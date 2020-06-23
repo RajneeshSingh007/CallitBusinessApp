@@ -1,0 +1,131 @@
+{
+  "project_info": {
+    "project_number": "256454720168",
+    "firebase_url": "https://callit-851ed.firebaseio.com",
+    "project_id": "callit-851ed",
+    "storage_bucket": "callit-851ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:256454720168:android:3cc38e2b130cfa7a",
+        "android_client_info": {
+          "package_name": "com.callit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "256454720168-nj2h2r6caefehstp9t8ukb1h77rp29mh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.callit",
+            "certificate_hash": "6a1167033f5a1bb9d0825b95ca204ebd5d9f4c94"
+          }
+        },
+        {
+          "client_id": "256454720168-t4qmlqpl0qmdv5j3pgq0ajl6ck07opv5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.callit",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "256454720168-ohla85rrj310as1br1sa6dutiiet9ebh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.callit",
+            "certificate_hash": "86e1803313f8dbe8b8f7575231b9ea3e38b461bc"
+          }
+        },
+        {
+          "client_id": "256454720168-loaghsqnpfc5mqk1upild9jcg9gieat1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABBtK5wcpj5b6HxW5RcSNsJxs5A5lNDKs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "256454720168-loaghsqnpfc5mqk1upild9jcg9gieat1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "256454720168-fa2kn1rfm9kke70l98uss8npi7vn3il2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.callit"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:256454720168:android:338f4513251965ab9fe09d",
+        "android_client_info": {
+          "package_name": "com.callit.business"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "256454720168-j41dfn189k16icotd97o88tkspivo0h9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.callit.business",
+            "certificate_hash": "6a1167033f5a1bb9d0825b95ca204ebd5d9f4c94"
+          }
+        },
+        {
+          "client_id": "256454720168-ha0psjdta73i20p78q8nau1tn81aphs7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.callit.business",
+            "certificate_hash": "86e1803313f8dbe8b8f7575231b9ea3e38b461bc"
+          }
+        },
+        {
+          "client_id": "256454720168-0b76pvoeuk3e9jlp26tehe8heslu1fka.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.callit.business",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "256454720168-loaghsqnpfc5mqk1upild9jcg9gieat1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABBtK5wcpj5b6HxW5RcSNsJxs5A5lNDKs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "256454720168-loaghsqnpfc5mqk1upild9jcg9gieat1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "256454720168-fa2kn1rfm9kke70l98uss8npi7vn3il2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.callit"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

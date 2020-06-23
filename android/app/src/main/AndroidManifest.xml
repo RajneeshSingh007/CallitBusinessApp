@@ -1,0 +1,61 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.callit">
+
+	<uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+	
+    <application
+      android:name=".MainApplication"
+      android:label="@string/app_name"
+      android:icon="@mipmap/ic_launcher"
+      android:roundIcon="@mipmap/ic_launcher"
+      android:allowBackup="false"
+        android:usesCleartextTraffic="true"
+        tools:overrideLibrary="com.reactnativecommunity.rctaudiotoolkit"
+      android:theme="@style/AppTheme">
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <receiver android:name="br.com.helderfarias.pushandroid.LocalMessagingReceiver" />
+               <receiver android:enabled="true" android:exported="true"
+                   android:name="br.com.helderfarias.pushandroid.SystemBootEventReceiver">
+                   <intent-filter>
+                       <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                       <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+                       <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+                       <category android:name="android.intent.category.DEFAULT" />
+                   </intent-filter>
+               </receiver>
+
+          <service android:name="br.com.helderfarias.pushandroid.MessagingService">
+               <intent-filter>
+                   <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+               </intent-filter>
+           </service>
+
+    <activity
+        android:name=".MainActivity"
+        android:label="@string/app_name"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+        android:windowSoftInputMode="adjustResize">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+                  <intent-filter>
+                      <action android:name="fcm.ACTION.HELLO" />
+                      <category android:name="android.intent.category.DEFAULT" />
+                   </intent-filter>
+
+    </activity>
+        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+    </application>
+
+</manifest>
