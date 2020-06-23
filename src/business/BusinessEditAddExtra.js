@@ -2,7 +2,7 @@ import React from "react";
 import { FlatList, StatusBar, StyleSheet, Image, TouchableWithoutFeedback,BackHandler,ScrollView,Alert} from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Divider, Title, Heading, NavigationBar, Row, Screen, Subtitle, TouchableOpacity, View } from "@shoutem/ui";
-import {Chip, Button, Checkbox, Colors, Dialog,Modal, FAB, Portal, Snackbar, TextInput, Avatar} from "react-native-paper";
+import {Chip, Button, Checkbox, Colors,Modal, Portal, Snackbar, TextInput} from "react-native-paper";
 import * as Helper from "./../util/Helper";
 import * as Pref from "./../util/Pref";
 import { Loader } from "./../customer/Loader";
@@ -52,6 +52,9 @@ export default class BusinessEditAddExtra extends React.Component {
       showdeletex:false,
       showAlert: false,
       alertContent: '',
+      //added
+      minSelect:0,
+      maxSelect:0,
     };
   }
 
@@ -107,14 +110,24 @@ export default class BusinessEditAddExtra extends React.Component {
         Pref.methodGet,
         this.state.token,
         result => {
-          ////console.log('catx', result);
+          //console.log('catx', result);
           let idxx = 0;
+          //added
+          let minSelect = -1;
+          let maxSelect = -1;
+          //
           Lodash.map(result, (ele) => {
             if (ele.name == yyyy) {
               idxx = ele.idcategory;
+              //console.log('elem', ele);
+              minSelect = ele.mustSelect;
+              maxSelect = ele.single;
             }
           });
-          //////console.log('idxx', idxx);
+          
+          //added
+          this.setMinNMaxSelect(minSelect, maxSelect);
+          //
           this.setState({ extraCatId: idxx, progressView: false });
         },
         error => {
@@ -122,6 +135,12 @@ export default class BusinessEditAddExtra extends React.Component {
         }
       );
     }
+  }
+
+  setMinNMaxSelect(min,max)
+  {
+    this.setState({minSelect:min,maxSelect:max});
+    // this.setState({maxSelect:max});
   }
 
   /**
@@ -355,10 +374,8 @@ export default class BusinessEditAddExtra extends React.Component {
         const ooo = this.state.tempData[indexx];
         const cloned = this.state.tempData;
         cloned.splice(indexx);
-
         const tpp = this.state.tempData1;
         const findjj = Lodash.findIndex(tpp, { name: ooo.name});
-        
         if(findjj !== -1){
           this.state.tempData1.splice(findjj);
         }
@@ -389,40 +406,31 @@ export default class BusinessEditAddExtra extends React.Component {
       <Row style={{ flexDirection: 'column', marginHorizontal: -8, marginVertical: -6 }}>
         <View styleName="horizontal space-between" style={{ width: '100%',flex:1,}}>
           <Subtitle numberOfLines={1} style={{ color: '#292929', fontSize: 16, fontWeight: 'bold',flex:0.7,alignSelf:'center'}}>{rowData.name}</Subtitle>
-
           <View style={{ flexDirection: 'row', alignItem: 'center', alignContent: 'center', flex: 0.3,justifyContent:'flex-end'}}>
-            
             <Checkbox
               status={rowData.extraAvailable === 1 ? 'checked' : 'unchecked'}
               color={Colors.green500}
               onPress={() => this.extraStockChecker(true, rowData, index)}
               style={{alignSelf:'center',}}
             />
-
             <Checkbox
               status={rowData.extraAvailable === 0 ? 'checked' : 'unchecked'}
               color={Colors.red500}
               onPress={() => this.extraStockChecker(false, rowData, index)}
               style={{ alignSelf: 'center', }}
             />
-
             <TouchableWithoutFeedback onPress={() => this.deleteExtras(index, rowData)}>
               <Image
                 source={require('../res/images/delete.png')}
                 style={{ width: 14, height: 17,  alignSelf:'center',marginStart:8,marginStart:4}}
               />
             </TouchableWithoutFeedback>
-
-
           </View>
-
         </View>
-
         <View styleName="horizontal" style={{ marginTop: sizeHeight(1) }}>
           <View
             style={{ alignItem: 'flex-start', flex: 0.5, justifyContent: 'center', borderColor: '#dedede', borderStyle: 'solid', borderWidth: 1, color: '#000000', height: 48, marginEnd: sizeWidth(1) }}>
             <Subtitle numberOfLines={1} style={{ color: '#292929', fontSize: 14, alignSelf: 'flex-start', marginHorizontal: sizeWidth(2) }}>{rowData.name}</Subtitle>
-
           </View>
           <TouchableWithoutFeedback onPress={() => this.editItems(rowData)}>
             <View
@@ -481,12 +489,6 @@ export default class BusinessEditAddExtra extends React.Component {
           styleName="inline no-border"
           rightComponent={
             <View style={{ flexDirection: 'row', marginEnd: sizeWidth(5) }}>
-              {/* <TouchableOpacity onPress={() => { }}>
-                <Image source={require('./../res/images/search.png')}
-                  onPress={() => this.onnScreen()}
-                  style={{ width: 24, height: 24, marginEnd: 16, }}
-                />
-              </TouchableOpacity> */}
               <BusinessMenuChoices />               
             </View>
           }
@@ -503,12 +505,26 @@ export default class BusinessEditAddExtra extends React.Component {
             ref={(ref) => { this.scrollingRef = ref }}>
             <View styleName="vertical sm-gutter" style={{ marginHorizontal: sizeWidth(2), }}>
               <Subtitle style={{ color: '#292929', fontSize: 16, marginTop: sizeHeight(1), marginHorizontal: sizeWidth(2), alignSelf: 'flex-start', fontWeight: '700' }}>{!this.state.extraMode ? "שם קטגורית התוספת" : Lodash.capitalize(this.state.extraName)}</Subtitle>
+              {/** show here the amount of to show  */}
+              { this.state.extraMode ? <View>
+                <View style={{flexDirection:'row', }}>
+                  <Subtitle style={{ color: 'black', fontSize: 16, alignSelf: 'flex-start', marginStart: sizeWidth(2) }}>{`מינימום בחירה: `}</Subtitle>
+              <Subtitle style={{ color: 'red', fontSize: 16, alignSelf: 'flex-start',  }}>{this.state.minSelect}</Subtitle>
+                </View>
+                <View style={{flexDirection:'row',marginBottom:sizeHeight(1)}}>
+                  <Subtitle style={{ color: 'black', fontSize: 16, alignSelf: 'flex-start', marginStart: sizeWidth(2) }}>{`מקסימום בחירה: `}</Subtitle>
+                  <Subtitle style={{ color: 'red', fontSize: 16, alignSelf: 'flex-start',  }}>{this.state.maxSelect === 0 ? `אין הגבלה` : this.state.maxSelect }</Subtitle>
+                </View> 
+              </View>: null}
+              {/* */}
               {this.state.extraMode ? <View style={{
                 width: '100%',
                 backgroundColor: '#d9d9d9',
                 marginVertical: sizeHeight(1),
                 height: 1,
               }} /> : null}
+              
+              
               {!this.state.extraMode ? <TouchableWithoutFeedback onPress={() => this.setState({ showCat: true })}>
                 <View
                   style={{ alignItem: 'flex-start', justifyContent: 'center', borderColor: '#dedede', borderStyle: 'solid', borderWidth: 1, color: '#000000', height: 60, marginHorizontal: sizeWidth(1) }}>
@@ -532,6 +548,7 @@ export default class BusinessEditAddExtra extends React.Component {
                   אפשר לבחור מספר תוספות
               </Subtitle>
               </View> : null}
+              
               <View style={{ marginTop: sizeHeight(1), }}>
                 {this.state.tempData.length > 0 ? (
                   <FlatList
@@ -556,8 +573,6 @@ export default class BusinessEditAddExtra extends React.Component {
                     underlineColor={"transparent"}
                     underlineColorAndroid={"transparent"}
                   />
-
-
                   <TextInput
                     style={[styles.inputStyle, { flex: 1, marginStart: sizeWidth(1) }]}
                     mode={"flat"}
@@ -585,7 +600,6 @@ export default class BusinessEditAddExtra extends React.Component {
                     <Subtitle style={{ color: '#292929', fontSize: 14, alignSelf: 'center', marginHorizontal: sizeWidth(2) }}>הוסף תוספת</Subtitle>
                   </View>
                 </TouchableWithoutFeedback>
-
               </View>
             </View>
           </ScrollView>
@@ -660,21 +674,7 @@ export default class BusinessEditAddExtra extends React.Component {
                 paddingVertical: 8,
               }}>{`עריכת תוספת`}</Title>
               <TextInput
-                style={{
-                  backgroundColor: "white",
-                  marginBottom: 6,
-                  marginTop: 6,
-                  borderWidth: 1,
-                  borderBottomEndRadius: 4,
-                  borderBottomLeftRadius: 4,
-                  borderBottomRightRadius: 4,
-                  borderBottomStartRadius: 4,
-                  borderTopEndRadius: 4,
-                  borderTopLeftRadius: 4,
-                  borderTopRightRadius: 4,
-                  borderTopStartRadius: 4,
-                  borderColor: "#eeeeee"
-                }}
+                style={styles.TextInput}
                 mode={"flat"}
                 label={"שם תוספת"}
                 password={false}
@@ -687,23 +687,8 @@ export default class BusinessEditAddExtra extends React.Component {
                 underlineColor={"transparent"}
                 underlineColorAndroid={"transparent"}
               />
-
               <TextInput
-                style={{
-                  backgroundColor: "white",
-                  marginBottom: 6,
-                  marginTop: 6,
-                  borderWidth: 1,
-                  borderBottomEndRadius: 4,
-                  borderBottomLeftRadius: 4,
-                  borderBottomRightRadius: 4,
-                  borderBottomStartRadius: 4,
-                  borderTopEndRadius: 4,
-                  borderTopLeftRadius: 4,
-                  borderTopRightRadius: 4,
-                  borderTopStartRadius: 4,
-                  borderColor: "#eeeeee"
-                }}
+                style={styles.TextInput}
                 mode={"flat"}
                 label={"מחיר"}
                 password={false}
@@ -715,20 +700,15 @@ export default class BusinessEditAddExtra extends React.Component {
                 underlineColor={"transparent"}
                 underlineColorAndroid={"transparent"}
               />
-
               <Button
                 mode={"contained"}
                 style={[styles.loginButtonStyle,{marginVertical:sizeHeight(1)}]}
-                onPress={() => this.editSave()}
-              >
+                onPress={() => this.editSave()}>
                 <Subtitle
                   styleName="v-center h-center"
-                  style={{
-                    color: "white"
-                  }}
-                >
+                  style={{color: "white"}}>
                   {`שמירה`}
-              </Subtitle>
+                </Subtitle>
               </Button>
             </View>
 
@@ -782,5 +762,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#3daccf',
     textAlign: "center",
     margin:0,
+  },
+  TextInput:{
+    backgroundColor: "white",
+    marginBottom: 6,
+    marginTop: 6,
+    borderWidth: 1,
+    borderBottomEndRadius: 4,
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 4,
+    borderBottomStartRadius: 4,
+    borderTopEndRadius: 4,
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
+    borderTopStartRadius: 4,
+    borderColor: "#eeeeee"
   },
 });

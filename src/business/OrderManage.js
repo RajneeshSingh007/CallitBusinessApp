@@ -46,6 +46,7 @@ import RNPrint from 'react-native-print';
 import xml2js from 'xml2js';
 
 let word = 'עדכון: הזמנה מוכנה';
+let declineMsg = '';
 
 export default class OrderManage extends React.Component {
   constructor(props) {
@@ -172,6 +173,19 @@ export default class OrderManage extends React.Component {
     });
   }
 
+  declineWithOutOfStock = () => {
+    declineMsg = ` לקוחות יקרים, חלק מהמוצרים שבחרתם אינם במלאי, נא להתעדכן בתפריט ולהזמין מחדש. סליחה ותודה על ההבנה `;
+    this.decline();
+  };
+  declineWithBusy = () => {
+    declineMsg = ` לקוחות יקרים, עקב עומס רב בהזמנות בבית העסק שלנו, אנחנו לא יכולים לקבל את ההזמנה שלך. סליחה ותודה על ההבנה `;
+    this.decline();
+  };
+  declineWithNothing = () => {
+    declineMsg = ``;
+    this.decline();
+  };
+
   printText = async () => {
     const {restaurants} = this.state;
     let parseString = `<html><head><title>Order</title></head><body style="width:80mm; height:80mm;direction: rtl;">`;
@@ -232,10 +246,9 @@ export default class OrderManage extends React.Component {
       parseString += `שם לקוח: ${this.state.ogData.name}` + '<br>';
       parseString += `פלאפון: ${this.state.ogData.customertelephone}` + '<br>';
       if (this.state.ogData.address !== '') {
-        parseString +=
-          `מיקום הלקוח במפה: ${this.state.ogData.address}` + '<br>';
+        parseString += `כתובת: ${this.state.ogData.address}` + '<br>';
       }
-      parseString += `סכום לתשלום:?${this.state.ogData.totalPrice}` + '<br>';
+      parseString += `סכום לתשלום:₪${this.state.ogData.totalPrice}` + '<br>';
       parseString += `אמצעי תשלום:${
         this.state.ogData.paid === 0 ? 'מזומן' : 'אשראי'
       }`;
@@ -627,7 +640,8 @@ export default class OrderManage extends React.Component {
     this.setState({showDecline: false, showp: true});
     const datas = [];
     //const time = this.state.time;
-    const message = this.state.message;
+    const newmsg = declineMsg || '';
+    const message = this.state.message + newmsg;
     const bid = this.state.bid;
     const customerfkOx = this.state.customerfkO;
     const timeformat = `${this.state.convertTime}:00:00`;
@@ -806,7 +820,7 @@ export default class OrderManage extends React.Component {
                   fontSize: 15,
                   fontWeight: '700',
                   marginStart: sizeWidth(3),
-                  lineHeight:32
+                  lineHeight: 32,
                 }}>{`הזמנה זו בוטלה על ידי הלקוח`}</Subtitle>
             ) : null}
 
@@ -864,8 +878,7 @@ export default class OrderManage extends React.Component {
                     }}>{`שם לקוח: ${this.state.ogData.name}`}</Subtitle>
                   <TouchableWithoutFeedback
                     onPress={() => {
-                      const phoneNumber = this.state.ogData
-                        .customertelephone;
+                      const phoneNumber = this.state.ogData.customertelephone;
                       Linking.openURL(`tel:${phoneNumber}`);
                     }}>
                     <Subtitle
@@ -882,9 +895,7 @@ export default class OrderManage extends React.Component {
                           fontFamily: 'Rubik',
                           alignSelf: 'flex-start',
                           fontSize: 15,
-                        }}>{`${
-                        this.state.ogData.customertelephone
-                      }`}</Subtitle>
+                        }}>{`${this.state.ogData.customertelephone}`}</Subtitle>
                     </Subtitle>
                   </TouchableWithoutFeedback>
                   <View
@@ -981,20 +992,37 @@ export default class OrderManage extends React.Component {
                       {this.state.ogData.paid === 0 ? 'מזומן' : 'אשראי'}
                     </Subtitle>
                   </Subtitle>
-                  {this.state.ogData.orderdate !== undefined &&
-                  this.state.ogData.orderdate !== '' &&
-                  this.state.ogData.orderdate !== null ? (
-                    <Subtitle
-                      style={{
-                        color: '#292929',
-                        fontFamily: 'Rubik',
-                        alignSelf: 'flex-start',
-                        fontWeight: '600',
-                        fontSize: 15,
-                      }}>{`תאריך הזמנה: ${Moment(
-                      this.state.ogData.orderdate,
-                    ).format('YYYY/DD/MM HH:mm')}`}</Subtitle>
-                  ) : null}
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                    {this.state.ogData.orderdate !== undefined &&
+                    this.state.ogData.orderdate !== '' &&
+                    this.state.ogData.orderdate !== null ? (
+                      <Subtitle
+                        style={{
+                          color: '#292929',
+                          fontFamily: 'Rubik',
+                          alignSelf: 'flex-start',
+                          fontWeight: '600',
+                          fontSize: 15,
+                        }}>{`תאריך הזמנה: ${Moment(
+                        this.state.ogData.orderdate,
+                      ).format('YYYY/DD/MM HH:mm')}`}</Subtitle>
+                    ) : null}
+                    <TouchableWithoutFeedback onPress={this.printText}>
+                      <Icons
+                        name={'print'}
+                        size={28}
+                        style={{
+                          alignSelf: 'center',
+                          padding: 4,
+                          marginEnd: 4,
+                        }}
+                      />
+                    </TouchableWithoutFeedback>
+                  </View>
                 </View>
               </View>
             ) : null}
@@ -1420,9 +1448,7 @@ export default class OrderManage extends React.Component {
                     marginVertical: sizeHeight(2),
                   }}>
                   <Checkbox
-                    status={
-                      this.state.printmodeon ? 'checked' : 'unchecked'
-                    }
+                    status={this.state.printmodeon ? 'checked' : 'unchecked'}
                     color={'#3daccf'}
                     onPress={() => {
                       const checkers = this.state.printmodeon;
@@ -1524,7 +1550,6 @@ export default class OrderManage extends React.Component {
                 }}>
                 {`בטל הזמנה`}
               </Subtitle>
-
               <Subtitle
                 style={{
                   color: '#292929',
@@ -1534,32 +1559,58 @@ export default class OrderManage extends React.Component {
                   fontWeight: 'bold',
                   paddingBottom: 8,
                 }}>
-                {'?האם אתה בטוח'}
+                {'סיבת הסירוב:'}
               </Subtitle>
-              <Button
-                styleName=" muted border"
-                mode={'contained'}
-                uppercase={true}
-                dark={true}
-                style={[
-                  styles.loginButtonStyle,
-                  {marginVertical: 0, marginHorizontal: sizeWidth(3)},
-                ]}
-                onPress={this.decline}>
-                <Subtitle style={{color: 'white'}}>{'כן'}</Subtitle>
-              </Button>
+              <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                <Button
+                  styleName=" muted border"
+                  mode={'contained'}
+                  uppercase={true}
+                  dark={true}
+                  style={[
+                    styles.loginButtonStyle,
+                    {marginVertical: 0, marginHorizontal: sizeWidth(3)},
+                  ]}
+                  onPress={this.declineWithNothing}>
+                  <Subtitle style={{color: 'white'}}>{'כללי'}</Subtitle>
+                </Button>
+                <Button
+                  styleName=" muted border"
+                  mode={'contained'}
+                  uppercase={true}
+                  dark={true}
+                  style={[
+                    styles.loginButtonStyle,
+                    {marginVertical: 0, marginHorizontal: sizeWidth(3)},
+                  ]}
+                  onPress={this.declineWithBusy}>
+                  <Subtitle style={{color: 'white'}}>{'עמוס'}</Subtitle>
+                </Button>
+                <Button
+                  styleName=" muted border"
+                  mode={'contained'}
+                  uppercase={true}
+                  dark={true}
+                  style={[
+                    styles.loginButtonStyle,
+                    {marginVertical: 0, marginHorizontal: sizeWidth(3)},
+                  ]}
+                  onPress={this.declineWithOutOfStock}>
+                  <Subtitle style={{color: 'white'}}>{'לא במלאי'}</Subtitle>
+                </Button>
+              </View>
               <TouchableWithoutFeedback
                 onPress={() => this.setState({showDecline: false})}>
                 <Subtitle
                   style={{
-                    marginTop: sizeHeight(1.5),
+                    marginTop: sizeHeight(5),
                     color: '#292929',
                     fontFamily: 'Rubik',
                     alignSelf: 'center',
-                    fontSize: 15,
+                    fontSize: 18,
                     paddingBottom: 8,
                   }}>
-                  {'לא'}
+                  {'חזור'}
                 </Subtitle>
               </TouchableWithoutFeedback>
             </View>

@@ -1,6 +1,6 @@
 import React from "react";
 import { StatusBar, StyleSheet,TouchableOpacity } from "react-native";
-import { Image, Screen, Subtitle, Title, View,Heading } from "@shoutem/ui";
+import { Image, Screen, Subtitle, Title, View,Heading,DropDownMenu } from "@shoutem/ui";
 import * as Helper from "./../util/Helper";
 import * as Pref from "./../util/Pref";
 import { Button, Card, Colors, Snackbar, TextInput } from "react-native-paper";
@@ -14,7 +14,18 @@ export default class BusinessWelcomePage extends React.Component {
       username: "",
       password: "",
       progressView: false,
-      message: ""
+      message: "",
+      user_type: [
+        {
+          type: "עסק",
+        },
+        {
+          type: "שליח",
+        },
+        {
+          type:""
+        }
+      ]
     };
   }
 
@@ -25,11 +36,22 @@ export default class BusinessWelcomePage extends React.Component {
       ////console.log(e);
     }
   }
+
+  getUserNameWithType(selected_ut)
+  {
+    //console.log(selected_ut);
+    if(selected_ut.type === "עסק")
+    {
+      return "us-" +this.state.username;
+    }
+    return "ud-" + this.state.username;
+  }
   
   /**
    * signIn
    */
-  signIn() {
+  signIn(selected_ut) {
+
     if (this.state.username === "" && this.state.password === "") {
       this.setState({ message: "נא למלא שם משתמש וסיסמא" });
     } else if (this.state.username === "") {
@@ -43,11 +65,14 @@ export default class BusinessWelcomePage extends React.Component {
           //console.log('fcmToken', fcmToken);
           if (fcmToken) {
             const jsonData = JSON.stringify({
-              "username": this.state.username,
+              "username": this.getUserNameWithType(selected_ut),
               "password": this.state.password,
               "deviceid": fcmToken
             });
-            Helper.networkHelperTokenPost(Pref.UserOwnerLoginUrl, jsonData, Pref.methodPost,Pref.LASTTOKEN, (result) => {
+            //added  selected_ut.type === "עסק" ? Pref.UserOwnerLoginUrl : Pref.UserDilveryLoginUrl
+            Helper.networkHelperTokenPost( selected_ut.type === "עסק" ? Pref.UserOwnerLoginUrl : Pref.UserDilveryLoginUrl, jsonData, Pref.methodPost,
+            Pref.LASTTOKEN,
+               (result) => {
               this.setState({ progressView: false });
               //console.log('result', result);
               if (Helper.checkJson(result)) {
@@ -68,6 +93,7 @@ export default class BusinessWelcomePage extends React.Component {
 
             }, (error) => {
               this.setState({ progressView: false });
+              
             });
           } else {
             alert('ההתחברות נכשלה');
@@ -79,13 +105,25 @@ export default class BusinessWelcomePage extends React.Component {
 
 
   render() {
+    const selected_ut = this.state.selected_ut || this.state.user_type[0];
     return (
-      <Screen style={{ backgroundColor: "white", }}>
-      <StatusBar barStyle="dark-content" backgroundColor='white'/>
-      <View styleName='space-between fill-parent vertical'>
-          <Heading styleName='xl-gutter bold v-center h-center' style={{ padding: 4, color: "#292929", fontWeight: '700', fontSize: 24, }}>התחבר למערכת</Heading>
-        <View styleName='v-center h-center'>
-            <Subtitle styleName='v-center h-center' style={{ color: '#292929', fontSize: 16 }}>שם משתמש</Subtitle>
+      <View style={styles.main}>
+        <Screen style={{ backgroundColor: "white", }}>
+        <StatusBar barStyle="dark-content" backgroundColor='white'/>
+        <View styleName='space-between fill-parent vertical'>
+          <Heading styleName='xl-gutter bold v-center h-center' style={{  color: "#292929", fontWeight: '700', fontSize: 24, }}>התחבר למערכת</Heading>
+          <View styleName='v-center h-center'>
+            <View >
+              <DropDownMenu
+                
+                options={this.state.user_type}
+                selectedOption={selected_ut ? selected_ut : this.state.user_type[0]}
+                onOptionSelected={(user_type) => this.setState({ selected_ut: user_type }) }
+                titleProperty="type"
+              />
+              <Subtitle styleName='v-center h-center' style={{ color: '#292929', fontSize: 16,}}>שם משתמש</Subtitle>
+            </View>
+            
           <TextInput
             mode='flat'
             underlineColor='transparent'
@@ -112,13 +150,13 @@ export default class BusinessWelcomePage extends React.Component {
             source={require('./../res/images/loginbg.png')}
         />
         <Button 
-          styleName=" muted border"
+          styleName="muted border"
           mode={"flat"}
           uppercase={true}
           dark={true}
           loading={this.state.progressView}
           style={styles.loginButtonStyle}
-          onPress={() => this.signIn()}
+          onPress={() =>{ this.signIn(selected_ut);} }
         >
           <Subtitle
               style={{ color: "white" }}>{this.state.progressView === true ? "נא להמתין..." :  'התחבר' }</Subtitle>
@@ -136,10 +174,11 @@ export default class BusinessWelcomePage extends React.Component {
             message: ""
           })
         }
-      >
-        {this.state.message}
-      </Snackbar>
-    </Screen>
+        >
+          {this.state.message}
+        </Snackbar>
+      </Screen>
+    </View>
     );
   }
 }
@@ -167,6 +206,9 @@ const styles = StyleSheet.create({
     width:'100%',
     backgroundColor: '#3daccf',
     textAlign: "center"
+  },
+  main: {
+   flex: 1   
   }
 });
 
