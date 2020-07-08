@@ -1,6 +1,7 @@
 import { Dimensions, PermissionsAndroid, Platform } from "react-native";
 import { NavigationActions, StackActions } from "react-navigation";
 import NavigationAction from "./../util/NavigationActions";
+import Lodash from 'lodash';
 
 /**
  *
@@ -268,5 +269,66 @@ export const subslongText = (name, length) => {
 	const size = name.length;
 	return size > length ? name.substring(0, length) + "..." : name;
 }
+
+
+/**
+ *
+ * @param {*} array
+ */
+export const countcatextraItem = array => {
+  var r = [],
+    o = {};
+  Lodash.map(array, (a, index) => {
+    if (!o[a.name]) {
+      o[a.name] = {category: a.category, value: 0, name: a.name};
+      r.push(o[a.name]);
+    }
+    o[a.name].value++;
+  });
+  return r;
+};
+
+/**
+ *
+ * @param {*} result
+ */
+export const groupExtraWithCountString = (result, val) => {
+  if (result === undefined || result === null || result.length === 0) {
+    return '';
+  }
+  const data = val ? countcatextraItem(result) : result;
+  let groupedExtra = Lodash.groupBy(data, function(exData) {
+    if (exData.category !== '') {
+      return exData.category;
+    }
+  });
+  let extraString = '';
+  Object.keys(groupedExtra).map(key => {
+    let filterExtras = key + ': ';
+    const datass = groupedExtra[key];
+    Lodash.map(datass, (ele, index) => {
+      if (val) {
+        if (index === datass.length - 1) {
+          filterExtras += `${ele.value > 1 ? `${ele.value}x` : ''} ${ele.name}`;
+        } else {
+          filterExtras += `${ele.value > 1 ? `${ele.value}x` : ''}  ${
+            ele.name
+          },`;
+        }
+      } else {
+        if (index === datass.length - 1) {
+          filterExtras += `${ele.name}`;
+        } else {
+          filterExtras += `${
+            ele.name
+          }, `;
+        }
+      }
+    });
+    extraString += filterExtras.trim() + '\n';
+  });
+  return extraString;
+};
+
 
 

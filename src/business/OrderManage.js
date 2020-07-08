@@ -66,6 +66,7 @@ export default class OrderManage extends React.Component {
       searchVisibility: false,
       clone: [],
       restaurants: [],
+      displayList: [],
       bData: [],
       name: '',
       time: '',
@@ -86,6 +87,7 @@ export default class OrderManage extends React.Component {
       convertTime: '',
       terminalNumber: '',
       cardSessionID: '',
+      shovar:''
     };
     Pref.getVal(Pref.branchId, va => {
       Pref.getVal(Pref.bBearerToken, token => {
@@ -151,6 +153,19 @@ export default class OrderManage extends React.Component {
     });
   }
 
+  objectsEqual = (o1, o2) => {
+    if (o1.length !== o2.length) return false;
+    let count = 0;
+    for (let index = 0; index < o1.length; index++) {
+      const e1 = o1[index];
+      const e2 = o2[index];
+      if (e1.name === e2.name) {
+        count += 1;
+      }
+    }
+    return count === o1.length;
+  };
+
   componentDidMount() {
     const {state} = this.props.navigation;
     const data = state.params.item;
@@ -159,6 +174,43 @@ export default class OrderManage extends React.Component {
     const pppp = data.status;
     console.log(`pppp`, pppp);
     let allMessages = '';
+
+    const groupByProduct = Lodash.groupBy(data.data, item => item.serviceName);
+    const finalDisplayData = [];
+    Object.keys(groupByProduct).map(keyx => {
+      let pppp = groupByProduct[keyx];
+      Lodash.map(pppp, (firspos, index) => {
+        const {extras, message, price, idorder, serviceName} = firspos;
+        let total = Number(price);
+        let found = false;
+        for (let lu = index + 1; lu < pppp.length; lu++) {
+          const cc = pppp[lu];
+          const check = this.objectsEqual(extras, cc.extras);
+          if (check && message === cc.message) {
+            found = true;
+            total += Number(cc.price);
+          }
+        }
+        //console.log(`found`, found);
+        //if (find === undefined) {
+        const exstr = Helper.groupExtraWithCountString(extras, found);
+        const find = Lodash.filter(
+          finalDisplayData,
+          z => z.serviceName === keyx,
+        );
+        if (find.length === 0) {
+          finalDisplayData.push({
+            serviceName: keyx,
+            extraDisplayArray: exstr,
+            message: message,
+            price: found ? total : price,
+            counter: found ? pppp.length : 0,
+          });
+        }
+
+        //}
+      });
+    });
     this.setState({
       customerfkO: data.data[0].customerfkO,
       allMessages: allMessages,
@@ -167,9 +219,11 @@ export default class OrderManage extends React.Component {
       mode: mm,
       status: pppp,
       clone: data.data,
+      displayList: finalDisplayData,
       restaurants: data.data,
       progressView: false,
       isDelivery: data.data[0].isDelivery,
+      shovar:data.data[0].shovar || ''
     });
   }
 
@@ -330,63 +384,46 @@ export default class OrderManage extends React.Component {
       <View
         style={{
           flexDirection: 'column',
-          marginVertical: sizeHeight(0.5),
           marginHorizontal: sizeWidth(2),
         }}>
         <View style={{flexDirection: 'row', flex: 1}}>
-          {/* <Card elevation={4} style={{
-                        marginTop: 8,
-                        borderTopRightRadius: 8,
-                        borderTopStartRadius: 8,
-                        borderBottomRightRadius: 8,
-                        borderBottomStartRadius: 8,
-                        borderBottomEndRadius: 8,
-                        borderBottomLeftRadius: 8,
-                        flexWrap: 'wrap',
-                        width: 96,
-                        height: 96,
-                    }}>
-                        <Image
-                            styleName="small"
-                            source={{ uri: `${Pref.BASEURL}/${item.imageUrl}` }}
-                            style={{
-                                width: 96,
-                                height: 96,
-                                alignSelf: 'center',
-                                justifyContent: 'center',
-                                borderTopEndRadius: 8,
-                                borderTopLeftRadius: 8,
-                                borderTopRightRadius: 8,
-                                borderTopStartRadius: 8,
-                                borderBottomRightRadius: 8,
-                                borderBottomStartRadius: 8,
-                                borderBottomEndRadius: 8,
-                                borderBottomLeftRadius: 8,
-                                
-                            }}
-                        />
-                    </Card> */}
           <View
             style={{
               flexDirection: 'column',
               flex: 1,
-              marginTop: 4,
               marginStart: sizeWidth(2),
               marginBottom: sizeWidth(1),
             }}>
             <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
               <Title
                 styleName="bold"
                 style={{
                   color: '#292929',
                   fontFamily: 'Rubik',
-                  fontSize: 16,
-                  multiline: false,
+                  fontSize: 15,
                   alignSelf: 'flex-start',
                   fontWeight: '700',
                 }}>
-                {Lodash.capitalize(item.serviceName)}
+                {item.serviceName}{' '}
+                {item.counter > 0 ? (
+                  <Title
+                    styleName="bold"
+                    style={{
+                      color: '#5EBBD7',
+                      fontFamily: 'Rubik',
+                      fontSize: 18,
+                      alignSelf: 'flex-start',
+                      fontWeight: 'bold',
+                    }}>
+                    {`   ${item.counter}x`}
+                  </Title>
+                ) : (
+                  ''
+                )}
               </Title>
               <Subtitle
                 style={{
@@ -398,36 +435,27 @@ export default class OrderManage extends React.Component {
                   fontWeight: 'bold',
                 }}>{`₪${item.price}`}</Subtitle>
             </View>
-            {/* {item.extras !== null && item.extras !== undefined && item.extras.length > 0 ? <FlatList
-                            showsHorizontalScrollIndicator={false}
-                            showsVerticalScrollIndicator={true}
-                            data={this.filterExtrasCat(item.extras)}
-                            nestedScrollEnabled={true}
-                            keyExtractor={(item, index) => item.name}
-                            renderItem={({ item: item, index }) => this.renderExtraRow(item, index)} /> : null} */}
-            {item.extras !== undefined && item.extras.length > 0 ? (
-              <View style={{flex: 1, flexDirection: 'column'}}>
-                {this.filterExtrasCat(item.extras).map(ele => {
-                  return (
-                    <View
-                      style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
-                      <Title
-                        styleName="wrap"
-                        style={{
-                          color: '#292929',
-                          fontFamily: 'Rubik',
-                          fontSize: 16,
-                          fontWeight: '400',
-                          paddingHorizontal: 2,
-                          writingDirection: 'ltr',
-                        }}>
-                        {`${Lodash.capitalize(ele.data)}`}
-                      </Title>
-                    </View>
-                  );
-                })}
+            <View style={{flex: 1, flexDirection: 'column'}}>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                }}>
+                <Title
+                  styleName="wrap"
+                  style={{
+                    color: '#292929',
+                    fontFamily: 'Rubik',
+                    fontSize: 16,
+                    fontWeight: '400',
+                    paddingHorizontal: 2,
+                    writingDirection: 'ltr',
+                  }}>
+                  {`${Lodash.capitalize(item.extraDisplayArray)}`}
+                </Title>
               </View>
-            ) : null}
+            </View>
             {item.message !== null &&
             item.message !== '' &&
             item.message !== undefined ? (
@@ -474,7 +502,10 @@ export default class OrderManage extends React.Component {
     const time = this.state.time;
     const message = this.state.message;
     const bid = this.state.bid;
-    const timeformat = `${this.state.convertTime}:${time}:00`;
+    const timeformat =
+      time === ''
+        ? `00001-01-01 00:00:00`
+        : `${this.state.convertTime}:${time}:00`;
     //${time}
     //Moment().format('YYYY-MM-DD HH:MM')
     Lodash.map(this.state.restaurants, ele => {
@@ -482,7 +513,7 @@ export default class OrderManage extends React.Component {
         Id_order: ele.idorder,
         customerfkO: ele.fkcustomerO,
         Expected_date: timeformat,
-        Mins: ``,
+        Mins: `${time}`,
         Message: message,
         Status: newStatus,
         Id_branch: Number(bid),
@@ -504,7 +535,7 @@ export default class OrderManage extends React.Component {
           const total = this.state.ogData.totalPrice;
           //console.log(`total`, total)
           let parstotal = '';
-          if (total.toString().contains('.')) {
+          if (total.toString().includes('.')) {
             parstotal = total.toString().replace('.', '');
           } else {
             parstotal = `${total.toString()}00`;
@@ -834,17 +865,9 @@ export default class OrderManage extends React.Component {
                     extraData={this.state}
                     showsVerticalScrollIndicator={true}
                     showsHorizontalScrollIndicator={false}
-                    data={this.state.restaurants}
-                    // ItemSeparatorComponent={() =>{
-                    //     return <View style={{
-                    //         height: 1,
-                    //         backgroundColor: '#dedede',
-                    //         marginVertical: sizeHeight(1),
-                    //         marginHorizontal:sizeWidth(4),
-                    //     }} />
-                    // }}
+                    data={this.state.displayList}
                     nestedScrollEnabled={true}
-                    keyExtractor={(item, index) => item.name}
+                    keyExtractor={(item, index) => `${index}`}
                     renderItem={({item: item, index}) =>
                       this.renderRow(item, index)
                     }
@@ -878,7 +901,8 @@ export default class OrderManage extends React.Component {
                     }}>{`שם לקוח: ${this.state.ogData.name}`}</Subtitle>
                   <TouchableWithoutFeedback
                     onPress={() => {
-                      const phoneNumber = this.state.ogData.customertelephone;
+                      const phoneNumber = this.state.ogData
+                        .customertelephone;
                       Linking.openURL(`tel:${phoneNumber}`);
                     }}>
                     <Subtitle
@@ -895,7 +919,9 @@ export default class OrderManage extends React.Component {
                           fontFamily: 'Rubik',
                           alignSelf: 'flex-start',
                           fontSize: 15,
-                        }}>{`${this.state.ogData.customertelephone}`}</Subtitle>
+                        }}>{`${
+                        this.state.ogData.customertelephone
+                      }`}</Subtitle>
                     </Subtitle>
                   </TouchableWithoutFeedback>
                   <View
@@ -992,6 +1018,25 @@ export default class OrderManage extends React.Component {
                       {this.state.ogData.paid === 0 ? 'מזומן' : 'אשראי'}
                     </Subtitle>
                   </Subtitle>
+                  {this.state.shovar !== '' ? (
+                    <Subtitle
+                      style={{
+                        color: '#292929',
+                        fontFamily: 'Rubik',
+                        alignSelf: 'flex-start',
+                        fontSize: 15,
+                      }}>
+                      {`מספר שובר: `}
+                      <Subtitle
+                        style={{
+                          color: 'orange',
+                          fontFamily: 'Rubik',
+                          fontSize: 15,
+                        }}>
+                        {this.state.shovar}
+                      </Subtitle>
+                    </Subtitle>
+                  ) : null}
                   <View
                     style={{
                       flexDirection: 'row',
@@ -1035,331 +1080,365 @@ export default class OrderManage extends React.Component {
                     marginVertical: sizeHeight(1),
                   }}
                 />
-                <Subtitle
-                  style={{
-                    color: '#292929',
-                    fontSize: 16,
-                    marginTop: sizeHeight(1),
-                    marginHorizontal: sizeWidth(4),
-                    fontWeight: '400',
-                  }}>{`כמה זמן יקח? (בדקות) - אופציונלי`}</Subtitle>
-                <View
-                  styleName="horizontal"
-                  style={{
-                    flexDirection: 'row-reverse',
-                    marginVertical: sizeHeight(1),
-                    marginHorizontal: sizeWidth(4),
-                    borderColor: '#dedede',
-                    borderStyle: 'solid',
-                    borderWidth: 1,
-                    color: '#000000',
-                    flex: 8,
-                  }}>
-                  <TouchableWithoutFeedback
-                    onPress={() => {
-                      const oo = this.state.wse;
-                      this.setState({time: '5', wse: oo === 1 ? 0 : 1});
-                    }}>
-                    <View
+                {Number(this.state.status) !== -2 ? (
+                  <View>
+                    <Subtitle
                       style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        height: sizeHeight(6.5),
-                        width: sizeWidth(10),
-                        backgroundColor:
-                          this.state.wse == 1 ? '#3daccf' : 'white',
-                      }}>
-                      <View
-                        style={{
-                          width: 1,
-                          backgroundColor: '#dedede',
-                        }}
-                      />
-                      <Subtitle
-                        style={{
-                          color: this.state.wse !== 1 ? '#292929' : 'white',
-                          fontSize: 16,
-                          alignSelf: 'center',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          alignContent: 'center',
-                          marginStart: 13,
-                        }}>
-                        5
-                      </Subtitle>
-                    </View>
-                  </TouchableWithoutFeedback>
-                  <TouchableWithoutFeedback
-                    onPress={() => {
-                      const oo = this.state.wse;
-                      this.setState({time: '10', wse: oo === 2 ? 0 : 2});
-                    }}>
+                        color: '#292929',
+                        fontSize: 16,
+                        marginTop: sizeHeight(1),
+                        marginHorizontal: sizeWidth(4),
+                        fontWeight: '400',
+                      }}>{`כמה זמן יקח? (בדקות) - אופציונלי`}</Subtitle>
                     <View
+                      styleName="horizontal"
                       style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        height: sizeHeight(6.5),
-                        width: sizeWidth(10),
-                        backgroundColor:
-                          this.state.wse == 2 ? '#3daccf' : 'white',
+                        flexDirection: 'row-reverse',
+                        marginVertical: sizeHeight(1),
+                        marginHorizontal: sizeWidth(4),
+                        borderColor: '#dedede',
+                        borderStyle: 'solid',
+                        borderWidth: 1,
+                        color: '#000000',
+                        flex: 8,
                       }}>
-                      <View
-                        style={{
-                          width: 1,
-                          backgroundColor: '#dedede',
-                        }}
-                      />
-                      <Subtitle
-                        style={{
-                          color: this.state.wse !== 2 ? '#292929' : 'white',
-                          fontSize: 16,
-                          alignSelf: 'center',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          alignContent: 'center',
-                          marginStart: 13,
+                      <TouchableWithoutFeedback
+                        onPress={() => {
+                          const oo = this.state.wse;
+                          this.setState({time: '5', wse: oo === 1 ? 0 : 1});
                         }}>
-                        10
-                      </Subtitle>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            height: sizeHeight(6.5),
+                            width: sizeWidth(10),
+                            backgroundColor:
+                              this.state.wse == 1 ? '#3daccf' : 'white',
+                          }}>
+                          <View
+                            style={{
+                              width: 1,
+                              backgroundColor: '#dedede',
+                            }}
+                          />
+                          <Subtitle
+                            style={{
+                              color:
+                                this.state.wse !== 1 ? '#292929' : 'white',
+                              fontSize: 16,
+                              alignSelf: 'center',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              alignContent: 'center',
+                              marginStart: 13,
+                            }}>
+                            5
+                          </Subtitle>
+                        </View>
+                      </TouchableWithoutFeedback>
+                      <TouchableWithoutFeedback
+                        onPress={() => {
+                          const oo = this.state.wse;
+                          this.setState({
+                            time: '10',
+                            wse: oo === 2 ? 0 : 2,
+                          });
+                        }}>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            height: sizeHeight(6.5),
+                            width: sizeWidth(10),
+                            backgroundColor:
+                              this.state.wse == 2 ? '#3daccf' : 'white',
+                          }}>
+                          <View
+                            style={{
+                              width: 1,
+                              backgroundColor: '#dedede',
+                            }}
+                          />
+                          <Subtitle
+                            style={{
+                              color:
+                                this.state.wse !== 2 ? '#292929' : 'white',
+                              fontSize: 16,
+                              alignSelf: 'center',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              alignContent: 'center',
+                              marginStart: 13,
+                            }}>
+                            10
+                          </Subtitle>
+                        </View>
+                      </TouchableWithoutFeedback>
+                      <TouchableWithoutFeedback
+                        onPress={() => {
+                          const oo = this.state.wse;
+                          this.setState({
+                            time: '15',
+                            wse: oo === 3 ? 0 : 3,
+                          });
+                        }}>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            height: sizeHeight(6.5),
+                            width: sizeWidth(10),
+                            backgroundColor:
+                              this.state.wse == 3 ? '#3daccf' : 'white',
+                          }}>
+                          <View
+                            style={{
+                              width: 1,
+                              backgroundColor: '#dedede',
+                            }}
+                          />
+                          <Subtitle
+                            style={{
+                              color:
+                                this.state.wse !== 3 ? '#292929' : 'white',
+                              fontSize: 16,
+                              alignSelf: 'center',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              alignContent: 'center',
+                              marginStart: 13,
+                            }}>
+                            15
+                          </Subtitle>
+                        </View>
+                      </TouchableWithoutFeedback>
+                      <TouchableWithoutFeedback
+                        onPress={() => {
+                          const oo = this.state.wse;
+                          this.setState({
+                            time: '20',
+                            wse: oo === 4 ? 0 : 4,
+                          });
+                        }}>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            height: sizeHeight(6.5),
+                            width: sizeWidth(10),
+                            backgroundColor:
+                              this.state.wse == 4 ? '#3daccf' : 'white',
+                          }}>
+                          <View
+                            style={{
+                              width: 1,
+                              backgroundColor: '#dedede',
+                            }}
+                          />
+                          <Subtitle
+                            style={{
+                              color:
+                                this.state.wse !== 4 ? '#292929' : 'white',
+                              fontSize: 16,
+                              alignSelf: 'center',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              alignContent: 'center',
+                              marginStart: 13,
+                            }}>
+                            20
+                          </Subtitle>
+                        </View>
+                      </TouchableWithoutFeedback>
+                      <TouchableWithoutFeedback
+                        onPress={() => {
+                          const oo = this.state.wse;
+                          this.setState({
+                            time: '30',
+                            wse: oo === 5 ? 0 : 5,
+                          });
+                        }}>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            height: sizeHeight(6.5),
+                            width: sizeWidth(10),
+                            backgroundColor:
+                              this.state.wse == 5 ? '#3daccf' : 'white',
+                          }}>
+                          <View
+                            style={{
+                              width: 1,
+                              backgroundColor: '#dedede',
+                            }}
+                          />
+                          <Subtitle
+                            style={{
+                              color:
+                                this.state.wse !== 5 ? '#292929' : 'white',
+                              fontSize: 16,
+                              alignSelf: 'center',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              alignContent: 'center',
+                              marginStart: 13,
+                            }}>
+                            30
+                          </Subtitle>
+                        </View>
+                      </TouchableWithoutFeedback>
+                      <TouchableWithoutFeedback
+                        onPress={() => {
+                          const oo = this.state.wse;
+                          this.setState({
+                            time: '40',
+                            wse: oo === 6 ? 0 : 6,
+                          });
+                        }}>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            height: sizeHeight(6.5),
+                            width: sizeWidth(10),
+                            backgroundColor:
+                              this.state.wse == 6 ? '#3daccf' : 'white',
+                          }}>
+                          <View
+                            style={{
+                              width: 1,
+                              backgroundColor: '#dedede',
+                            }}
+                          />
+                          <Subtitle
+                            style={{
+                              color:
+                                this.state.wse !== 6 ? '#292929' : 'white',
+                              fontSize: 16,
+                              alignSelf: 'center',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              alignContent: 'center',
+                              marginStart: 13,
+                            }}>
+                            40
+                          </Subtitle>
+                        </View>
+                      </TouchableWithoutFeedback>
+                      <TouchableWithoutFeedback
+                        onPress={() => {
+                          const oo = this.state.wse;
+                          this.setState({
+                            time: '50',
+                            wse: oo === 7 ? 0 : 7,
+                          });
+                        }}>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            height: sizeHeight(6.5),
+                            width: sizeWidth(10),
+                            backgroundColor:
+                              this.state.wse == 7 ? '#3daccf' : 'white',
+                          }}>
+                          <View
+                            style={{
+                              width: 1,
+                              backgroundColor: '#dedede',
+                            }}
+                          />
+                          <Subtitle
+                            style={{
+                              color:
+                                this.state.wse !== 7 ? '#292929' : 'white',
+                              fontSize: 16,
+                              alignSelf: 'center',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              alignContent: 'center',
+                              marginStart: 13,
+                            }}>
+                            50
+                          </Subtitle>
+                        </View>
+                      </TouchableWithoutFeedback>
+                      <TouchableWithoutFeedback
+                        onPress={() => {
+                          const oo = this.state.wse;
+                          this.setState({
+                            time: '60',
+                            wse: oo === 8 ? 0 : 8,
+                          });
+                        }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            height: sizeHeight(6.5),
+                            width: sizeWidth(10),
+                            backgroundColor:
+                              this.state.wse == 8 ? '#3daccf' : 'white',
+                          }}>
+                          <Subtitle
+                            style={{
+                              color:
+                                this.state.wse !== 8 ? '#292929' : 'white',
+                              fontSize: 16,
+                              alignSelf: 'center',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              alignContent: 'center',
+                              marginStart: 5,
+                            }}>
+                            60
+                          </Subtitle>
+                        </View>
+                      </TouchableWithoutFeedback>
                     </View>
-                  </TouchableWithoutFeedback>
-                  <TouchableWithoutFeedback
-                    onPress={() => {
-                      const oo = this.state.wse;
-                      this.setState({time: '15', wse: oo === 3 ? 0 : 3});
-                    }}>
-                    <View
+                    <TextInput
+                      style={[
+                        styles.inputStyle,
+                        {
+                          height: 42,
+                          marginVertical: sizeHeight(1),
+                          width: 90,
+                          justifyContent: 'center',
+                          alignSelf: 'center',
+                        },
+                      ]}
+                      mode={'flat'}
+                      //label={"message"}
+                      password={false}
+                      keyboardType={'number-pad'}
+                      value={this.state.time}
+                      onChangeText={text => this.setState({time: text})}
+                      underlineColor={'transparent'}
+                      underlineColorAndroid={'transparent'}
+                    />
+                    <Subtitle
                       style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        height: sizeHeight(6.5),
-                        width: sizeWidth(10),
-                        backgroundColor:
-                          this.state.wse == 3 ? '#3daccf' : 'white',
-                      }}>
-                      <View
-                        style={{
-                          width: 1,
-                          backgroundColor: '#dedede',
-                        }}
-                      />
-                      <Subtitle
-                        style={{
-                          color: this.state.wse !== 3 ? '#292929' : 'white',
-                          fontSize: 16,
-                          alignSelf: 'center',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          alignContent: 'center',
-                          marginStart: 13,
-                        }}>
-                        15
-                      </Subtitle>
-                    </View>
-                  </TouchableWithoutFeedback>
-                  <TouchableWithoutFeedback
-                    onPress={() => {
-                      const oo = this.state.wse;
-                      this.setState({time: '20', wse: oo === 4 ? 0 : 4});
-                    }}>
-                    <View
-                      style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        height: sizeHeight(6.5),
-                        width: sizeWidth(10),
-                        backgroundColor:
-                          this.state.wse == 4 ? '#3daccf' : 'white',
-                      }}>
-                      <View
-                        style={{
-                          width: 1,
-                          backgroundColor: '#dedede',
-                        }}
-                      />
-                      <Subtitle
-                        style={{
-                          color: this.state.wse !== 4 ? '#292929' : 'white',
-                          fontSize: 16,
-                          alignSelf: 'center',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          alignContent: 'center',
-                          marginStart: 13,
-                        }}>
-                        20
-                      </Subtitle>
-                    </View>
-                  </TouchableWithoutFeedback>
-                  <TouchableWithoutFeedback
-                    onPress={() => {
-                      const oo = this.state.wse;
-                      this.setState({time: '30', wse: oo === 5 ? 0 : 5});
-                    }}>
-                    <View
-                      style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        height: sizeHeight(6.5),
-                        width: sizeWidth(10),
-                        backgroundColor:
-                          this.state.wse == 5 ? '#3daccf' : 'white',
-                      }}>
-                      <View
-                        style={{
-                          width: 1,
-                          backgroundColor: '#dedede',
-                        }}
-                      />
-                      <Subtitle
-                        style={{
-                          color: this.state.wse !== 5 ? '#292929' : 'white',
-                          fontSize: 16,
-                          alignSelf: 'center',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          alignContent: 'center',
-                          marginStart: 13,
-                        }}>
-                        30
-                      </Subtitle>
-                    </View>
-                  </TouchableWithoutFeedback>
-                  <TouchableWithoutFeedback
-                    onPress={() => {
-                      const oo = this.state.wse;
-                      this.setState({time: '40', wse: oo === 6 ? 0 : 6});
-                    }}>
-                    <View
-                      style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        height: sizeHeight(6.5),
-                        width: sizeWidth(10),
-                        backgroundColor:
-                          this.state.wse == 6 ? '#3daccf' : 'white',
-                      }}>
-                      <View
-                        style={{
-                          width: 1,
-                          backgroundColor: '#dedede',
-                        }}
-                      />
-                      <Subtitle
-                        style={{
-                          color: this.state.wse !== 6 ? '#292929' : 'white',
-                          fontSize: 16,
-                          alignSelf: 'center',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          alignContent: 'center',
-                          marginStart: 13,
-                        }}>
-                        40
-                      </Subtitle>
-                    </View>
-                  </TouchableWithoutFeedback>
-                  <TouchableWithoutFeedback
-                    onPress={() => {
-                      const oo = this.state.wse;
-                      this.setState({time: '50', wse: oo === 7 ? 0 : 7});
-                    }}>
-                    <View
-                      style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        height: sizeHeight(6.5),
-                        width: sizeWidth(10),
-                        backgroundColor:
-                          this.state.wse == 7 ? '#3daccf' : 'white',
-                      }}>
-                      <View
-                        style={{
-                          width: 1,
-                          backgroundColor: '#dedede',
-                        }}
-                      />
-                      <Subtitle
-                        style={{
-                          color: this.state.wse !== 7 ? '#292929' : 'white',
-                          fontSize: 16,
-                          alignSelf: 'center',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          alignContent: 'center',
-                          marginStart: 13,
-                        }}>
-                        50
-                      </Subtitle>
-                    </View>
-                  </TouchableWithoutFeedback>
-                  <TouchableWithoutFeedback
-                    onPress={() => {
-                      const oo = this.state.wse;
-                      this.setState({time: '60', wse: oo === 8 ? 0 : 8});
-                    }}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        height: sizeHeight(6.5),
-                        width: sizeWidth(10),
-                        backgroundColor:
-                          this.state.wse == 8 ? '#3daccf' : 'white',
-                      }}>
-                      <Subtitle
-                        style={{
-                          color: this.state.wse !== 8 ? '#292929' : 'white',
-                          fontSize: 16,
-                          alignSelf: 'center',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          alignContent: 'center',
-                          marginStart: 5,
-                        }}>
-                        60
-                      </Subtitle>
-                    </View>
-                  </TouchableWithoutFeedback>
-                </View>
-                <TextInput
-                  style={[
-                    styles.inputStyle,
-                    {
-                      height: 42,
-                      marginVertical: sizeHeight(1),
-                      width: 90,
-                      justifyContent: 'center',
-                      alignSelf: 'center',
-                    },
-                  ]}
-                  mode={'flat'}
-                  //label={"message"}
-                  password={false}
-                  keyboardType={'number-pad'}
-                  value={this.state.time}
-                  onChangeText={text => this.setState({time: text})}
-                  underlineColor={'transparent'}
-                  underlineColorAndroid={'transparent'}
-                />
-                <Subtitle
-                  style={{
-                    color: '#292929',
-                    fontSize: 16,
-                    marginTop: sizeHeight(1),
-                    marginHorizontal: sizeWidth(4),
-                  }}>{`הערה ללקוח - אופציונלי`}</Subtitle>
-                <TextInput
-                  style={[styles.inputStyle, {height: 100}]}
-                  mode={'flat'}
-                  //label={"message"}
-                  password={false}
-                  returnKeyType="next"
-                  multiline={true}
-                  value={this.state.message}
-                  onChangeText={text => this.setState({message: text})}
-                  underlineColor={'transparent'}
-                  underlineColorAndroid={'transparent'}
-                />
+                        color: '#292929',
+                        fontSize: 16,
+                        marginTop: sizeHeight(1),
+                        marginHorizontal: sizeWidth(4),
+                      }}>{`הערה ללקוח - אופציונלי`}</Subtitle>
+                    <TextInput
+                      style={[styles.inputStyle, {height: 100}]}
+                      mode={'flat'}
+                      //label={"message"}
+                      password={false}
+                      returnKeyType="next"
+                      multiline={true}
+                      value={this.state.message}
+                      onChangeText={text => this.setState({message: text})}
+                      underlineColor={'transparent'}
+                      underlineColorAndroid={'transparent'}
+                    />
+                  </View>
+                ) : null}
+
                 {Number(this.state.status) === -2 ? (
                   <View
                     styleName="horizontal"
@@ -1448,7 +1527,9 @@ export default class OrderManage extends React.Component {
                     marginVertical: sizeHeight(2),
                   }}>
                   <Checkbox
-                    status={this.state.printmodeon ? 'checked' : 'unchecked'}
+                    status={
+                      this.state.printmodeon ? 'checked' : 'unchecked'
+                    }
                     color={'#3daccf'}
                     onPress={() => {
                       const checkers = this.state.printmodeon;
@@ -1561,7 +1642,8 @@ export default class OrderManage extends React.Component {
                 }}>
                 {'סיבת הסירוב:'}
               </Subtitle>
-              <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <View
+                style={{flexDirection: 'row', justifyContent: 'center'}}>
                 <Button
                   styleName=" muted border"
                   mode={'contained'}
