@@ -180,7 +180,14 @@ export default class OrderManage extends React.Component {
     Object.keys(groupByProduct).map(keyx => {
       let pppp = groupByProduct[keyx];
       Lodash.map(pppp, (firspos, index) => {
-        const {extras, message, price, idorder, serviceName} = firspos;
+        const {
+          extras,
+          message,
+          price,
+          idorder,
+          serviceName,
+          orderdate,
+        } = firspos;
         let total = Number(price);
         let found = false;
         for (let lu = index + 1; lu < pppp.length; lu++) {
@@ -196,10 +203,11 @@ export default class OrderManage extends React.Component {
         const exstr = Helper.groupExtraWithCountString(extras, found);
         const find = Lodash.filter(
           finalDisplayData,
-          z => z.serviceName === keyx,
+          z => z.orderdate === orderdate,
         );
         if (find.length === 0) {
           finalDisplayData.push({
+            orderdate:orderdate,
             serviceName: keyx,
             extraDisplayArray: exstr,
             message: message,

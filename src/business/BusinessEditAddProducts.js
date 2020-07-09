@@ -30,7 +30,7 @@ import {
   Card,
   List,
   Modal,
-  Portal
+  Portal,
 } from 'react-native-paper';
 import * as Helper from './../util/Helper';
 import * as Pref from './../util/Pref';
@@ -96,6 +96,7 @@ export default class BusinessEditAddProducts extends React.Component {
       serviceType: 'מוצר רגיל',
       showServiceTypeList: false,
       //catgories
+      expandedCat: false,
       serviceCategoryid: -1,
       serviceCategories: [],
       ///
@@ -151,6 +152,10 @@ export default class BusinessEditAddProducts extends React.Component {
     if (this.state.serviceType.length < index || index < 0) return 'מוצר רגיל';
     else return serviceTypes[index];
   }
+
+  handleExpandedCat = () => {
+    this.setState({expandedCat: !this.state.expandedCat});
+  };
 
   fetchAllCategories() {
     Pref.getVal(Pref.bBearerToken, value => {
@@ -325,6 +330,12 @@ export default class BusinessEditAddProducts extends React.Component {
               serviceExtra: [],
               servicecatfk: this.state.servicecatfk,
               servicecategoryfk: this.state.serviceCategoryid,
+              Servicemode: serviceTypes.findIndex(element => {
+                return this.state.serviceType == element;
+              }), // line 281
+              // serviceExtra: [],
+              // servicecatfk: this.state.servicecatfk,
+              // servicecategoryfk: this.state.serviceCategoryid,
             },
             Image: {
               filename: this.state.imageName === '' ? '' : this.state.imageName,
@@ -358,6 +369,9 @@ export default class BusinessEditAddProducts extends React.Component {
               serviceExtra: [],
               servicecatfk: 0,
               servicecategoryfk: this.state.serviceCategoryid,
+              Servicemode: serviceTypes.findIndex(element => {
+                this.state.serviceType == element;
+              }), //line 306
             },
             Image: {
               filename: this.state.imageName === '' ? '' : this.state.imageName,
@@ -451,11 +465,11 @@ export default class BusinessEditAddProducts extends React.Component {
     });
   }
 
-  handleServiceTypeOnClick =() => {
+  handleServiceTypeOnClick = () => {
     const displayList = this.state.showServiceTypeList;
     this.setState({showServiceTypeList: !displayList});
-  }
-  renderServiceTypes(rowData,index) {
+  };
+  renderServiceTypes(rowData, index) {
     return (
       <View
         style={{
@@ -505,7 +519,7 @@ export default class BusinessEditAddProducts extends React.Component {
             return <View style={styles.renderRowFlatListView} />;
           }}
           keyExtractor={index => index.toString()}
-          renderItem={({item,index}) => this.renderServiceTypes(item, index)}
+          renderItem={({item, index}) => this.renderServiceTypes(item, index)}
         />
       </View>
     );
@@ -568,7 +582,8 @@ export default class BusinessEditAddProducts extends React.Component {
   setModalVisible = visible => {
     this.setState({modalVisible: visible});
   };
-  updateCategory() { // call api to update category
+  updateCategory() {
+    // call api to update category
     Pref.getVal(Pref.bId, value => {
       const sendJsonData = JSON.stringify({
         // edit product
@@ -602,7 +617,8 @@ export default class BusinessEditAddProducts extends React.Component {
     this.setModalVisible(false);
   }
 
-  addNewCategory() { //call api to send category
+  addNewCategory() {
+    //call api to send category
     //console.log("add new category");
 
     Pref.getVal(Pref.bId, value => {
@@ -687,9 +703,7 @@ export default class BusinessEditAddProducts extends React.Component {
                     returnKeyType="next"
                     numberOfLines={1}
                     value={this.state.modalCatName}
-                    onChangeText={text =>
-                      this.setState({modalCatName: text})
-                    }
+                    onChangeText={text => this.setState({modalCatName: text})}
                     underlineColor={'transparent'}
                     underlineColorAndroid={'transparent'}
                   />
@@ -717,9 +731,7 @@ export default class BusinessEditAddProducts extends React.Component {
                     returnKeyType="next"
                     numberOfLines={1}
                     value={this.state.modalCatDes}
-                    onChangeText={text =>
-                      this.setState({modalCatDes: text})
-                    }
+                    onChangeText={text => this.setState({modalCatDes: text})}
                     underlineColor={'transparent'}
                     underlineColorAndroid={'transparent'}
                   />
@@ -760,9 +772,14 @@ export default class BusinessEditAddProducts extends React.Component {
       <View>
         {index === 0 ? <View style={styles.renderRowFlatListView} /> : null}
         <TouchableOpacity
-          onPress={() =>
-            this.handleCategoryPick(category.name, category.categoryid)
-          }>
+          onPress={() => {
+            this.handleCategoryPick(category.name, category.categoryid);
+            this.handleExpandedCat();
+          }}
+          // onPress={() =>
+          //   this.handleCategoryPick(category.name, category.categoryid)
+          // }
+          >
           <View
             style={{
               justifyContent: 'space-between',
@@ -929,7 +946,9 @@ export default class BusinessEditAddProducts extends React.Component {
                     fontFamily: 'Rubik',
                     fontSize: 16,
                     fontWeight: '400',
-                  }}>
+                  }}
+                  expanded={this.state.expandedCat}
+                  onPress={this.handleExpandedCat}>
                   <FlatList
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={true}
@@ -1194,7 +1213,7 @@ export default class BusinessEditAddProducts extends React.Component {
                   borderColor: '#dedede',
                   borderStyle: 'solid',
                   borderWidth: 1,
-                  marginHorizontal: sizeWidth(2.5)
+                  marginHorizontal: sizeWidth(2.5),
                 }}>
                 <List.Accordion
                   title={this.state.serviceType}
@@ -1481,7 +1500,7 @@ const styles = StyleSheet.create({
   renderRowFlatListView: {
     backgroundColor: '#d9d9d9',
     height: 1,
-    width:'100%'
+    width: '100%',
   },
   editimageCategory: {
     width: 24,

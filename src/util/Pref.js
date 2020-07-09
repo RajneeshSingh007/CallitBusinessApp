@@ -60,7 +60,9 @@ export const GetDeliveryListItemUrl = `${BASEURL}api/DeliveryPrices/`;
 export const GetDeliveryListItemAutoCompleteSearchUrl = `${BASEURL}api/CitiesAutocomplete/`;
 export const UpdateBusiness = `${BASEURL}api/UpdateBusiness/`;
 export const ServerTimeUrl = `${BASEURL}api/getServerTime/`;
-export const CreditCardUrl = `https://api.creditguard.co.il/merchants/xpo/Relay`;
+//export const CreditCardUrl = `https://api.creditguard.co.il/merchants/xpo/Relay`;
+export const CreditCardUrl = `https://cguat2.creditguard.co.il/xpo/Relay`;
+//export const CreditCardUrl = `https://api.creditguard.co.il/merchants/xpo/Relay`;
 export const GetSessionCardUrl = `${BASEURL}api/getSessionIdForCG`;
 
 export const GetServiceCategories = `${BASEURL}/api/getServiceCategories/`;
