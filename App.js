@@ -28,7 +28,7 @@ class App extends React.Component {
                 const {fcm} = details;
                 const title = fcm.title;
                 if (title === 'הזמנה חדשה'){
-                    console.log('details', details);
+                    //console.log('details', details);
                     this.player = new Player('ding.mp3', {
                         autoDestroy: true,
                         continuesToPlayInBackground: true

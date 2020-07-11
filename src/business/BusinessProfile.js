@@ -4,17 +4,14 @@ import {
   Share, Linking, TouchableWithoutFeedback, Platform
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { Card, Colors,Button} from "react-native-paper";
+import { Colors,Button} from "react-native-paper";
 import {
   Image,
-  Divider,
   NavigationBar,
-  Row,
   Screen,
   Subtitle,
   Title,
   TouchableOpacity,
-  Heading,
 } from "@shoutem/ui";
 import * as Helper from "./../util/Helper";
 import * as Pref from "./../util/Pref";
@@ -22,15 +19,12 @@ import NavigationActions from "../util/NavigationActions";
 import { sizeHeight, sizeWidth, sizeFont } from './../util/Size';
 import ProfileBusinessPp from './ProfileBusinessPp';
 import DummyLoader from "../util/DummyLoader";
-import * as Animatable from "react-native-animatable";
-import { showLocation } from "react-native-map-link";
-import * as Lodash from 'lodash';
-import GetLocation from 'react-native-get-location';
-import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
+//import * as Animatable from "react-native-animatable";
+//import { showLocation } from "react-native-map-link";
+//import * as Lodash from 'lodash';
 import { ScrollView } from "react-native-gesture-handler";
-import Moment from 'moment';
 
-var data = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 var now = new Date().getDay();
 const openBiz = `פתוח`;
 const closedBiz = `סגור`;
@@ -41,7 +35,7 @@ export default class BusinessProfile extends React.Component {
     super(props);
     this.shareBusiness = this.shareBusiness.bind(this);
     this.parsetime = this.parsetime.bind(this);
-    this.checkStatusBiz = this.checkStatusBiz.bind(this);
+    //this.checkStatusBiz = this.checkStatusBiz.bind(this);
     this.phoneCalls = this.phoneCalls.bind(this);
     this.locationOpen = this.locationOpen.bind(this);
     this.state = {
@@ -116,42 +110,7 @@ export default class BusinessProfile extends React.Component {
     Linking.openURL(url);
   }
 
-  checkStatusBiz = (time) => {
-    if (time == undefined || time == null) {
-      return false;
-    }
-    if (time.includes('#')) {
-      const g = time.split("\n");
-      let data = "";
-      for (let index = 0; index < g.length; index++) {
-        if (now === index) {
-          data = g[index];//+ '-' + g[index + 1] + " :" + g[index+2];
-          break;
-        }
-      }
-      if (data.includes('סגור')) {
-        return false;
-      } else {
-        const fool = data.replace(/#/g, ':');
-        const jj = fool.split(' ');
-
-        const startSp = jj[1].split(":");
-        const endSp = jj[3].split(":");
-
-        const start = Number(startSp[0]) * 60 + Number(startSp[1]);
-        const end = Number(endSp[0]) * 60 + Number(endSp[1]);
-        const date = new Date();
-        const now = date.getHours() * 60 + date.getMinutes();
-        if (start <= now && now <= end) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    } else {
-      return false;
-    }
-  }
+ 
 
 
   parsetime = (time) => {
@@ -192,9 +151,10 @@ export default class BusinessProfile extends React.Component {
   work() {
     Pref.getVal(Pref.branchId, va=>{
       Pref.getVal(Pref.bBearerToken, token =>{
+        //console.log("TOKEN:\n",token);
         const rm = Helper.removeQuotes(token);
         Helper.networkHelperToken(Pref.BusinessOwnerUrl + va, Pref.methodGet, rm, result=>{
-          //console.log('re', result);
+          ////console.log('re', result);
           this.setState({ progressView: false, item: result, hasDelivery: result.hasDelivery === null ? 0 : result.hasDelivery });
         }, error =>{
           //
@@ -204,6 +164,7 @@ export default class BusinessProfile extends React.Component {
   }
 
   render() {
+    //console.log("isOpen", this.state.item.isOpen);
     return (
       <Screen
         style={{
@@ -272,12 +233,6 @@ export default class BusinessProfile extends React.Component {
                       alignSelf: 'flex-start',
                       fontWeight: '700',
                     }}> {this.state.item.name}</Title>
-                    {/* <Subtitle style={{
-                      color: '#1BB940',
-                      fontFamily: 'Rubik',
-                      alignSelf: 'flex-start',
-                      fontSize: 14,
-                    }}>k  <View style={{ width: 8, height: 8, backgroundColor: '#292929', borderRadius: 8, }} />    */}
                     <View style={{ flexDirection: 'row' }}>
                       <Subtitle style={{
                         color: '#292929',
@@ -287,29 +242,14 @@ export default class BusinessProfile extends React.Component {
                       }}>{this.state.item.description}</Subtitle>
                       <View style={{ width: 8, height: 8, backgroundColor: '#292929', borderRadius: 8, alignSelf: 'center', margin: 6 }} />
                       <Subtitle style={{
-                        color: this.checkStatusBiz(this.state.item.businessHours) ? this.state.hasDelivery === 1 ? Colors.deepOrange500 : '#1BB940' : '#B72727',
-                       // color: this.checkStatusBiz(this.state.item.businessHours) ? '#1BB940' : '#B72727',
+                        color: this.state.item.isOpen=== "open" ? '#1BB940' : this.state.item.isOpen === 'closed' ? '#B72727'  : Colors.deepOrange500 ,
                         fontFamily: 'Rubik',
                         alignSelf: 'flex-start',
                         fontSize: 16,
-                      }}>{this.checkStatusBiz(this.state.item.businessHours) ? this.state.hasDelivery === 1 ? `${busyBiz}` : `${openBiz}` : `${closedBiz}`}</Subtitle>
+                      }}>{this.state.item.isOpen === 'open' ?  `${openBiz}` : this.state.item.isOpen === 'closed' ? `${closedBiz}` : `${busyBiz}`}</Subtitle>
                     </View>
                     {/* </Subtitle> */}
                   </View>
-                  {/* <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
-                    <TouchableOpacity onPress={this.shareBusiness}>
-                      <Icon
-                        name="share"
-                        size={24}
-                        color="black"
-                        style={{
-                          padding: 4,
-                          marginEnd: 4,
-                          backgroundColor: "transparent"
-                        }}
-                      />
-                    </TouchableOpacity>
-                  </View> */}
                 </View>
                 <View style={{
                   backgroundColor: '#dedede',
@@ -388,7 +328,7 @@ export default class BusinessProfile extends React.Component {
                       alignSelf: 'center',
                       fontSize: 14,
                       marginStart: sizeWidth(2)
-                    }}>{this.parsetime(this.state.item.businessHours)}</Subtitle>
+                    }}>{this.parsetime(this.state.item.fullOpeningHours)}</Subtitle>
                   </View>
                   <TouchableWithoutFeedback onPress={() => this.setState({ isTimeExpanded: !this.state.isTimeExpanded })}>
                     <Subtitle style={{

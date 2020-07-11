@@ -103,7 +103,7 @@ export default class BusinessHomePage extends React.Component {
            Pref.methodGet,
            removeQuotes,
            result => {
-             console.log('info',result);
+             //console.log('info',result);
              Pref.setVal(Pref.bData, JSON.stringify(result));
              Pref.setVal(Pref.bId, result.idbusiness);
              Pref.setVal(Pref.branchId, pp.idbranch);

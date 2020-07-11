@@ -9,7 +9,7 @@ import * as Pref from "./../util/Pref";
 import { Card, List, Colors } from 'react-native-paper';
 import { sizeHeight, sizeWidth, sizeFont } from './../util/Size';
 import Moment from 'moment';
-import Lodash from 'lodash'
+// import Lodash from 'lodash'
 
 var now = new Date().getDay();
 
@@ -94,7 +94,7 @@ export default class HomeList extends React.PureComponent {
                 removeQuotes,
                 result => {
                     //console.log('business', result.business);
-                    console.log('branchList', result);
+                    //console.log('branchList', result);
                     const bb = [];
                     bb.push(result.business);
                     const vv = result.business;
