@@ -1003,30 +1003,40 @@ export default class BranchDetailEdit extends React.Component {
             }
         }
         times = times.filter((_,i)=>!indexesToRemove.includes(i));
-        let opening;
-        let closing;
-        for(let i = 0 ; i < times.length; i++)
-        {
-            if(i === 0 )// opening and closing are empty so we assign them
-            {
-                let temp  = times[i].split('-');
-                opening = temp[0];
-                closing = temp[1];
-                continue;
-            }
-            else
-            {
-                let temp = times[i].split('-');
-                let curOpening = temp[0];
-                let curClosing = temp[1];
-                if(curClosing === curOpening)
-                {
-                    times[i-1]= opening + '-' + curClosing;
-                    times = times.splice(i,1);
-                }
+        // let opening;
+        // let closing;
+        
+        // for(let i = times.length ; i >-1; i--)
+        // {
+        //     if(i === 0 )// opening and closing are empty so we assign them
+        //     {
+        //         continue;
+        //     }
+        //     else
+        //     {
+        //         let temp = times[i].split('-');
+        //         let curOpening = temp[0];
+        //         let curClosing = temp[1];
+        //         let tt = times[i-1].split('-');
+        //         let earlyOpening =tt[0];
+        //         let earlierClosing = tt[1];
+        //         console.log("PRINTING: INDEX", i);
+        //         console.log(curClosing);
+        //         console.log(curOpening);
+        //         console.log(earlierClosing);
+        //         console.log(earlyOpening);
+        //         // console.log(times);
+        //         if(curOpening === closing)
+        //         {
+        //             times[i-1]= opening + '-' + curClosing;
+        //             times.splice(i,1);
+        //             i--;
+        //         }
+        //         opening = curOpening;
+        //         closing = curClosing;
                 
-            }
-        }
+        //     }
+        // }
         return times;
     }
     checkTimesCrossSD(ttimes)// //in time[1]:  `HH:mm-HH:mm` '15:00-20:00','15:00-20:00'

@@ -165,6 +165,10 @@ export default class BusinessProfile extends React.Component {
 
   render() {
     //console.log("isOpen", this.state.item.isOpen);
+    // if( this.state.item !== null)
+    // {
+    //   console.log("isOpen", this.state.item.isOpen);
+    // }
     return (
       <Screen
         style={{
