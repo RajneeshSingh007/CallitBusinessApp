@@ -399,7 +399,7 @@ export default class ProfileBusinessPp extends React.Component {
                                     }} />;
                                 }}
                                 keyExtractor={(item, index) => {
-                                    index.toString();
+                                    return index.toString();
                                 }}
                                 renderItem={({ item: item, index }) =>
                                     this.renderRow(item, index)

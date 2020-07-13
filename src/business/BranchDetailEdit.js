@@ -347,7 +347,7 @@ export default class BranchDetailEdit extends React.Component {
         return (
             <Screen
                 style={{
-                    backgroundColor: "white"
+                    backgroundColor: "white",
                 }}>
                 <StatusBar barStyle="dark-content" backgroundColor="white" />
                 <NavigationBar
@@ -388,7 +388,7 @@ export default class BranchDetailEdit extends React.Component {
                         }}> עריכת פרופיל</Heading>
                     </View>}
                 />
-                <ScrollView>
+                <ScrollView style={{flex:1}}>
                     <View>
                         <View style={{
                             borderRadius: 2,
@@ -596,6 +596,9 @@ export default class BranchDetailEdit extends React.Component {
                         </TouchableWithoutFeedback>
                         
                     </View>
+                    
+                </ScrollView>
+                <View >
                     <Button
                         styleName=" muted border"
                         mode={"contained"}
@@ -605,15 +608,13 @@ export default class BranchDetailEdit extends React.Component {
                         style={[styles.loginButtonStyle]}
                         onPress={this.onSaveClick}
                     >
-
                         <Subtitle
                             style={{
                                 color: "white"
                             }}
                         >עדכון </Subtitle>
                     </Button>
-
-                </ScrollView>
+                </View>
                 <Portal>
                     <Modal
                         onDismiss={() => this.setState({ showdialogtime: false, })}
@@ -999,7 +1000,8 @@ export default class BranchDetailEdit extends React.Component {
             let temp = times[i].split('-');
             if(temp[0]===temp[1])
             {
-                indexesToRemove.push(i);
+                // indexesToRemove.push(i);
+                return ['00:00-23:59'];
             }
         }
         times = times.filter((_,i)=>!indexesToRemove.includes(i));
