@@ -16,9 +16,7 @@ var now = new Date().getDay();
 export default class HomeList extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.renderRow = this
-            .renderRow
-            .bind(this);
+        this.renderRow = this.renderRow.bind(this);
         this._handleAppStateChange = this._handleAppStateChange.bind(this);
         this.checkTime = this.checkTime.bind(this);
         this.parsetime = this.parsetime.bind(this);

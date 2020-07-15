@@ -37,6 +37,7 @@ import {
 } from 'react-native-paper';
 import {sizeHeight, sizeWidth, sizeFont} from './../util/Size';
 import Moment from 'moment';
+import momenttz from 'moment-timezone';
 import NavigationActions from './../util/NavigationActions';
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import {Loader} from './../customer/Loader';
@@ -84,11 +85,78 @@ export default class OrderManage extends React.Component {
       isHistory: false,
       printmodeon: false,
       firstTime: true,
-      convertTime: '',
+      //convertTime: '',
       terminalNumber: '',
       cardSessionID: '',
       shovar:''
     };
+    // Pref.getVal(Pref.branchId, va => {
+    //   Pref.getVal(Pref.bBearerToken, token => {
+    //     const rm = Helper.removeQuotes(token);
+    //     Helper.networkHelperToken(
+    //       Pref.BusinessOwnerUrl + va,
+    //       Pref.methodGet,
+    //       rm,
+    //       result => {
+    //         //console.log('terminalNumber', result.terminalNumber);
+    //         this.setState({terminalNumber: result.terminalNumber});
+    //       },
+    //       error => {
+    //         //
+    //       },
+    //     );
+    //   });
+    // });
+    // Pref.getVal(Pref.bBearerToken, v => {
+    //   const oop = Helper.removeQuotes(v);
+    //   this.setState({token: oop});
+    //   Helper.networkHelperToken(
+    //     Pref.GetSessionCardUrl,
+    //     Pref.methodGet,
+    //     oop,
+    //     op => {
+    //       //console.log(op);
+    //       this.setState({cardSessionID: op});
+    //     },
+    //     error => {
+    //       console.log(error);
+    //     },
+    //   );
+    //   // Helper.networkHelperToken(
+    //   //   Pref.ServerTimeUrl,
+    //   //   Pref.methodGet,
+    //   //   oop,
+    //   //   value => {
+    //   //     //value
+    //   //     console.log('ServerTimeUrl', value);
+    //   //     const convertTime = Moment.utc(value)
+    //   //       .utcOffset(2, false)
+    //   //       .format('YYYY-MM-DD HH');
+    //   //     this.setState({convertTime: convertTime});
+    //   //   },
+    //   //   error => {
+    //   //     //console.log('err', error);
+    //   //   },
+    //   // );
+    // });
+    
+  }
+
+  objectsEqual = (o1, o2) => {
+    if (o1.length !== o2.length) return false;
+    let count = 0;
+    for (let index = 0; index < o1.length; index++) {
+      const e1 = o1[index];
+      const e2 = o2[index];
+      if (e1.name === e2.name) {
+        count += 1;
+      }
+    }
+    return count === o1.length;
+  };
+
+  fetchCG()
+  {
     Pref.getVal(Pref.branchId, va => {
       Pref.getVal(Pref.bBearerToken, token => {
         const rm = Helper.removeQuotes(token);
@@ -114,31 +182,18 @@ export default class OrderManage extends React.Component {
         Pref.methodGet,
         oop,
         op => {
-          console.log(op);
+          //console.log(op);
           this.setState({cardSessionID: op});
         },
         error => {
-          console.log(error);
-        },
-      );
-      Helper.networkHelperToken(
-        Pref.ServerTimeUrl,
-        Pref.methodGet,
-        oop,
-        value => {
-          //value
-          //console.log('ServerTimeUrl', value);
-          const convertTime = Moment.utc(value)
-            .utcOffset(2, false)
-            .format('YYYY-MM-DD HH');
-          //console.log('convertTime', convertTime);
-          this.setState({convertTime: convertTime});
-        },
-        error => {
-          //console.log('err', error);
+          console.log("ERROR IN FETCHING Session CardURL" , error);
         },
       );
     });
+  }
+
+  componentDidMount() {
+    this.fetchCG();
     Pref.getVal(Pref.bId, v => {
       this.setState({bid: v});
     });
@@ -151,22 +206,6 @@ export default class OrderManage extends React.Component {
         },
       );
     });
-  }
-
-  objectsEqual = (o1, o2) => {
-    if (o1.length !== o2.length) return false;
-    let count = 0;
-    for (let index = 0; index < o1.length; index++) {
-      const e1 = o1[index];
-      const e2 = o2[index];
-      if (e1.name === e2.name) {
-        count += 1;
-      }
-    }
-    return count === o1.length;
-  };
-
-  componentDidMount() {
     const {state} = this.props.navigation;
     const data = state.params.item;
     //console.log('data', data);
@@ -216,7 +255,6 @@ export default class OrderManage extends React.Component {
           });
         }
 
-        //}
       });
     });
     this.setState({
@@ -499,29 +537,49 @@ export default class OrderManage extends React.Component {
       });
     }
   }
+//Asia/Jerusalem
+  getExpectedTime= (time) =>
+  {
+    let minsToadd = time;
+    if(minsToadd !== '' )
+    {
+      let dateTime = momenttz.tz('Asia/Jerusalem').add(minsToadd,'minutes').format();
+      let timeTemp = dateTime.replace('T', ' ');
+      let splited = timeTemp.split('+');
+      // console.log(splited[0]);
+      return splited[0];
+    }
+    return `00001-01-01 00:00:00`;
+  }
 
-  ordemm = () => {
+  ordemm = () => {   
+    // this.getExpectedTime(20);
+    // return;
     let status = this.state.status;
     const oldSta = status;
     let newStatus = status + 1;
     //////console.log('newStatus', newStatus);
     this.setState({showApprove: false, showp: true});
     const datas = [];
-    const time = this.state.time;
+    const minToBeReady = this.state.time;
     const message = this.state.message;
     const bid = this.state.bid;
-    const timeformat =
-      time === ''
-        ? `00001-01-01 00:00:00`
-        : `${this.state.convertTime}:${time}:00`;
+    //const timeformat =
+      // time === ''
+      //   ? `00001-01-01 00:00:00`
+      //   : `${this.state.convertTime}:${time}:00`;
     //${time}
     //Moment().format('YYYY-MM-DD HH:MM')
+    const curTime = this.getExpectedTime(0);
+    const exp_date = this.getExpectedTime(minToBeReady);
+    // console.log("CUR TIME", curTime);
+    // console.log("EXP DATE", exp_date);
     Lodash.map(this.state.restaurants, ele => {
       datas.push({
         Id_order: ele.idorder,
         customerfkO: ele.fkcustomerO,
-        Expected_date: timeformat,
-        Mins: `${time}`,
+        Expected_date: exp_date,
+        Mins: `${minToBeReady}`,
         Message: message,
         Status: newStatus,
         Id_branch: Number(bid),
@@ -536,7 +594,7 @@ export default class OrderManage extends React.Component {
       const data = this.state.clone;
       const paid = data[0].paid;
       const cgUid = data[0].cgUid;
-      console.log(`paid`, paid, cgUid);
+      //console.log(`paid`, paid, cgUid);
       const terminalNumber = this.state.terminalNumber;
       if (paid === 1) {
         if (terminalNumber !== '') {
@@ -550,7 +608,7 @@ export default class OrderManage extends React.Component {
           }
           //console.log(`parstotal`, parstotal)
           //const timeformat = `${this.state.convertTime}:${time}:00`
-          const sendXml = `<ashrait><request><version>2000</version><language>ENG</language><dateTime>${timeformat}</dateTime><command>doDeal</command><requestId></requestId><doDeal><terminalNumber>${terminalNumber}</terminalNumber><cardNo></cardNo><cardExpiration></cardExpiration><cvv></cvv><total>${parstotal}</total><transactionType>Debit</transactionType><creditType>RegularCredit</creditType><currency>ILS</currency><transactionCode>Phone</transactionCode><validation>AutoCommRelease</validation><cgUid>${cgUid}</cgUid><customerData/></doDeal></request></ashrait>`;
+          const sendXml = `<ashrait><request><version>2000</version><language>ENG</language><dateTime>${curTime}</dateTime><command>doDeal</command><requestId></requestId><doDeal><terminalNumber>${terminalNumber}</terminalNumber><cardNo></cardNo><cardExpiration></cardExpiration><cvv></cvv><total>${parstotal}</total><transactionType>Debit</transactionType><creditType>RegularCredit</creditType><currency>ILS</currency><transactionCode>Phone</transactionCode><validation>AutoCommRelease</validation><cgUid>${cgUid}</cgUid><customerData/></doDeal></request></ashrait>`;
           //console.log(`sendXml`, sendXml)
           fetch(
             `${Pref.CreditCardUrl}?int_in=${sendXml}&sessionId=${
@@ -571,7 +629,7 @@ export default class OrderManage extends React.Component {
                   const {ashrait} = result;
                   const {response} = ashrait;
                   const {message, doDeal} = response;
-                  console.log(`message`, message, result);
+                  //console.log(`message`, message, result);
                   if (message === `Permitted transaction`) {
                     Helper.networkHelperTokenPost(
                       Pref.UpdateStatusUrl,
@@ -683,13 +741,14 @@ export default class OrderManage extends React.Component {
     const message = this.state.message + newmsg;
     const bid = this.state.bid;
     const customerfkOx = this.state.customerfkO;
-    const timeformat = `${this.state.convertTime}:00:00`;
+    const curTime = this.getExpectedTime(0);
+    //const timeformat = `${this.state.convertTime}:00:00`;
 
     Lodash.map(this.state.restaurants, ele => {
       datas.push({
         Id_order: ele.idorder,
         customerfkO: ele.fkcustomerO,
-        Expected_date: timeformat,
+        Expected_date: curTime,
         //Expected_date: "",
         Mins: '1',
         Message: message,
@@ -698,13 +757,13 @@ export default class OrderManage extends React.Component {
       });
     });
     const body = JSON.stringify(datas);
-    console.log('body', body);
+    //console.log('body', body);
     const ppp = this.state.token;
 
     const data = this.state.clone;
     const paid = data[0].paid;
     const cgUid = data[0].cgUid;
-    console.log(`paid`, paid, cgUid);
+    //console.log(`paid`, paid, cgUid);
     const terminalNumber = this.state.terminalNumber;
     if (paid === 1) {
       if (terminalNumber !== '') {
@@ -731,7 +790,7 @@ export default class OrderManage extends React.Component {
                 const {ashrait} = result;
                 const {response} = ashrait;
                 const {message, cancelDeal, additionalInfo} = response;
-                console.log(`message`, message, additionalInfo);
+                //console.log(`message`, message, additionalInfo);
                 if (additionalInfo.toString().includes('SUCCESS')) {
                   Helper.networkHelperTokenPost(
                     Pref.UpdateStatusUrl,
@@ -740,7 +799,7 @@ export default class OrderManage extends React.Component {
                     ppp,
                     result => {
                       this.setState({showp: false});
-                      console.log(result);
+                      //console.log(result);
                       NavigationActions.goBack();
                     },
                     error => {
