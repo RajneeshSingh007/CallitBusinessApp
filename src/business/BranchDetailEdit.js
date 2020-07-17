@@ -594,7 +594,6 @@ export default class BranchDetailEdit extends React.Component {
                                 }}>{this.state.imageName === '' ? `לחץ כדי להעלות לוגו לעסק` : this.state.imageName}</Subtitle>
                             </View>
                         </TouchableWithoutFeedback>
-                        
                     </View>
                     
                 </ScrollView>

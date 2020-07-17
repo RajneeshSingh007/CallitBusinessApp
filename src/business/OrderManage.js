@@ -669,7 +669,7 @@ export default class OrderManage extends React.Component {
     this.setState({showDecline: false, showp: true});
     const datas = [];
     //const time = this.state.time;
-    const newmsg = declineMsg || '';
+    const newmsg = (this.state.status) === -2 ?  "" : declineMsg || '';    
     const message = this.state.message + newmsg;
     const bid = this.state.bid;
     const customerfkOx = this.state.customerfkO;
