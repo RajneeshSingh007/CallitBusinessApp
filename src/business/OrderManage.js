@@ -87,9 +87,9 @@ export default class OrderManage extends React.Component {
       firstTime: true,
       terminalNumber: '',
       cardSessionID: '',
-      shovar:''
+      shovar: '',
+      combinePriced:'',
     };
-    
   }
 
   objectsEqual = (o1, o2) => {
@@ -105,8 +105,7 @@ export default class OrderManage extends React.Component {
     return count === o1.length;
   };
 
-  fetchCG()
-  {
+  fetchCG() {
     Pref.getVal(Pref.branchId, va => {
       Pref.getVal(Pref.bBearerToken, token => {
         const rm = Helper.removeQuotes(token);
@@ -136,7 +135,7 @@ export default class OrderManage extends React.Component {
           this.setState({cardSessionID: op});
         },
         error => {
-          console.log("ERROR IN FETCHING Session CardURL" , error);
+          console.log('ERROR IN FETCHING Session CardURL', error);
         },
       );
     });
@@ -162,64 +161,48 @@ export default class OrderManage extends React.Component {
     const mm = state.params.mode;
     const pppp = data.status;
     console.log(`pppp`, pppp);
+    const allDatas = data.data;
     let allMessages = '';
 
-    const groupByProduct = Lodash.groupBy(data.data, item => item.serviceName);
     const finalDisplayData = [];
-    Object.keys(groupByProduct).map(keyx => {
-      let pppp = groupByProduct[keyx];
-      Lodash.map(pppp, (firspos, index) => {
-        const {
-          extras,
-          message,
-          price,
-          idorder,
-          serviceName,
-          orderdate,
-        } = firspos;
-        let total = Number(price);
-        let found = false;
-        for (let lu = index + 1; lu < pppp.length; lu++) {
-          const cc = pppp[lu];
-          const check = this.objectsEqual(extras, cc.extras);
-          if (check && message === cc.message) {
-            found = true;
-            total += Number(cc.price);
-          }
-        }
-        //console.log(`found`, found);
-        //if (find === undefined) {
-        const exstr = Helper.groupExtraWithCountString(extras, found);
-        const find = Lodash.filter(
-          finalDisplayData,
-          z => z.orderdate === orderdate,
-        );
-        if (find.length === 0) {
-          finalDisplayData.push({
-            orderdate:orderdate,
-            serviceName: keyx,
-            extraDisplayArray: exstr,
-            message: message,
-            price: found ? total : price,
-            counter: found ? pppp.length : 0,
-          });
-        }
-
+    Lodash.map(allDatas, firspos => {
+      const {
+        extras,
+        message,
+        price,
+        serviceName,
+        orderdate,
+        quantity,
+      } = firspos;
+      let total = Number(price);
+      const exstr = Helper.groupExtraWithCountString(extras, false);
+      finalDisplayData.push({
+        orderdate: orderdate,
+        serviceName: serviceName,
+        extraDisplayArray: exstr,
+        message: message,
+        price: total,
+        counter: quantity || 0,
       });
     });
+
     this.setState({
-      customerfkO: data.data[0].customerfkO,
+      customerfkO: data.customerfkO,
       allMessages: allMessages,
       ogData: data,
-      idxx: data.data[0].idorder,
+      idxx: data.idorder,
       mode: mm,
       status: pppp,
-      clone: data.data,
+      clone: allDatas,
       displayList: finalDisplayData,
-      restaurants: data.data,
+      restaurants: allDatas,
       progressView: false,
-      isDelivery: data.data[0].isDelivery,
-      shovar:data.data[0].shovar || ''
+      isDelivery: data.isDelivery,
+      shovar: data.shovar || '',
+      combinePriced: Helper.getCombinedprice(
+        data.totalPrice,
+        data.deliveryprice,
+      ),
     });
   }
 
@@ -298,7 +281,7 @@ export default class OrderManage extends React.Component {
       if (this.state.ogData.address !== '') {
         parseString += `כתובת: ${this.state.ogData.address}` + '<br>';
       }
-      parseString += `סכום לתשלום:₪${this.state.ogData.totalPrice}` + '<br>';
+      parseString += `סכום לתשלום:₪${this.state.combinePriced}` + '<br>';
       parseString += `אמצעי תשלום:${
         this.state.ogData.paid === 0 ? 'מזומן' : 'אשראי'
       }`;
@@ -404,12 +387,12 @@ export default class OrderManage extends React.Component {
                   alignSelf: 'flex-start',
                   fontWeight: '700',
                 }}>
-                {item.serviceName}{' '}
+                {item.serviceName}
                 {item.counter > 0 ? (
                   <Title
                     styleName="bold"
                     style={{
-                      color: '#5EBBD7',
+                      color: 'green',
                       fontFamily: 'Rubik',
                       fontSize: 18,
                       alignSelf: 'flex-start',
@@ -417,9 +400,7 @@ export default class OrderManage extends React.Component {
                     }}>
                     {`   ${item.counter}x`}
                   </Title>
-                ) : (
-                  ''
-                )}
+                ) : null}
               </Title>
               <Subtitle
                 style={{
@@ -448,7 +429,7 @@ export default class OrderManage extends React.Component {
                     paddingHorizontal: 2,
                     writingDirection: 'ltr',
                   }}>
-                  {`${Lodash.capitalize(item.extraDisplayArray)}`}
+                  {`${Lodash.capitalize(item.extraDisplayArray.trim())}`}
                 </Title>
               </View>
             </View>
@@ -487,22 +468,23 @@ export default class OrderManage extends React.Component {
       });
     }
   }
-//Asia/Jerusalem
-  getExpectedTime= (time) =>
-  {
+  //Asia/Jerusalem
+  getExpectedTime = time => {
     let minsToadd = time;
-    if(minsToadd !== '' )
-    {
-      let dateTime = momenttz.tz('Asia/Jerusalem').add(minsToadd,'minutes').format();
+    if (minsToadd !== '') {
+      let dateTime = momenttz
+        .tz('Asia/Jerusalem')
+        .add(minsToadd, 'minutes')
+        .format();
       let timeTemp = dateTime.replace('T', ' ');
       let splited = timeTemp.split('+');
       // console.log(splited[0]);
       return splited[0];
     }
     return `00001-01-01 00:00:00`;
-  }
+  };
 
-  ordemm = () => {   
+  ordemm = () => {
     // this.getExpectedTime(20);
     // return;
     let status = this.state.status;
@@ -515,9 +497,9 @@ export default class OrderManage extends React.Component {
     const message = this.state.message;
     const bid = this.state.bid;
     //const timeformat =
-      // time === ''
-      //   ? `00001-01-01 00:00:00`
-      //   : `${this.state.convertTime}:${time}:00`;
+    // time === ''
+    //   ? `00001-01-01 00:00:00`
+    //   : `${this.state.convertTime}:${time}:00`;
     //${time}
     //Moment().format('YYYY-MM-DD HH:MM')
     const curTime = this.getExpectedTime(0);
@@ -548,7 +530,7 @@ export default class OrderManage extends React.Component {
       const terminalNumber = this.state.terminalNumber;
       if (paid === 1) {
         if (terminalNumber !== '') {
-          const total = this.state.ogData.totalPrice;
+          const total = this.state.combinePriced;
           //console.log(`total`, total)
           let parstotal = '';
           if (total.toString().includes('.')) {
@@ -989,8 +971,9 @@ export default class OrderManage extends React.Component {
                     </TouchableWithoutFeedback>
                   </View>
                   {this.state.ogData.deliveryprice !== undefined &&
+                  this.state.ogData.deliveryprice !== null &&
                   this.state.ogData.deliveryprice !== '' &&
-                  this.state.ogData.deliveryprice !== null ? (
+                  Number(this.state.ogData.deliveryprice > 0) ? (
                     <Subtitle
                       style={{
                         color: '#292929',
@@ -1016,7 +999,7 @@ export default class OrderManage extends React.Component {
                         fontFamily: 'Rubik',
                         fontWeight: '700',
                         fontSize: 15,
-                      }}>{`₪${this.state.ogData.totalPrice}`}</Subtitle>
+                      }}>{`₪${this.state.combinePriced}`}</Subtitle>
                   </Subtitle>
                   <Subtitle
                     style={{
