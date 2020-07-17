@@ -1,11 +1,14 @@
 import React from "react";
-import { StatusBar, StyleSheet,TouchableOpacity } from "react-native";
-import { Image, Screen, Subtitle, Title, View,Heading,DropDownMenu } from "@shoutem/ui";
+import { StatusBar, StyleSheet } from "react-native";
+import { Image, Screen, Subtitle, View,Heading,DropDownMenu } from "@shoutem/ui";
 import * as Helper from "./../util/Helper";
 import * as Pref from "./../util/Pref";
-import { Button, Card, Colors, Snackbar, TextInput } from "react-native-paper";
-import DeviceInfo from "react-native-device-info";
+import { Button, Snackbar,  } from "react-native-paper";
 import messaging from '@react-native-firebase/messaging';
+
+import FloatingLabelInput from '../Component/FloatingLabelInput';
+
+
 
 export default class BusinessWelcomePage extends React.Component {
   constructor(props) {
@@ -112,58 +115,48 @@ export default class BusinessWelcomePage extends React.Component {
         <StatusBar barStyle="dark-content" backgroundColor='white'/>
         <View styleName='space-between fill-parent vertical'>
           <Heading styleName='xl-gutter bold v-center h-center' style={{  color: "#292929", fontWeight: '700', fontSize: 24, }}>התחבר למערכת</Heading>
-          <View styleName='v-center h-center'>
-            <View >
-              <DropDownMenu
-                
+          <DropDownMenu
                 options={this.state.user_type}
                 selectedOption={selected_ut ? selected_ut : this.state.user_type[0]}
                 onOptionSelected={(user_type) => this.setState({ selected_ut: user_type }) }
                 titleProperty="type"
               />
-              <Subtitle styleName='v-center h-center' style={{ color: '#292929', fontSize: 16,}}>שם משתמש</Subtitle>
-            </View>
-            
-          <TextInput
+              
+          <FloatingLabelInput 
+            label="שם משתמש"
             mode='flat'
             underlineColor='transparent'
             underlineColorAndroid='transparent'
-            style={styles.inputStyle}
             onChangeText={value => this.setState({ username: value })}
-            value={this.state.username}
-          />
-         <View style={{marginTop:16}}>
-              <Subtitle styleName='v-center h-center' style={{ color: '#292929', fontSize: 16 }}>סיסמה</Subtitle>
-            <TextInput
+            value={this.state.username}></FloatingLabelInput>
+          <View style={{marginTop:16}}>
+            <FloatingLabelInput 
+              label="סיסמה"
               mode='flat'
               underlineColor='transparent'
               underlineColorAndroid='transparent'
+              autoCorrect={false}
               secureTextEntry={true}
+              
               onChangeText={value => this.setState({ password: value })}
-              value={this.state.password}
-              style={styles.inputStyle}
-            />
-            </View>
-        </View>
-        <Image
+              value={this.state.password}></FloatingLabelInput>
+          </View>          
+          <Image
             styleName="md-gutter large-wide v-center h-center"
-            source={require('./../res/images/loginbg.png')}
-        />
-        <Button 
-          styleName="muted border"
-          mode={"flat"}
-          uppercase={true}
-          dark={true}
-          loading={this.state.progressView}
-          style={styles.loginButtonStyle}
-          onPress={() =>{ this.signIn(selected_ut);} }
-        >
-          <Subtitle
-              style={{ color: "white" }}>{this.state.progressView === true ? "נא להמתין..." :  'התחבר' }</Subtitle>
-        </Button>
+            source={require('./../res/images/loginbg.png')}/>
+          <Button 
+            styleName="muted border"
+            mode={"flat"}
+            uppercase={true}
+            dark={true}
+            loading={this.state.progressView}
+            style={styles.loginButtonStyle}
+            onPress={() =>{ this.signIn(selected_ut);} }>
+            <Subtitle
+                style={{ color: "white" }}>{this.state.progressView === true ? "נא להמתין..." :  'התחבר' }</Subtitle>
+          </Button>
         
-      </View>
-    
+        </View>
         <Snackbar
         visible={
           this.state.message === "" ? false : true

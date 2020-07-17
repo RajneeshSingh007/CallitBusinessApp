@@ -106,17 +106,7 @@ export default class HomeList extends React.PureComponent {
         });
     }
 
-    // parsetime(time) {
-    //     if (time == null && time == undefined) {
-    //         return "";
-    //     }
-    //     const sp = time.split(" - ");
-    //     var start = Moment.duration(sp[0], "HH:mm");
-    //     var end = Moment.duration(sp[1], "HH:mm");
-    //     var diff = end.subtract(start);
-    //     return diff.hours() + ":" + diff.minutes();
-    // }
-
+   
     checkTime(time) {
         if (time == null && time == undefined) {
             return "";

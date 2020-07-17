@@ -85,60 +85,10 @@ export default class OrderManage extends React.Component {
       isHistory: false,
       printmodeon: false,
       firstTime: true,
-      //convertTime: '',
       terminalNumber: '',
       cardSessionID: '',
       shovar:''
     };
-    // Pref.getVal(Pref.branchId, va => {
-    //   Pref.getVal(Pref.bBearerToken, token => {
-    //     const rm = Helper.removeQuotes(token);
-    //     Helper.networkHelperToken(
-    //       Pref.BusinessOwnerUrl + va,
-    //       Pref.methodGet,
-    //       rm,
-    //       result => {
-    //         //console.log('terminalNumber', result.terminalNumber);
-    //         this.setState({terminalNumber: result.terminalNumber});
-    //       },
-    //       error => {
-    //         //
-    //       },
-    //     );
-    //   });
-    // });
-    // Pref.getVal(Pref.bBearerToken, v => {
-    //   const oop = Helper.removeQuotes(v);
-    //   this.setState({token: oop});
-    //   Helper.networkHelperToken(
-    //     Pref.GetSessionCardUrl,
-    //     Pref.methodGet,
-    //     oop,
-    //     op => {
-    //       //console.log(op);
-    //       this.setState({cardSessionID: op});
-    //     },
-    //     error => {
-    //       console.log(error);
-    //     },
-    //   );
-    //   // Helper.networkHelperToken(
-    //   //   Pref.ServerTimeUrl,
-    //   //   Pref.methodGet,
-    //   //   oop,
-    //   //   value => {
-    //   //     //value
-    //   //     console.log('ServerTimeUrl', value);
-    //   //     const convertTime = Moment.utc(value)
-    //   //       .utcOffset(2, false)
-    //   //       .format('YYYY-MM-DD HH');
-    //   //     this.setState({convertTime: convertTime});
-    //   //   },
-    //   //   error => {
-    //   //     //console.log('err', error);
-    //   //   },
-    //   // );
-    // });
     
   }
 

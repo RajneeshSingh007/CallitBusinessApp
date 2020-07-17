@@ -383,6 +383,7 @@ export default class BusinessHomePage extends React.Component {
 
 
   render() {
+    
     return (
       <Screen style={{
         backgroundColor: "white"
