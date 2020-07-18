@@ -137,7 +137,6 @@ export default class BusinessWelcomePage extends React.Component {
               underlineColorAndroid='transparent'
               autoCorrect={false}
               secureTextEntry={true}
-              
               onChangeText={value => this.setState({ password: value })}
               value={this.state.password}></FloatingLabelInput>
           </View>          

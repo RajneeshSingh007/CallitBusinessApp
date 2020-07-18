@@ -388,7 +388,7 @@ export default class BranchDetailEdit extends React.Component {
                         }}> עריכת פרופיל</Heading>
                     </View>}
                 />
-                <ScrollView style={{flex:1}}>
+                <ScrollView style={{flex:1}} keyboardShouldPersistTaps="handled">
                     <View>
                         <View style={{
                             borderRadius: 2,
@@ -594,6 +594,7 @@ export default class BranchDetailEdit extends React.Component {
                                 }}>{this.state.imageName === '' ? `לחץ כדי להעלות לוגו לעסק` : this.state.imageName}</Subtitle>
                             </View>
                         </TouchableWithoutFeedback>
+                        
                     </View>
                     
                 </ScrollView>

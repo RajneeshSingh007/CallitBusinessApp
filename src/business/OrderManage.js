@@ -780,6 +780,7 @@ export default class OrderManage extends React.Component {
   };
 
   render() {
+    
     return (
       <Screen
         style={{
@@ -946,7 +947,8 @@ export default class OrderManage extends React.Component {
                           }}>
                           {this.state.ogData.address !== ''
                             ? `${this.state.ogData.address}`
-                            : 'איסוף עצמי'}
+                            : this.state.ogData.isdelivery === 1 ? 'נשלחה מיקום הלקוח, לבדוק במפה' : 'איסוף עצמי'
+                            }
                         </Subtitle>
                       </TouchableWithoutFeedback>
                     </Subtitle>
