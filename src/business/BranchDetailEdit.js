@@ -388,7 +388,7 @@ export default class BranchDetailEdit extends React.Component {
                         }}> עריכת פרופיל</Heading>
                     </View>}
                 />
-                <ScrollView style={{flex:1}} keyboardShouldPersistTaps="handled">
+                <ScrollView style={{flex:1}} >
                     <View>
                         <View style={{
                             borderRadius: 2,
@@ -438,6 +438,7 @@ export default class BranchDetailEdit extends React.Component {
                             }}
                             value={this.state.firstName}
                             returnKeyType="next"
+                            multiline={true}
                             numberOfLines={1}
                             underlineColor={"transparent"}
                             underlineColorAndroid={"transparent"}
@@ -450,6 +451,7 @@ export default class BranchDetailEdit extends React.Component {
                             disabled={this.state.disabled}
                             value={this.state.mobileNo}
                             password={false}
+                            multiline={true}
                             numberOfLines={1}
                             underlineColor={"transparent"}
                             underlineColorAndroid={"transparent"}
@@ -460,12 +462,13 @@ export default class BranchDetailEdit extends React.Component {
                             label={"הודעת העסק"}
                             disabled={this.state.disabled}
                             password={false}
+                            //multiline={true}
                             numberOfLines={1}
                             onChangeText={text => {
                                 this.setState({ add1: text });
                             }}
                             value={this.state.add1}
-                            multiline={false}
+                            multiline={true}
                             returnKeyType="next"
                             underlineColor={"transparent"}
                             underlineColorAndroid={"transparent"}
@@ -481,6 +484,7 @@ export default class BranchDetailEdit extends React.Component {
                             }}
                             value={this.state.address}
                             returnKeyType="next"
+                            multiline={true}
                             numberOfLines={1}
                             underlineColor={"transparent"}
                             underlineColorAndroid={"transparent"}

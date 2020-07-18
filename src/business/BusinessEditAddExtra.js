@@ -427,23 +427,26 @@ export default class BusinessEditAddExtra extends React.Component {
             </TouchableWithoutFeedback>
           </View>
         </View>
-        <View styleName="horizontal" style={{ marginTop: sizeHeight(1) }}>
-          <View
-            style={{ alignItem: 'flex-start', flex: 0.5, justifyContent: 'center', borderColor: '#dedede', borderStyle: 'solid', borderWidth: 1, color: '#000000', height: 48, marginEnd: sizeWidth(1) }}>
-            <Subtitle numberOfLines={1} style={{ color: '#292929', fontSize: 14, alignSelf: 'flex-start', marginHorizontal: sizeWidth(2) }}>{rowData.name}</Subtitle>
-          </View>
+        {/* <View styleName="horizontal" style={{ marginTop: sizeHeight(1) }}> */}
           <TouchableWithoutFeedback onPress={() => this.editItems(rowData)}>
-            <View
-              style={{ alignItem: 'flex-start', flex: 0.5, justifyContent: 'center', borderColor: '#dedede', borderStyle: 'solid', borderWidth: 1, color: '#000000', height: 48, }}>
-              <Subtitle
-                numberOfLines={1}
-                styleName="bold"
-                style={{ color: '#292929', fontSize: 14, alignSelf: 'flex-start', marginHorizontal: sizeWidth(2), fontWeight: '700' }}>
-                ₪{rowData.price}
-            </Subtitle>
+            <View styleName="horizontal" style={{ marginTop: sizeHeight(1) }}>
+              <View
+                style={{ alignItem: 'flex-start', flex: 0.5, justifyContent: 'center', borderColor: '#dedede', borderStyle: 'solid', borderWidth: 1, color: '#000000', height: 48, marginEnd: sizeWidth(1) }}>
+                <Subtitle numberOfLines={1} style={{ color: '#292929', fontSize: 14, alignSelf: 'flex-start', marginHorizontal: sizeWidth(2) }}>{rowData.name}</Subtitle>
+              </View>
+              
+                <View
+                  style={{ alignItem: 'flex-start', flex: 0.5, justifyContent: 'center', borderColor: '#dedede', borderStyle: 'solid', borderWidth: 1, color: '#000000', height: 48, }}>
+                  <Subtitle
+                    numberOfLines={1}
+                    styleName="bold"
+                    style={{ color: '#292929', fontSize: 14, alignSelf: 'flex-start', marginHorizontal: sizeWidth(2), fontWeight: '700' }}>
+                    ₪{rowData.price}
+                </Subtitle>
+                </View>
             </View>
           </TouchableWithoutFeedback>
-        </View>
+        {/* </View> */}
       </Row>
     );
   }
