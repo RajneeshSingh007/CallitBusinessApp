@@ -58,6 +58,7 @@ export default class OrderManage extends React.Component {
     this.renderExtraRow = this.renderExtraRow.bind(this);
     this.decline = this.decline.bind(this);
     this.state = {
+      branchId: null,
       ogData: [],
       token: '',
       bData: null,
@@ -146,6 +147,9 @@ export default class OrderManage extends React.Component {
     Pref.getVal(Pref.bId, v => {
       this.setState({bid: v});
     });
+    Pref.getVal(Pref.branchId,brID=>{
+      this.setState({branchId: brID});
+    });
     Pref.getVal(Pref.printon, value => {
       const oop = Helper.removeQuotes(value);
       this.setState(
@@ -229,7 +233,8 @@ export default class OrderManage extends React.Component {
         '</strong><br><br>';
       restaurants.map(item => {
         parseString +=
-          '<strong>' + Lodash.capitalize(item.serviceName) + '</strong>';
+          '<strong>' + Lodash.capitalize(item.serviceName) + `   ${item.quantity}x`+ '</strong>';
+          //console.log("items", item);
         if (item.extras !== undefined && item.extras.length > 0) {
           let manisps = `<p>`;
           this.filterExtrasCat(item.extras).map(elex => {
@@ -264,6 +269,7 @@ export default class OrderManage extends React.Component {
           parseString += manisps;
           //parseString += "<br>";
         } else {
+          parseString += `<p></p>`;
         }
         //parseString += "<br>";
         if (
@@ -487,7 +493,9 @@ export default class OrderManage extends React.Component {
   ordemm = () => {
     // this.getExpectedTime(20);
     // return;
+    //console.log("BRANCH ID", this.state.branchId);
     let status = this.state.status;
+    //console.log("STATUS:", status);
     const oldSta = status;
     let newStatus = status + 1;
     //////console.log('newStatus', newStatus);
@@ -495,17 +503,9 @@ export default class OrderManage extends React.Component {
     const datas = [];
     const minToBeReady = this.state.time;
     const message = this.state.message;
-    const bid = this.state.bid;
-    //const timeformat =
-    // time === ''
-    //   ? `00001-01-01 00:00:00`
-    //   : `${this.state.convertTime}:${time}:00`;
-    //${time}
-    //Moment().format('YYYY-MM-DD HH:MM')
+    const bid = this.state.branchId;
     const curTime = this.getExpectedTime(0);
     const exp_date = this.getExpectedTime(minToBeReady);
-    // console.log("CUR TIME", curTime);
-    // console.log("EXP DATE", exp_date);
     Lodash.map(this.state.restaurants, ele => {
       datas.push({
         Id_order: ele.idorder,
@@ -519,7 +519,7 @@ export default class OrderManage extends React.Component {
     });
     //console.log(`datas`, datas);
     const body = JSON.stringify(datas);
-    //////console.log('body', body);
+    //console.log('body', body);
     const ppp = this.state.token;
 
     if (oldSta === 1) {
@@ -603,7 +603,7 @@ export default class OrderManage extends React.Component {
           Pref.methodPost,
           ppp,
           result => {
-            //////console.log(result);
+            //console.log("RESULT 1" ,body);
             if (newStatus === 4) {
               NavigationActions.goBack();
             }
@@ -620,6 +620,7 @@ export default class OrderManage extends React.Component {
             });
           },
           error => {
+            //console.log("ERROR",error);
             this.setState({showApprove: false, showp: false});
           },
         );
@@ -631,7 +632,7 @@ export default class OrderManage extends React.Component {
         Pref.methodPost,
         ppp,
         result => {
-          //////console.log(result);
+          //console.log("RESULT 2",result);
           if (newStatus === 4) {
             NavigationActions.goBack();
           }
@@ -648,6 +649,7 @@ export default class OrderManage extends React.Component {
           });
         },
         error => {
+          //console.log("ERROR2:", error);
           this.setState({showApprove: false, showp: false});
         },
       );

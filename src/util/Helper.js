@@ -196,7 +196,7 @@ export const networkHelperTokenPost = (
       callback(responseJson);
     })
     .catch(error => {
-      //////console.log(error);
+      console.log("ERROR FROM API:", error);
       errorCallback();
     });
 };

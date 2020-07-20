@@ -22,6 +22,7 @@ class App extends React.Component {
    * @returns {Promise<void>}
    */
     componentDidMount() {
+        
         this._notificationEvent = PushNotificationAndroid.addEventListener(
             "notification",
             details => {
@@ -68,6 +69,7 @@ class App extends React.Component {
                 .onChangeNavigation(prevScreen, currentScreen)
         }
     }
+
 }
 
 const getActiveRouteName = (navigationState) => {

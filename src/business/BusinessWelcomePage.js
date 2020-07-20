@@ -8,7 +8,7 @@ import messaging from '@react-native-firebase/messaging';
 
 import FloatingLabelInput from '../Component/FloatingLabelInput';
 
-
+import momenttz from 'moment-timezone';
 
 export default class BusinessWelcomePage extends React.Component {
   constructor(props) {
@@ -50,11 +50,19 @@ export default class BusinessWelcomePage extends React.Component {
     return "ud-" + this.state.username;
   }
   
+  registerTime = () =>
+  {
+    let dateTime = momenttz.tz('Asia/Jerusalem').add(1, 'months').format(momenttz.HTML5_FMT.DATE);
+    //let dateTime = momenttz.tz('Asia/Jerusalem').add(1, 'days').format(momenttz.HTML5_FMT.DATE);
+    return dateTime;
+  }
+
+
   /**
    * signIn
    */
   signIn(selected_ut) {
-
+    let dateLogin = this.registerTime();
     if (this.state.username === "" && this.state.password === "") {
       this.setState({ message: "נא למלא שם משתמש וסיסמא" });
     } else if (this.state.username === "") {
@@ -84,6 +92,10 @@ export default class BusinessWelcomePage extends React.Component {
                   //set token
                   Pref.setVal(Pref.bBearerToken, bToken);
                   Pref.setVal(Pref.bLoggedStatus, true);
+                  Pref.setVal(Pref.dateToLogout,dateLogin);
+                  //need to set record for when registered after that each time logged need to check...
+                  //after each month kick away
+                  
                   //homepage
                   // NavigationActions.navigate('Home');
                   Helper.itemClick(this.props, "HomeList");

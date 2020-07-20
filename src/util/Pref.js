@@ -19,6 +19,7 @@ export const LASTTOKEN =
 export const CardAccount = 'cgdemo';
 export const CardPass = 'C!kd2nc3a';
 export const CardMid = '11665';
+export const dateToLogout = 'dateLogin';
 
 /**
  * Business Server Url
@@ -61,8 +62,8 @@ export const GetDeliveryListItemAutoCompleteSearchUrl = `${BASEURL}api/CitiesAut
 export const UpdateBusiness = `${BASEURL}api/UpdateBusiness/`;
 export const ServerTimeUrl = `${BASEURL}api/getServerTime/`;
 //export const CreditCardUrl = `https://api.creditguard.co.il/merchants/xpo/Relay`;
-export const CreditCardUrl = `https://cguat2.creditguard.co.il/xpo/Relay`;
-//export const CreditCardUrl = `https://api.creditguard.co.il/merchants/xpo/Relay`;
+//export const CreditCardUrl = `https://cguat2.creditguard.co.il/xpo/Relay`;
+export const CreditCardUrl = `https://api.creditguard.co.il/merchants/xpo/Relay`;
 export const GetSessionCardUrl = `${BASEURL}api/getSessionIdForCG`;
 
 export const GetServiceCategories = `${BASEURL}/api/getServiceCategories/`;
