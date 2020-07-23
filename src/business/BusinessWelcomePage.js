@@ -1,14 +1,16 @@
 import React from "react";
-import { StatusBar, StyleSheet } from "react-native";
-import { Image, Screen, Subtitle, View,Heading,DropDownMenu } from "@shoutem/ui";
+import { StatusBar, StyleSheet, Text } from "react-native";
+import { Image, Screen, Subtitle, View,Heading,Icon } from "@shoutem/ui";
 import * as Helper from "./../util/Helper";
 import * as Pref from "./../util/Pref";
-import { Button, Snackbar,  } from "react-native-paper";
+import { Button, Snackbar, Menu,Divider  } from "react-native-paper";
 import messaging from '@react-native-firebase/messaging';
 
 import FloatingLabelInput from '../Component/FloatingLabelInput';
 
 import momenttz from 'moment-timezone';
+//import Icon from "react-native-vector-icons/MaterialIcons";
+import { sizeWidth, sizeHeight } from "../util/Size";
 
 export default class BusinessWelcomePage extends React.Component {
   constructor(props) {
@@ -18,17 +20,8 @@ export default class BusinessWelcomePage extends React.Component {
       password: "",
       progressView: false,
       message: "",
-      user_type: [
-        {
-          type: "עסק",
-        },
-        {
-          type: "שליח",
-        },
-        {
-          type:""
-        }
-      ]
+      visible:false,
+      type:'עסק',
     };
   }
 
@@ -43,7 +36,7 @@ export default class BusinessWelcomePage extends React.Component {
   getUserNameWithType(selected_ut)
   {
     //console.log(selected_ut);
-    if(selected_ut.type === "עסק")
+    if(selected_ut === "עסק")
     {
       return "us-" +this.state.username;
     }
@@ -57,7 +50,8 @@ export default class BusinessWelcomePage extends React.Component {
     return dateTime;
   }
 
-
+  closeMenu = () => this.setState({visible: false});
+  openMenu = () => this.setState({visible:true});
   /**
    * signIn
    */
@@ -81,7 +75,7 @@ export default class BusinessWelcomePage extends React.Component {
               "deviceid": fcmToken
             });
             //added  selected_ut.type === "עסק" ? Pref.UserOwnerLoginUrl : Pref.UserDilveryLoginUrl
-            Helper.networkHelperTokenPost( selected_ut.type === "עסק" ? Pref.UserOwnerLoginUrl : Pref.UserDilveryLoginUrl, jsonData, Pref.methodPost,
+            Helper.networkHelperTokenPost( selected_ut === "עסק" ? Pref.UserOwnerLoginUrl : Pref.UserDilveryLoginUrl, jsonData, Pref.methodPost,
             Pref.LASTTOKEN,
                (result) => {
               this.setState({ progressView: false });
@@ -119,20 +113,60 @@ export default class BusinessWelcomePage extends React.Component {
   };
 
 
+  anchor = () =>
+  {
+    const {type} = this.state;
+    return (
+        <Button onPress={this.openMenu}>
+          <Icon name="down-arrow" style={{ color: '#3daccf'}} />
+          <Text
+            style={{ color: '#3daccf',fontSize: 21}}>
+              {type}
+          </Text>
+          {/* <Image 
+            styleName="small"
+            style={{ width: 20, height: 20,}} 
+            source={require('../res/images/shop.png')} 
+          /> */}
+        </Button>
+    );
+  }
+
+  handleType = (type) =>
+  {
+    // const {type} = this.state;
+    if(type === 'עסק')
+    {
+      this.setState({type:'עסק'});
+    }
+    else
+    {
+      this.setState({type:'שליח'});
+    }
+    this.closeMenu();
+  }
+
+
   render() {
-    const selected_ut = this.state.selected_ut || this.state.user_type[0];
+    // const selected_ut = this.state.selected_ut || this.state.user_type[0];
+    const { visible ,type } = this.state;
     return (
       <View style={styles.main}>
         <Screen style={{ backgroundColor: "white", }}>
         <StatusBar barStyle="dark-content" backgroundColor='white'/>
         <View styleName='space-between fill-parent vertical'>
           <Heading styleName='xl-gutter bold v-center h-center' style={{  color: "#292929", fontWeight: '700', fontSize: 24, }}>התחבר למערכת</Heading>
-          <DropDownMenu
-                options={this.state.user_type}
-                selectedOption={selected_ut ? selected_ut : this.state.user_type[0]}
-                onOptionSelected={(user_type) => this.setState({ selected_ut: user_type }) }
-                titleProperty="type"
-              />
+          <View style={{alignContent:'center',alignItems:'center',marginBottom:20, }}>
+            <Menu
+              visible={visible}
+              onDismiss={this.closeMenu}
+              anchor={this.anchor()}
+            >
+              <Menu.Item icon={require('../res/images/shop.png')} onPress={() => this.handleType('עסק')} title='עסק' />
+              <Divider />
+              <Menu.Item icon={require('../res/images/Tracking.png')} onPress={() => this.handleType('שליח')} title="שליח" />
+            </Menu>
+          </View>
               
           <FloatingLabelInput 
             label="שם משתמש"
@@ -162,7 +196,7 @@ export default class BusinessWelcomePage extends React.Component {
             dark={true}
             loading={this.state.progressView}
             style={styles.loginButtonStyle}
-            onPress={() =>{ this.signIn(selected_ut);} }>
+            onPress={() =>{ this.signIn(type);} }>
             <Subtitle
                 style={{ color: "white" }}>{this.state.progressView === true ? "נא להמתין..." :  'התחבר' }</Subtitle>
           </Button>

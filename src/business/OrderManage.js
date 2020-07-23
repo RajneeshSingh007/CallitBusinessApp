@@ -781,6 +781,22 @@ export default class OrderManage extends React.Component {
     }
   };
 
+
+  getTitle = (status) =>
+  {
+    if(status === 1)
+      return `הזמנה ממתינה`;
+    if(status === 2)
+      return 'הזמנה בטיפול';
+    if(status === 3 )
+      return 'הזמנה מוכנה';
+    if(status === 4)
+      return 'הזמנה הסתיימה';
+    if(status === -2 || status === -1)
+      return 'הזמנה בוטלה';
+    return 'הזמנה';
+  }
+  
   render() {
     
     return (
@@ -832,7 +848,7 @@ export default class OrderManage extends React.Component {
                   fontWeight: '700',
                   alignSelf: 'center',
                 }}>
-                {'הזמנה ממתינה'}
+                {this.getTitle(this.state.status)}
               </Heading>
             </View>
           }

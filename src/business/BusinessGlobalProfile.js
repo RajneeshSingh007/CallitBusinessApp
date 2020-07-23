@@ -88,14 +88,6 @@ export default class BusinessGlobalProfile extends React.Component {
                 <StatusBar barStyle="dark-content" backgroundColor="white" />
                 <NavigationBar
                     styleName="inline no-border"
-                    // rightComponent={
-                    //     <View style={{ flexDirection: 'row', marginEnd: sizeWidth(5) }}>
-                    //         <Image source={require('./../res/images/menu.png')}
-                    //             style={{ width: 24, height: 24, }}
-                    //         />
-
-                    //     </View>
-                    // }
                     style={
                         {
                             rightComponent: {
@@ -145,9 +137,11 @@ export default class BusinessGlobalProfile extends React.Component {
                                 }}
                                 value={this.state.firstName}
                                 returnKeyType="next"
+                                multiline={true}
                                 numberOfLines={1}
                                 underlineColor={"transparent"}
                                 underlineColorAndroid={"transparent"}
+                                
                             />
                             <TextInput
                                 style={styles.inputStyle}
@@ -158,6 +152,7 @@ export default class BusinessGlobalProfile extends React.Component {
                                 }}
                                 value={this.state.lastName}
                                 returnKeyType="next"
+                                multiline={true}
                                 numberOfLines={1}
                                 underlineColor={"transparent"}
                                 underlineColorAndroid={"transparent"}
@@ -171,6 +166,7 @@ export default class BusinessGlobalProfile extends React.Component {
                                 }}
                                 value={this.state.mobileNo}
                                 keyboardType={'number-pad'}
+                                multiline={true}
                                 numberOfLines={1}
                                 underlineColor={"transparent"}
                                 underlineColorAndroid={"transparent"}
@@ -184,7 +180,7 @@ export default class BusinessGlobalProfile extends React.Component {
                                     this.setState({ add1: text });
                                 }}
                                 value={this.state.add1}
-                                multiline={false}
+                                multiline={true}
                                 returnKeyType="next"
                                 underlineColor={"transparent"}
                                 underlineColorAndroid={"transparent"}
@@ -198,6 +194,7 @@ export default class BusinessGlobalProfile extends React.Component {
                                 }}
                                 value={this.state.address}
                                 returnKeyType="next"
+                                multiline={true}
                                 numberOfLines={1}
                                 underlineColor={"transparent"}
                                 underlineColorAndroid={"transparent"}

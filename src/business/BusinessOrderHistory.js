@@ -14,6 +14,8 @@ import BusinessMenuChoices from "./BusinessMenuChoices";
 import Lodash from 'lodash';
 import Icon from "react-native-vector-icons/MaterialIcons";
 
+import OrderCard from '../Component/OrderCard';
+
 export default class BusinessOrderHistory extends React.Component {
   constructor(props) {
     super(props);
@@ -102,71 +104,7 @@ export default class BusinessOrderHistory extends React.Component {
           Pref.methodPost,
           removeQuotes,
           result => {
-            // const sumclone = Lodash.filter(result, function (o) {
-            //   return o.status >= 3;
-            // });
-            // let groupedExtrax = Lodash.groupBy(sumclone, function (exData) {
-            //   return exData.fkcustomerO;
-            // });
-            // let allDatas = [];
-            // for (var keyx in groupedExtrax) {
-            //   const value = groupedExtrax[keyx];
-            //   if (value !== undefined) {
-            //     let groupedExtra = Lodash.groupBy(JSON.parse(JSON.stringify(value)), (ele) => {
-            //       const parseDate = Moment(ele.orderdate).format('YYYY/MM/DD HH:mm');
-            //       return parseDate;
-            //     })
-            //     Object.keys(groupedExtra).map(key => {
-            //       const st = groupedExtra[key][0].status;
-            //       let servicelist = [];
-            //       var result = groupedExtra[key].reduce(function (p, c) {
-            //         var defaultValue = {
-            //           name: c.serviceName,
-            //           count: 0
-            //         };
-            //         p[c.serviceName] = p[c.serviceName] || defaultValue
-            //         p[c.serviceName].count++;
-            //         return p;
-            //       }, {});
-            //       for (var k in result) {
-            //         const uuu = result[k];
-            //         let count = uuu.count;
-            //         let jjj = '';
-            //         if (count > 1) {
-            //           jjj = uuu.name + " " + uuu.count + "x";
-            //         } else {
-            //           jjj = uuu.name;
-            //         }
-            //         servicelist.push(jjj);
-            //       }
-            //       let finalPricess = Lodash.sumBy(groupedExtra[key], function (o) { return o.price; });
-            //       const iii = groupedExtra[key][0];
-            //       if (iii.deliveryprice !== undefined && iii.deliveryprice !== null) {
-            //         if (Number(iii.deliveryprice) > 0) {
-            //           finalPricess += iii.deliveryprice;
-            //         }
-            //       }
-
-            //       allDatas.push({
-            //         title: key,
-            //         name: groupedExtra[key][0].firstname + " " + groupedExtra[key][0].lastname,
-            //         address: groupedExtra[key][0].address,
-            //         customertelephone: groupedExtra[key][0].customertelephone,
-            //         totalPrice: finalPricess,
-            //         status: st,
-            //         deliveryprice: groupedExtra[key][0].deliveryprice,
-            //         orderdate: groupedExtra[key][0].orderdate,
-            //         paid: groupedExtra[key][0].paid,
-            //         data: groupedExtra[key],
-            //         servicelist: servicelist,
-            //         isHistory: true,
-            //       });
-            //     });
-            //   }
-            // }
-            // const fl = allDatas.sort((a, b) => {
-            //   return Moment(a.title, 'YYYY/MM/DD HH:mm:ss').isAfter(Moment(b.title, 'YYYY/MM/DD HH:mm:ss')) ? -1 : 1
-            // })
+            
             const finalordersList = Helper.orderData(result, true, false);
             this.setState({
               inputDStartDateTime: this.state.stDate,
@@ -230,200 +168,179 @@ export default class BusinessOrderHistory extends React.Component {
 
   renderRow(item, index) {
     return (
-      <View
-        style={{
-          flexDirection: 'column',
-          marginHorizontal: sizeWidth(5),
-          marginVertical: sizeHeight(2),
-        }}>
-        <Card
-          style={{
-            borderColor: '#dedede',
-            ...Platform.select({
-              android: {
-                elevation: 2,
-              },
-              default: {
-                shadowColor: 'rgba(0,0,0, .2)',
-                shadowOffset: {height: 0, width: 0},
-                shadowOpacity: 1,
-                shadowRadius: 1,
-              },
-            }),
-          }}
-          onPress={() =>
-            NavigationActions.navigate('OrderManage', {
-              item: item,
-              mode: true,
-            })
-          }>
-          {/* <Image
-							styleName="medium-square"
-							//source={{ uri: `http://192.236.162.188/${item.imageurl}` }}
-							source={{ uri: 'https://picsum.photos/700' }}
-							style={{
-								width:'100%',
-								borderTopLeftRadius: 8,
-								borderTopEndRadius: 8,
-								borderTopRightRadius: 8,
-								borderTopStartRadius: 8,
-					}}
-					/> */}
-          <View
-            style={{
-              flexDirection: 'column',
-              marginTop: 8,
-              marginHorizontal: sizeWidth(2.5),
-              marginBottom: sizeWidth(1),
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}>
-              <View style={{flexDirection: 'column', flex: 1}}>
-                {item.data !== null && item.data !== undefined
-                  ? item.data.map((ele, index) => {
-                      return index < 3 ? (
-                        <Subtitle
-                          styleName="bold"
-                          style={{
-                            color: '#292929',
-                            fontFamily: 'Rubik',
-                            fontSize: 15,
-                            alignSelf: 'flex-start',
-                            fontWeight: '400',
-                          }}>
-                          {`${Lodash.capitalize(ele.serviceName)}  ${
-                            ele.quantity
-                          }x`}
-                        </Subtitle>
-                      ) : null;
-                    })
-                  : null}
-              </View>
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontFamily: 'Rubik',
-                  alignSelf: 'flex-start',
-                  fontSize: 16,
-                  fontWeight: '700',
-                  fontWeight: 'bold',
-                }}>{`₪${Helper.getCombinedprice(
-                item.totalPrice,
-                item.deliveryprice,
-              )}`}</Subtitle>
-            </View>
-            {/* {item.extras !== null && item.extras.length > 0 ? <List.Accordion title={'extra'} style={{ marginVertical: -10, marginHorizontal: -16, }} titleStyle={{ marginHorizontal: -1 }}>
-              <FlatList
-                extraData={this.state}
-                showsVerticalScrollIndicator={true}
-                showsHorizontalScrollIndicator={false}
-                data={item.extras}
-                ItemSeparatorComponent={()=>{
-                  return <View style={{
-                    backgroundColor: '#d9d9d9',
-                    height: 1,
-                  }} />;
-                }}
-                keyExtractor={(item, index) => item.name}
-                renderItem={({ item: item, index }) => this.renderExtraRow(item, index)} />
-            </List.Accordion> : null} */}
-            <View
-              style={{flexDirection: 'column', marginTop: sizeHeight(0.4)}}>
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontFamily: 'Rubik',
-                  alignSelf: 'flex-start',
-                  fontSize: 15,
-                }}>{`${item.name} :שם לקוח`}</Subtitle>
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontFamily: 'Rubik',
-                  alignSelf: 'flex-start',
-                  fontSize: 15,
-                }}>{`פלאפון: ${item.customertelephone}`}</Subtitle>
-              {item.address !== '' ? (
-                <Subtitle
-                  style={{
-                    color: '#6DC124',
-                    fontFamily: 'Rubik',
-                    alignSelf: 'flex-start',
-                    fontSize: 15,
-                  }}>
-                  {`כתובת:`}{' '}
-                  <Subtitle
-                    style={{
-                      color: '#292929',
-                      fontFamily: 'Rubik',
-                      alignSelf: 'flex-start',
-                      fontSize: 15,
-                    }}>{`${item.address}`}</Subtitle>
-                </Subtitle>
-              ) : null}
-              {/* <Subtitle style={{
-                color: '#292929',
-                fontFamily: 'Rubik',
-                alignSelf: 'flex-start',
-                fontSize: 15,
-              }}><Subtitle style={{
-                color: '#6DC124',
-                fontFamily: 'Rubik',
-                alignSelf: 'flex-start',
-                fontSize: 15,
-                }}>{`${item.address} `}</Subtitle>
-                :כתובת</Subtitle> */}
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontFamily: 'Rubik',
-                  alignSelf: 'flex-start',
-                  fontSize: 15,
-                }}>
-                {`אמצעי תשלום:`}{' '}
-                <Subtitle
-                  style={{
-                    color: 'red',
-                    fontFamily: 'Rubik',
-                    fontSize: 15,
-                  }}>
-                  {item.paid === 0 ? 'מזומן' : 'אשראי'}
-                </Subtitle>
-              </Subtitle>
-            </View>
+      <OrderCard item={item} onClick={() =>
+              NavigationActions.navigate('OrderManage', {
+                item: item,
+                mode: true,
+              })}/>
+      // <View
+      //   style={{
+      //     flexDirection: 'column',
+      //     marginHorizontal: sizeWidth(5),
+      //     marginVertical: sizeHeight(2),
+      //   }}>
+      //   <Card
+      //     style={{
+      //       borderColor: '#dedede',
+      //       ...Platform.select({
+      //         android: {
+      //           elevation: 2,
+      //         },
+      //         default: {
+      //           shadowColor: 'rgba(0,0,0, .2)',
+      //           shadowOffset: {height: 0, width: 0},
+      //           shadowOpacity: 1,
+      //           shadowRadius: 1,
+      //         },
+      //       }),
+      //     }}
+      //     onPress={() =>
+      //       NavigationActions.navigate('OrderManage', {
+      //         item: item,
+      //         mode: true,
+      //       })
+      //     }>
+      //     <View
+      //       style={{
+      //         flexDirection: 'column',
+      //         marginTop: 8,
+      //         marginHorizontal: sizeWidth(2.5),
+      //         marginBottom: sizeWidth(1),
+      //       }}>
+      //       <View
+      //         style={{
+      //           flexDirection: 'row',
+      //           justifyContent: 'space-between',
+      //         }}>
+      //         <View style={{flexDirection: 'column', flex: 1}}>
+      //           {item.data !== null && item.data !== undefined
+      //             ? item.data.map((ele, index) => {
+      //                 return index < 3 ? (
+      //                   <Subtitle
+      //                     styleName="bold"
+      //                     style={{
+      //                       color: '#292929',
+      //                       fontFamily: 'Rubik',
+      //                       fontSize: 15,
+      //                       alignSelf: 'flex-start',
+      //                       fontWeight: '400',
+      //                     }}>
+      //                     {`${Lodash.capitalize(ele.serviceName)}  ${
+      //                       ele.quantity
+      //                     }x`}
+      //                   </Subtitle>
+      //                 ) : null;
+      //               })
+      //             : null}
+      //         </View>
+      //         <Subtitle
+      //           style={{
+      //             color: '#292929',
+      //             fontFamily: 'Rubik',
+      //             alignSelf: 'flex-start',
+      //             fontSize: 16,
+      //             fontWeight: '700',
+      //             fontWeight: 'bold',
+      //           }}>{`₪${Helper.getCombinedprice(
+      //           item.totalPrice,
+      //           item.deliveryprice,
+      //         )}`}</Subtitle>
+      //       </View>
+      //       <View
+      //         style={{flexDirection: 'column', marginTop: sizeHeight(0.4)}}>
+      //         <Subtitle
+      //           style={{
+      //             color: '#292929',
+      //             fontFamily: 'Rubik',
+      //             alignSelf: 'flex-start',
+      //             fontSize: 15,
+      //           }}>{`${item.name} :שם לקוח`}</Subtitle>
+      //         <Subtitle
+      //           style={{
+      //             color: '#292929',
+      //             fontFamily: 'Rubik',
+      //             alignSelf: 'flex-start',
+      //             fontSize: 15,
+      //           }}>{`פלאפון: ${item.customertelephone}`}</Subtitle>
+      //         {item.address !== '' ? (
+      //           <Subtitle
+      //             style={{
+      //               color: '#6DC124',
+      //               fontFamily: 'Rubik',
+      //               alignSelf: 'flex-start',
+      //               fontSize: 15,
+      //             }}>
+      //             {`כתובת:`}{' '}
+      //             <Subtitle
+      //               style={{
+      //                 color: '#292929',
+      //                 fontFamily: 'Rubik',
+      //                 alignSelf: 'flex-start',
+      //                 fontSize: 15,
+      //               }}>{`${item.address}`}</Subtitle>
+      //           </Subtitle>
+      //         ) : null}
+      //         <Subtitle
+      //           style={{
+      //             color: '#292929',
+      //             fontFamily: 'Rubik',
+      //             alignSelf: 'flex-start',
+      //             fontSize: 15,
+      //           }}>
+      //           {`אמצעי תשלום:`}{' '}
+      //           <Subtitle
+      //             style={{
+      //               color: 'red',
+      //               fontFamily: 'Rubik',
+      //               fontSize: 15,
+      //             }}>
+      //             {item.paid === 0 ? 'מזומן' : 'אשראי'}
+      //           </Subtitle>
+      //         </Subtitle>
+      //       </View>
 
-            <View
-              style={{
-                height: 1,
-                marginEnd: 6,
-                backgroundColor: '#dedede',
-                paddingHorizontal: sizeWidth(2),
-                marginTop: sizeHeight(1),
-              }}
-            />
-            <Subtitle
-              style={{
-                color: '#C18D24',
-                fontFamily: 'Rubik',
-                alignSelf: 'flex-start',
-                fontSize: 14,
-                paddingVertical: 2,
-              }}>
-              {item.status === 1
-                ? `ההזמנה שלך התקבלה במערכת ומחכה לאישור`
-                : item.status === 2
-                ? 'התחילו לטפל בהזמנה שלך, לא יקח הרבה זמן'
-                : item.status === 3
-                ? `ההזמנה בדרך אליך`
-                : `תודה רבה שבחרת בשירותינו`}
-            </Subtitle>
-          </View>
-        </Card>
-      </View>
+      //       <View
+      //         style={{
+      //           height: 1,
+      //           marginEnd: 6,
+      //           backgroundColor: '#dedede',
+      //           paddingHorizontal: sizeWidth(2),
+      //           marginTop: sizeHeight(1),
+      //         }}
+      //       />
+      //       <Subtitle
+      //         style={{
+      //           //color: '#C18D24',
+      //           color: item.status === 1 ? 'green' : item.status === 2 ? '#C18D24' : item.status === 3 ? 'purple' : item.status === 4 ? '#3daccf' : 'red',
+      //           fontFamily: 'Rubik',
+      //           alignSelf: 'flex-start',
+      //           fontWeight:'bold',
+      //           fontSize: 14,
+      //           paddingVertical: 2,
+      //         }}>
+      //         {this.textBelowOrder(item.status,item.isdelivery)}
+      //       </Subtitle>
+      //     </View>
+      //   </Card>
+      // </View>
     );
+  }
+  textBelowOrder = (status, isDelivery ) =>
+  {
+    if(status === 1)
+      return `התקבלה הזמנה חדשה ומחכה לאישור`;
+    if(status === 2)
+      return 'הזמנה בטיפול';
+    if(status === 3 && isDelivery)
+      return 'הזמנה מוכנה למשלוח';
+    if(status === 3 && !isDelivery)
+      return 'הזמנה מוכנה לאיסוף';
+    if(status === 4)
+      return 'הזמנה הסתיימה';
+    if(status === -2)
+      return 'הזמנה בוטלה על ידי לקוח';
+    
+    return 'הזמנה בוטלה על ידי בית עסק';
   }
 
 

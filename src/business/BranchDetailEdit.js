@@ -189,7 +189,7 @@ export default class BranchDetailEdit extends React.Component {
         
         let businessTime = `${this.state.sun}\n${this.state.mon}\n${this.state.tue}\n${this.state.wed}\n${this.state.thur}\n${this.state.fri}\n${this.state.sat}`;
         // console.log("TIMES:");
-        // console.log(businessTime);
+         //console.log(businessTime);
         // return;
         this.setState({ progressView: true });
         
@@ -245,7 +245,7 @@ export default class BranchDetailEdit extends React.Component {
                     this.setState({
                         progressView: false,
                     });
-                    console.log("RESULT",result);
+                    //console.log("RESULT",result);
                    //alert('Profile Saved');
                 },
                 error => {
