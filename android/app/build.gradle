@@ -133,7 +133,7 @@ android {
         minSdkVersion 19
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 27
-        versionName "2.7"
+        versionName "2.8.1"
         multiDexEnabled true
     }
     splits {
@@ -152,7 +152,7 @@ android {
             keyPassword 'android'
         }
         release{
-            storeFile file('D:\\AndroidDevelopment\\AdamProjectsMajor\\callit.jks')
+            storeFile file('D:\\Call It\\Bussiness app\\callit.jks')
             storePassword 'callit'
             keyAlias 'callit'
             keyPassword 'callit'

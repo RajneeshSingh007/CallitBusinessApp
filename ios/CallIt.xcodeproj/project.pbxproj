@@ -42,6 +42,7 @@
 		C267BEEA687A4837AC60524E /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2DBD4421307049D58546CFEC /* Octicons.ttf */; };
 		705592674CAA4557AEB62754 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 35F897A70BA047DCB66E7E84 /* SimpleLineIcons.ttf */; };
 		4097DF4726E844D18942060B /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0233A7CA27C54F28ABF2C06F /* Zocial.ttf */; };
+		7D57FA84A1CF464AA7000B3A /* libReactNativeGetLocationLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DE2D339C56A4BF996EFD305 /* libReactNativeGetLocationLibrary.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +105,8 @@
 		2DBD4421307049D58546CFEC /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		35F897A70BA047DCB66E7E84 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		0233A7CA27C54F28ABF2C06F /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		7B52210EA0C04F21B6774AAC /* ReactNativeGetLocation.xcodeproj */ = {isa = PBXFileReference; name = "ReactNativeGetLocation.xcodeproj"; path = "../node_modules/react-native-get-location/ios/ReactNativeGetLocation.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		3DE2D339C56A4BF996EFD305 /* libReactNativeGetLocationLibrary.a */ = {isa = PBXFileReference; name = "libReactNativeGetLocationLibrary.a"; path = "libReactNativeGetLocationLibrary.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D57FA84A1CF464AA7000B3A /* libReactNativeGetLocationLibrary.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,6 +185,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				7B52210EA0C04F21B6774AAC /* ReactNativeGetLocation.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -580,6 +585,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CallIt.app/CallIt";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/..\node_modules\react-native-get-location\ios\ReactNativeGetLocationLibrary",
+				);
 			};
 			name = Debug;
 		};
@@ -599,6 +612,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CallIt.app/CallIt";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/..\node_modules\react-native-get-location\ios\ReactNativeGetLocationLibrary",
+				);
 			};
 			name = Release;
 		};
@@ -618,6 +639,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = CallIt;
 				VERSIONING_SYSTEM = "apple-generic";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/..\node_modules\react-native-get-location\ios\ReactNativeGetLocationLibrary",
+				);
 			};
 			name = Debug;
 		};
@@ -636,6 +661,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = CallIt;
 				VERSIONING_SYSTEM = "apple-generic";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/..\node_modules\react-native-get-location\ios\ReactNativeGetLocationLibrary",
+				);
 			};
 			name = Release;
 		};
@@ -663,6 +692,14 @@
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/..\node_modules\react-native-get-location\ios\ReactNativeGetLocationLibrary",
+				);
 			};
 			name = Debug;
 		};
@@ -690,6 +727,14 @@
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/..\node_modules\react-native-get-location\ios\ReactNativeGetLocationLibrary",
+				);
 			};
 			name = Release;
 		};
@@ -716,6 +761,14 @@
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CallIt-tvOS.app/CallIt-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/..\node_modules\react-native-get-location\ios\ReactNativeGetLocationLibrary",
+				);
 			};
 			name = Debug;
 		};
@@ -742,6 +795,14 @@
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CallIt-tvOS.app/CallIt-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/..\node_modules\react-native-get-location\ios\ReactNativeGetLocationLibrary",
+				);
 			};
 			name = Release;
 		};

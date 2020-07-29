@@ -17,233 +17,53 @@ import * as Helper from "./../util/Helper";
 import * as Pref from "./../util/Pref";
 import NavigationActions from "../util/NavigationActions";
 import { sizeHeight, sizeWidth, sizeFont } from './../util/Size';
-import ProfileBusinessPp from './ProfileBusinessPp';
-import DummyLoader from "../util/DummyLoader";
-//import * as Animatable from "react-native-animatable";
-//import { showLocation } from "react-native-map-link";
-//import * as Lodash from 'lodash';
-import { ScrollView } from "react-native-gesture-handler";
-//import TabSectionList from "../Component/TabSectionList";
 
 
-var now = new Date().getDay();
-const openBiz = `פתוח`;
-const closedBiz = `סגור`;
-const busyBiz = `עמוס`;
-
-export default class BusinessProfile extends React.Component {
-  constructor(props) {
-    super(props);
-    this.shareBusiness = this.shareBusiness.bind(this);
-    this.parsetime = this.parsetime.bind(this);
-    //this.checkStatusBiz = this.checkStatusBiz.bind(this);
-    this.phoneCalls = this.phoneCalls.bind(this);
-    this.locationOpen = this.locationOpen.bind(this);
-    this.state = {
-      favData: [],
-      item: null,
-      progressView: false,
-      isFav: false,
-      favIndex: 0,
-      counter: 0,
-      showOrderNo: false,
-      cartDatas: [],
-      branchid: 0,
-      tabNames: null,
-      eachTabData: null,
-      deliveryPrice: '',
-      customerdt: '',
-      isTimeExpanded:false,
-      hasDelivery:0
+export default class BusinessInfo extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
     }
-  }
 
-  componentDidMount() {
-    //this.work();
-    this.willfocusListener = this.props.navigation.addListener('willFocus', () => {
-      this.setState({ progressView: true });
-    });
-
-    this.focusListener = this.props.navigation.addListener('didFocus', () => {
-      this.work();
-    });
-  }
-
-  componentWillUnmount() {
-    if(this.focusListener !== undefined){this.focusListener.remove();}
-    if (this.willfocusListener !== undefined) { this.focusListener.remove(); }
-  }
-
-  shareBusiness = () => {
-    if(this.state.item !== null && this.state.item !== undefined){
-      Pref.getVal(Pref.bData, (value) =>{
-        const vv = JSON.parse(value);
-        //////console.log('websiteUrl', vv.websiteUrl);
-        if (vv.websiteUrl !== undefined){
-          Share.share({
-            title: this.state.item.name,
-            message: this.state.item.message,
-            url: vv.websiteUrl,
-            subject: "CallIt"
-          });
-        }else{
-          // alert('Website url not found');
+    parsetime = (time) => {
+        if (time == undefined || time == null) {
+          return '';
         }
-      });
-    }
-  };
-
-  phoneCalls = () => {
-    const phoneNumber = this.state.item.phone;
-    Linking.openURL(`tel:${phoneNumber}`)
-  }
-
-  locationOpen = () => {
-    const lat = this.state.item.lat;
-    const lng = this.state.item.lon;
-    const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
-    const latLng = `${lat},${lng}`;
-    const label = 'Callit';
-    const url = Platform.select({
-      ios: `${scheme}${label}@${latLng}`,
-      android: `${scheme}${latLng}(${label})`
-    });
-    Linking.openURL(url);
-  }
-
- 
-
-
-  parsetime = (time) => {
-    if (time == undefined || time == null) {
-      return '';
-    }
-    if (this.state.isTimeExpanded === true) {
-      if(time.includes('#')){
-        return time.replace(/#/g, ':');
-      }else{
-        const g = time.split("\n");
-        let data = "";
-        for (let index = 0; index < g.length; index++) {
-          if (now === index) {
-            data = g[index];//+ '-' + g[index + 1] + " :" + g[index+2];
-            break;
+        if (this.state.isTimeExpanded === true) {
+          if(time.includes('#')){
+            return time.replace(/#/g, ':');
+          }else{
+            const g = time.split("\n");
+            let data = "";
+            for (let index = 0; index < g.length; index++) {
+              if (now === index) {
+                data = g[index];//+ '-' + g[index + 1] + " :" + g[index+2];
+                break;
+              }
+            }
+            return data.trim();
           }
         }
-        return data.trim();
-      }
-    }
-    if (time.includes('#')) {
-      const g = time.split("\n");
-      let data = "";
-      for (let index = 0; index < g.length; index++) {
-        if (now === index) {
-          data = g[index];//+ '-' + g[index + 1] + " :" + g[index+2];
-          break;
+        if (time.includes('#')) {
+          const g = time.split("\n");
+          let data = "";
+          for (let index = 0; index < g.length; index++) {
+            if (now === index) {
+              data = g[index];//+ '-' + g[index + 1] + " :" + g[index+2];
+              break;
+            }
+          }
+          return data.replace(/#/g, ':').trim();
+        } else {
+          return time.replace(/#/g, ':');
         }
       }
-      return data.replace(/#/g, ':').trim();
-    } else {
-      return time.replace(/#/g, ':');
-    }
-  }
 
-
-  work() {
-    Pref.getVal(Pref.branchId, va=>{
-      Pref.getVal(Pref.bBearerToken, token =>{
-        //console.log("TOKEN:\n",token);
-        const rm = Helper.removeQuotes(token);
-        Helper.networkHelperToken(Pref.BusinessOwnerUrl + va, Pref.methodGet, rm, result=>{
-          ////console.log('re', result);
-          this.setState({ progressView: false, item: result, hasDelivery: result.hasDelivery === null ? 0 : result.hasDelivery });
-        }, error =>{
-          //
-        });
-      })
-    })
-  }
-  // render()
-  // {
-  //   return (
-  //     <SafeAreaView style={{flex:1}}>
-  //       <TabSectionList />
-  //     </SafeAreaView>
-  //   );
-  // }
-  
-  // aboveList = () =>
-  // {
-  //   return(
-  //     <Subtitle>TEST</Subtitle>
-  //   );
-  // }
-
-  render() {
-    //console.log("isOpen", this.state.item.isOpen);
-    // if( this.state.item !== null)
-    // {
-    //   console.log("isOpen", this.state.item.isOpen);
-    // }
-    return (
-      <Screen
-        style={{
-          backgroundColor: "white"
-        }}
-      >
-        <StatusBar barStyle="dark-content" backgroundColor="white" />
-        <ScrollView showsVerticalScrollIndicator={true} showsHorizontalScrollIndicator={false}>
-          {this.state.item !== null && this.state.item !== undefined ? <Image
-           // styleName="large-wide"
-            style={{ height: sizeHeight(24),resizeMode:'contain' }}
-            source={{ uri: `${Pref.BASEURL}${this.state.item.imageurl}` }}
-          />
-            : null}
-          <View style={{ position: 'absolute', backgroundColor: 'transparent' }}>
-            <NavigationBar
-              styleName="inline no-border clear"
-              leftComponent={
-                <View styleName="horizontal space-between" style={{ marginStart: 12,}}>
-                  <TouchableOpacity
-                    onPress={() => NavigationActions.goBack()}
-                  >
-                    <Icon
-                      name="arrow-forward"
-                      size={36}
-                      color="black"
-                      style={{
-                        padding: 4,
-                        backgroundColor: "transparent"
-                      }}
-                    />
-                  </TouchableOpacity>
-                </View>
-              }
-            />
-          </View>
-          <Button
-            styleName=" muted border"
-            mode={"contained"}
-            uppercase={true}
-            dark={true}
-            loading={false}
-            style={[styles.loginButtonStyle]}
-            onPress={() =>
-              NavigationActions.navigate("BranchDetailEdit", {
-                data: this.state.item
-              })
-            }
-          >
-
-            <Subtitle
-              style={{
-                color: "white"
-              }}
-            >עריכת פרופיל</Subtitle>
-          </Button>
-          <View>
-            {this.state.item !== null && this.state.item !== undefined ?
-              <View style={{ flexDirection: 'column' }}>
+    render()
+    {
+        return(
+            <View style={{ flexDirection: 'column' }}>
                 <View style={{ flexDirection: 'row', marginStart: sizeWidth(3), marginVertical: sizeHeight(2), paddingHorizontal: sizeWidth(2), justifyContent: 'space-between', backgroundColor: 'white' }}>
                   <View style={{ flexDirection: 'column' }}>
                     <Title styleName='bold' style={{
@@ -393,31 +213,11 @@ export default class BusinessProfile extends React.Component {
                     />
                   </TouchableWithoutFeedback>
                 </View>
-              </View> : null}
-          </View>
-          <DummyLoader
-            visibilty={this.state.progressView}
-            center={<ProfileBusinessPp/>}
-            //center={<TabSectionList/>}
-          />
-        </ScrollView>
-      </Screen>
-    );
-  }
+              </View>
+        );
+    }
 }
 
-/**
- * StyleSheet
- */
 const styles = StyleSheet.create({
-  loginButtonStyle: {
-    color: "white",
-    bottom: 0,
-    paddingVertical: sizeWidth(2),
-    marginHorizontal: sizeWidth(4),
-    marginBottom: sizeHeight(2),
-    marginTop: sizeHeight(2),
-    backgroundColor: '#3daccf',
-    textAlign: "center",
-  }
+
 });

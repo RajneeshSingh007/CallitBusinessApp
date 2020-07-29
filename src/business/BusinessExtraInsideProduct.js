@@ -752,16 +752,17 @@ export default class BusinessExtraInsideProduct extends React.Component {
                 backgroundColor: 'white',
               }}>
                 <View
-                  style={{ alignItem: 'center', justifyContent: 'space-between', height: 60, marginHorizontal: sizeWidth(4),flexDirection:'row',}}>
+                  style={{flexWrap:'wrap', alignItem: 'center', justifyContent: 'space-between', height: 60, marginHorizontal: sizeWidth(4),flexDirection:'row'}}>
                   <Heading style={{
                     fontSize: 18,
                     color: '#292929',
                     fontFamily: 'Rubik',
                     fontWeight: '700',
                     alignSelf: 'center'
-                  }}> {this.state.selectedCategoryName}</Heading>
+                  }}
+                  > {this.state.selectedCategoryName}</Heading>
                   <View style={{flexDirection:'row',alignItem:'center',justifyContent:'center',alignContent:'center',alignItems:'center'}}>
-                    <Subtitle numberOfLines={1} style={{ marginHorizontal: sizeWidth(0.5), color: '#292929', fontSize: 16, alignSelf: 'center' }}>
+                    <Subtitle  style={{ marginHorizontal: sizeWidth(0.5), color: '#292929', fontSize: 16, alignSelf: 'center' }}>
                       בחר הכל
                     </Subtitle>
                     <Checkbox

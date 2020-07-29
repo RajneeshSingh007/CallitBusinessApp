@@ -6,9 +6,7 @@ import { Divider,Title, Image, Heading, NavigationBar, Row, Screen, Subtitle, Te
 import { Loader } from "./../customer/Loader";
 import * as Helper from "./../util/Helper";
 import NavigationAction from "./../util/NavigationActions";
-import * as Animatable from "react-native-animatable";
 import * as Pref from "./../util/Pref";
-import MaterialTabs from "react-native-material-tabs";
 import * as Lodash from "lodash";
 import DummyLoader from "../util/DummyLoader";
 import {sizeHeight, sizeWidth, sizeFont} from './../util/Size';
@@ -126,36 +124,6 @@ export default class BusinessAllProductExtra extends React.Component {
             this.setState({ progressView: false });
           }
         );
-        // Helper.networkHelperToken(
-        //   Pref.FetchServicesUrl + biid,
-        //   Pref.methodGet,
-        //   removeQuotes,
-        //   result => {
-        //     const modifiedResult = Lodash.map(result, function (item, index) {
-        //       return Lodash.extend({}, item, { checked: false });
-        //     });
-        //     let groupedExtra = Lodash.groupBy(modifiedResult, function (exData) {
-        //       if (exData.category !== '') {
-        //         return exData.category;
-        //       }
-        //     });
-        //     const serviceCat = Object.keys(groupedExtra).map(key => ({
-        //       title: key,
-        //       checked:false,
-        //       selected:false,
-        //       data: groupedExtra[key]
-        //     }));
-        //     ////////console.log('s', serviceCat);
-        //     this.setState({
-        //       progressView: false,
-        //       allData: serviceCat,
-        //       cloneAllData: modifiedResult,
-        //     });
-        //   },
-        //   error => {
-        //     this.setState({ progressView: false });
-        //   }
-        // );
       });
       Pref.getVal(Pref.branchId, biid => {
         Helper.networkHelperToken(
@@ -303,7 +271,9 @@ export default class BusinessAllProductExtra extends React.Component {
         name: tuu.name,
         price: tuu.price,
         fkidbusiness: tuu.fkidbusiness,
-        extraAvailable: tuu.extraAvailable
+        extraAvailable: tuu.extraAvailable,
+        isFree:tuu.isFree,
+        imageNum:tuu.imageNum
       });
     });
     if(modif !== null && modif !== undefined && modif.length > 0){

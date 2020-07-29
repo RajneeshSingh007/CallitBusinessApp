@@ -88,7 +88,7 @@ export default class BusinessEditAddExtra extends React.Component {
     const {state} = this.props.navigation;
     const itemData = state.params.extraMode;
     const datax = state.params.datax;
-    ////console.log('datax', datax);
+    //console.log('datax', datax);
     const yyyy = state.params.name;
     this.setState({progressView:true, extraMode: itemData, tempData: datax, extraName: yyyy});
     if(itemData === false){
@@ -151,6 +151,7 @@ export default class BusinessEditAddExtra extends React.Component {
       const removeQuotes = this.state.token;
       const too = this.state.tempData;
       const promises = [];
+      //console.log("tempdata",too);
       for(const ele of too){
         const postData = JSON.stringify({
           idextra: ele.idextra,
@@ -158,8 +159,12 @@ export default class BusinessEditAddExtra extends React.Component {
           name: ele.name,
           price: Number(ele.price),
           fkidbusiness: ele.fkidbusiness,
-          extraAvailable: ele.extraAvailable
+          extraAvailable: ele.extraAvailable,
+          isFree:ele.isFree,
+          imageNum:ele.imageNum
         });
+        //console.log("POSTDATA",postData);
+        
         const pp = fetch(Pref.UpdateExtraUrl + ele.idextra, {
           method: Pref.methodPut,
           headers: {
@@ -186,7 +191,7 @@ export default class BusinessEditAddExtra extends React.Component {
         promises.push(ppxx);
       }
       Promise.all(promises).then(arrOfResults => {
-        //////console.log('arrOfResults', arrOfResults);
+        //console.log('arrOfResults', arrOfResults);
         this.setState({ smp: false });
         NavigationActions.goBack();
       });
@@ -250,14 +255,18 @@ export default class BusinessEditAddExtra extends React.Component {
         fkidcategory: this.state.extraCatId,
         name: this.state.extraNameOpt,
         price: this.state.extraPrice,
-        fkidbusiness: this.state.bId
+        fkidbusiness: this.state.bId,
+        isFree:0,
+        imageNum:0
       });
       if(this.state.extraMode){
         this.state.tempData1.push({
           fkidcategory: this.state.extraCatId,
           name: this.state.extraNameOpt,
           price: this.state.extraPrice,
-          fkidbusiness: this.state.bId
+          fkidbusiness: this.state.bId,
+          isFree:0,
+          imageNum:0
         });
       }
       if (this.scrollingRef !== undefined){
@@ -626,7 +635,13 @@ export default class BusinessEditAddExtra extends React.Component {
             visible={this.state.showCat}
             onDismiss={() => this.setState({ showCat: false })}
           >
-            <View styleName="vertical sm-gutter" style={{backgroundColor:'white',marginHorizontal:sizeWidth(8)}}>
+            <ScrollView>
+              <View styleName="vertical" style={{
+                flex:1,
+                backgroundColor: 'white',
+                margin:sizeWidth(8),
+              }}>
+            <View styleName="vertical sm-gutter" style={{backgroundColor:'white'}}>
               <Title style={{
                 fontSize: 16, 
                 color: '#292929',
@@ -662,6 +677,8 @@ export default class BusinessEditAddExtra extends React.Component {
                 />
               ) : null}
             </View>
+            </View>
+            </ScrollView>
           </Modal>
         </Portal>
         <Portal>
