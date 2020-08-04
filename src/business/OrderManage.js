@@ -164,7 +164,7 @@ export default class OrderManage extends React.Component {
     //console.log('data', data);
     const mm = state.params.mode;
     const pppp = data.status;
-    console.log(`pppp`, pppp);
+    //console.log(`pppp`, pppp);
     const allDatas = data.data;
     let allMessages = '';
 

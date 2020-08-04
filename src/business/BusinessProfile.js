@@ -1,14 +1,14 @@
 import React from "react";
 import {
   StatusBar, StyleSheet, View,
-  Share, Linking, TouchableWithoutFeedback, Platform,SafeAreaView
+  Share, Linking, TouchableWithoutFeedback, Platform,SafeAreaView,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Colors,Button} from "react-native-paper";
 import {
   Image,
   NavigationBar,
-  Screen,
+  
   Subtitle,
   Title,
   TouchableOpacity,
@@ -23,7 +23,7 @@ import DummyLoader from "../util/DummyLoader";
 //import { showLocation } from "react-native-map-link";
 //import * as Lodash from 'lodash';
 import { ScrollView } from "react-native-gesture-handler";
-//import TabSectionList from "../Component/TabSectionList";
+import TabSectionList from "../Component/TabSectionList";
 
 
 var now = new Date().getDay();
@@ -163,11 +163,25 @@ export default class BusinessProfile extends React.Component {
       })
     })
   }
+
   // render()
   // {
   //   return (
   //     <SafeAreaView style={{flex:1}}>
-  //       <TabSectionList />
+  //       {/* <ScrollView stickyHeaderIndices={[0]}> */}
+          
+  //         <View style={{flex:1}}>
+  //           <ScrollView stickyHeaderIndices={[1]}>
+  //             <View>
+  //               {this.aboveList()}
+  //             </View>
+  //             <View stlye={{flex:1}}> 
+  //             <TabSectionList myHeader={this.aboveList()}></TabSectionList>
+  //             </View>
+  //           </ScrollView>
+            
+  //         </View>
+  //       {/* </ScrollView> */}
   //     </SafeAreaView>
   //   );
   // }
@@ -175,24 +189,26 @@ export default class BusinessProfile extends React.Component {
   // aboveList = () =>
   // {
   //   return(
-  //     <Subtitle>TEST</Subtitle>
+  //     <View style={{flex:1}}>
+  //       <Subtitle style={{fontSize:20}}>TEST</Subtitle>
+  //       <Subtitle style={{fontSize:20}}>TEST</Subtitle>
+  //       <Subtitle style={{fontSize:20}}>TEST</Subtitle>
+  //       <Subtitle style={{fontSize:20}}>TEST</Subtitle>
+  //       <Subtitle style={{fontSize:20}}>TEST</Subtitle>
+  //     </View>
   //   );
   // }
 
   render() {
-    //console.log("isOpen", this.state.item.isOpen);
-    // if( this.state.item !== null)
-    // {
-    //   console.log("isOpen", this.state.item.isOpen);
-    // }
     return (
-      <Screen
+      <View
         style={{
           backgroundColor: "white"
         }}
       >
         <StatusBar barStyle="dark-content" backgroundColor="white" />
         <ScrollView showsVerticalScrollIndicator={true} showsHorizontalScrollIndicator={false}>
+          <View>
           {this.state.item !== null && this.state.item !== undefined ? <Image
            // styleName="large-wide"
             style={{ height: sizeHeight(24),resizeMode:'contain' }}
@@ -398,10 +414,14 @@ export default class BusinessProfile extends React.Component {
           <DummyLoader
             visibilty={this.state.progressView}
             center={<ProfileBusinessPp/>}
-            //center={<TabSectionList/>}
+            //center={<TabSectionList />}
           />
+          <View>
+          </View>
+            {/* <TabSectionList /> */}
+          </View>
         </ScrollView>
-      </Screen>
+      </View>
     );
   }
 }

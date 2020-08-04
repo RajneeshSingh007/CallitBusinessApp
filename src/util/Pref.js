@@ -24,8 +24,8 @@ export const dateToLogout = 'dateLogin';
 /**
  * Business Server Url
  */
-//'http://djangoman123-001-site1.btempurl.com/'
-//192.236.162.188
+// 'http://djangoman123-001-site1.btempurl.com/'
+//  http://192.236.162.188/
 export const BASEURL = 'http://djangoman123-001-site1.btempurl.com/';
 
 export const UserOwnerLoginUrl = `${BASEURL}api/UserownersLogin`;

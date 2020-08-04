@@ -43,7 +43,6 @@ export default class TabSectionList extends React.Component
                   return exData.category + ":" + exData.categoryDescription;
                 }
             });
-            
             const serviceCat = Object.keys(groupedCategory).map(key => ({
               title: key.split(":")[0],
               description: key.split(":")[1],
@@ -77,11 +76,8 @@ export default class TabSectionList extends React.Component
             />
             <View style={{flex:1,margin:sizeWidth(2)}}>
               <View style={{flex:1, flexDirection:'row' ,justifyContent:'space-between', alignItems:'flex-start',}}>
-                <Text style={styles.itemTitle}
-              >
-                {item.name}</Text>
-                <Text style={styles.itemTitle}>
-                  ₪{item.price}</Text>
+                <Text style={styles.itemTitle}> {item.name}</Text>
+                <Text style={styles.itemTitle}> ₪{item.price}</Text>
               </View>
             <Text style={styles.itemDescription}>{item.description}</Text>
             </View>
@@ -109,13 +105,16 @@ export default class TabSectionList extends React.Component
 
   render() 
   {
-    
+    // const {myHeader} = this.props;
     return (
       <View style={{flex:1}}>
         <SectionList
+          //compsAbove={myHeader}
           sections={this.state.productList}
           keyExtractor={item => item.title}
-          stickySectionHeadersEnabled={false}
+          // nestedScrollEnabled={true}
+          // stickySectionHeadersEnabled={false} 
+          nestedScrollEnabled={true} 
           scrollToLocationOffset={0}
           maxToRenderPerBatch={15}
           tabBarStyle={styles.tabBar}

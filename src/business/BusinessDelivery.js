@@ -53,7 +53,7 @@ export default class BusinessDelivery extends React.Component {
             showdeletex: false,
             showAlert: false,
             alertContent: '',
-            citiesList:[],
+            //citiesList:[],
             deliveryList:[],
             suggestionsListCities:[],
             tempinputdata:null,
@@ -105,17 +105,17 @@ export default class BusinessDelivery extends React.Component {
                     }
                 );
             });
-            Helper.networkHelperToken(
-                Pref.Cities,
-                Pref.methodGet,
-                removeQuotes,
-                result => {
-                    const allcities = result;
-                    this.setState({ citiesList: allcities, });
-                },
-                error => {
-                }
-            );
+            // Helper.networkHelperToken(
+            //     Pref.Cities,
+            //     Pref.methodGet,
+            //     removeQuotes,
+            //     result => {
+            //         const allcities = result;
+            //         this.setState({ citiesList: allcities, });
+            //     },
+            //     error => {
+            //     }
+            // );
         });
     }
 

@@ -132,7 +132,7 @@ android {
         //minSdkVersion rootProject.ext.minSdkVersion
         minSdkVersion 19
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 27
+        versionCode 29
         versionName "2.8.1"
         multiDexEnabled true
     }
