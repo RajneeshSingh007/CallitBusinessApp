@@ -755,7 +755,7 @@ export default class OrderManage extends React.Component {
         ppp,
         result => {
           this.setState({showp: false});
-          console.log(result);
+          //console.log(result);
           NavigationActions.goBack();
         },
         error => {

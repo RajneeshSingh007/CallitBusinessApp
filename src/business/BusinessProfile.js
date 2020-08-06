@@ -171,14 +171,12 @@ export default class BusinessProfile extends React.Component {
   //       {/* <ScrollView stickyHeaderIndices={[0]}> */}
           
   //         <View style={{flex:1}}>
-  //           <ScrollView stickyHeaderIndices={[1]}>
-  //             <View>
-  //               {this.aboveList()}
-  //             </View>
-  //             <View stlye={{flex:1}}> 
-  //             <TabSectionList myHeader={this.aboveList()}></TabSectionList>
-  //             </View>
-  //           </ScrollView>
+            
+              
+              
+  //           <TabSectionList myHeader={this.aboveList()}></TabSectionList>
+              
+            
             
   //         </View>
   //       {/* </ScrollView> */}

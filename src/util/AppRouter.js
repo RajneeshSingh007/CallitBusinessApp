@@ -21,20 +21,7 @@ import ReviewsPage from "./../business/ReviewsPage";
 import BusinessDelivery from "./../business/BusinessDelivery";
 import BusinessGlobalProfile from "./../business/BusinessGlobalProfile";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import {
-	Divider,
-	Heading,
-	Image,
-	NavigationBar,
-	Screen,
-	Subtitle,
-	TextInput,
-	TouchableOpacity,
-	View,
-	Title,
-	Caption
-} from "@shoutem/ui";
-import NavigationActions from "./NavigationActions";
+import {Image,} from "@shoutem/ui";
 import HomeList from "../business/HomeList";
 
 const tryBusiness = createStackNavigator(

@@ -105,11 +105,11 @@ export default class TabSectionList extends React.Component
 
   render() 
   {
-    // const {myHeader} = this.props;
+    const {myHeader} = this.props;
     return (
       <View style={{flex:1}}>
         <SectionList
-          //compsAbove={myHeader}
+          compsAbove={myHeader}
           sections={this.state.productList}
           keyExtractor={item => item.title}
           // nestedScrollEnabled={true}

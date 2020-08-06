@@ -152,7 +152,7 @@ export default class BusinessWelcomePage extends React.Component {
     const { visible ,type } = this.state;
     return (
       <View style={styles.main}>
-        <Screen style={{ backgroundColor: "white", }}>
+        <Screen style={{ backgroundColor: "white",flex:1 }}>
         <StatusBar barStyle="dark-content" backgroundColor='white'/>
         <View styleName='space-between fill-parent vertical'>
           <Heading styleName='xl-gutter bold v-center h-center' style={{  color: "#292929", fontWeight: '700', fontSize: 24, }}>התחבר למערכת</Heading>
