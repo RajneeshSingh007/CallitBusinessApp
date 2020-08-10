@@ -40,6 +40,7 @@ import DummyLoader from '../util/DummyLoader';
 import {Loader} from './../customer/Loader';
 import {sizeHeight, sizeWidth, sizeFont} from './../util/Size';
 import BusinessMenuChoices from './BusinessMenuChoices';
+import {SafeAreaView} from 'react-navigation';
 
 let tabData = [];
 
@@ -76,184 +77,183 @@ export default class BusinessAllProductList extends React.PureComponent {
 
   render() {
     return (
-      <Screen
-        style={{
-          backgroundColor: 'white',
-        }}>
-        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-        {this.state.longPress === false ? (
-          <NavigationBar
-            styleName="inline no-border"
-            style={{
-              rightComponent: {
-                flex: 0.4,
-              },
-              leftComponent: {
-                flex: 0.4,
-              },
-              centerComponent: {
-                flex: 0.2,
-              },
-              componentsContainer: {
-                flex: 1,
-              },
-            }}
-            rightComponent={
-              !this.state.close ? (
-                <View style={{flexDirection: 'row', marginEnd: sizeWidth(5)}}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.setState({
-                        isCatgegoryClicked: 2,
-                        filterView: true,
-                        close: true,
-                      })
-                    }>
-                    <Image
-                      source={require('./../res/images/search.png')}
-                      style={{width: 24, height: 24, marginEnd: 16}}
-                    />
-                  </TouchableOpacity>
-                  <BusinessMenuChoices />
+      <SafeAreaView style={styles.maincontainer} forceInset={{top: 'never'}}>
+        <Screen style={styles.maincontainer}>
+          <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+          {this.state.longPress === false ? (
+            <NavigationBar
+              styleName="inline no-border"
+              style={{
+                rightComponent: {
+                  flex: 0.4,
+                },
+                leftComponent: {
+                  flex: 0.4,
+                },
+                centerComponent: {
+                  flex: 0.2,
+                },
+                componentsContainer: {
+                  flex: 1,
+                },
+              }}
+              rightComponent={
+                !this.state.close ? (
+                  <View style={{flexDirection: 'row', marginEnd: sizeWidth(5)}}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.setState({
+                          isCatgegoryClicked: 2,
+                          filterView: true,
+                          close: true,
+                        })
+                      }>
+                      <Image
+                        source={require('./../res/images/search.png')}
+                        style={{width: 24, height: 24, marginEnd: 16}}
+                      />
+                    </TouchableOpacity>
+                    <BusinessMenuChoices />
+                  </View>
+                ) : (
+                  <View style={{flexDirection: 'row', marginEnd: sizeWidth(5)}}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.setState({
+                          isCatgegoryClicked: 1,
+                          filterView: false,
+                          close: false,
+                        })
+                      }>
+                      <Icon name={'close'} size={36} color={'#292929'} />
+                    </TouchableOpacity>
+                  </View>
+                )
+              }
+              leftComponent={
+                <View style={{marginStart: 12}}>
+                  <Heading
+                    style={{
+                      fontSize: 20,
+                      color: '#292929',
+                      fontFamily: 'Rubik',
+                      fontWeight: '700',
+                    }}>
+                    {this.state.close ? 'חפש מוצר' : 'המוצרים שלי'}
+                  </Heading>
                 </View>
-              ) : (
-                <View style={{flexDirection: 'row', marginEnd: sizeWidth(5)}}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.setState({
-                        isCatgegoryClicked: 1,
-                        filterView: false,
-                        close: false,
-                      })
-                    }>
-                    <Icon name={'close'} size={36} color={'#292929'} />
-                  </TouchableOpacity>
-                </View>
-              )
-            }
-            leftComponent={
-              <View style={{marginStart: 12}}>
+              }
+            />
+          ) : (
+            <NavigationBar
+              styleName="inline"
+              style={{
+                rightComponent: {
+                  flex: 0.4,
+                },
+                leftComponent: {
+                  flex: 0.4,
+                },
+                centerComponent: {
+                  flex: 0.2,
+                },
+                componentsContainer: {
+                  flex: 1,
+                },
+              }}
+              rightComponent={
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({
+                      longPress: false,
+                      selectedCounter: 0,
+                      selectedItem: [],
+                    })
+                  }>
+                  <Icon
+                    name="close"
+                    size={36}
+                    color="#292929"
+                    style={{
+                      padding: 4,
+                      marginEnd: 8,
+                      backgroundColor: 'transparent',
+                    }}
+                  />
+                </TouchableOpacity>
+              }
+              leftComponent={
                 <Heading
                   style={{
                     fontSize: 20,
                     color: '#292929',
                     fontFamily: 'Rubik',
                     fontWeight: '700',
+                    alignSelf: 'flex-start',
+                    marginStart: sizeWidth(2.5),
                   }}>
-                  {this.state.close ? 'חפש מוצר' : 'המוצרים שלי'}
+                  {this.state.selectedCounter + ' נבחרו '}
                 </Heading>
-              </View>
-            }
-          />
-        ) : (
-          <NavigationBar
-            styleName="inline"
-            style={{
-              rightComponent: {
-                flex: 0.4,
-              },
-              leftComponent: {
-                flex: 0.4,
-              },
-              centerComponent: {
-                flex: 0.2,
-              },
-              componentsContainer: {
-                flex: 1,
-              },
-            }}
-            rightComponent={
-              <TouchableOpacity
-                onPress={() =>
-                  this.setState({
-                    longPress: false,
-                    selectedCounter: 0,
-                    selectedItem: [],
-                  })
-                }>
-                <Icon
-                  name="close"
-                  size={36}
-                  color="#292929"
-                  style={{
-                    padding: 4,
-                    marginEnd: 8,
-                    backgroundColor: 'transparent',
-                  }}
-                />
-              </TouchableOpacity>
-            }
-            leftComponent={
-              <Heading
-                style={{
-                  fontSize: 20,
-                  color: '#292929',
-                  fontFamily: 'Rubik',
-                  fontWeight: '700',
-                  alignSelf: 'flex-start',
-                  marginStart: sizeWidth(2.5),
-                }}>
-                {this.state.selectedCounter + ' נבחרו '}
-              </Heading>
-            }
-          />
-        )}
-        {this.state.isCatgegoryClicked == 1 ? (
-          <View
-            styleName="vertical"
-            style={{flex: 1, backgroundColor: 'white'}}>
-            <View>
-              {this.state.longPress === false
-                ? this.renderBtnAddProduct()
-                : this.renderBtnDeleteAndStockInfo()}
-            </View>
-            <DummyLoader
-              visibilty={this.state.progressView}
-              center={
-                this.state.productList.length > 0 ? (
-                  <FlatList
-                    extraData={this.state}
-                    data={this.state.productList}
-                    disableVirtualization={false}
-                    showsHorizontalScrollIndicator={false}
-                    showsVerticalScrollIndicator={true}
-                    ItemSeparatorComponent={() => {
-                      return (
-                        <View
-                          style={{
-                            height: 1,
-                            backgroundColor: '#dedede',
-                          }}
-                        />
-                      );
-                    }}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({item: item, index}) =>
-                      this.renderRow(item, index)
-                    }
-                  />
-                ) : (
-                  <Subtitle style={styles.productsNotFoundList}>
-                    ...לא נמצאו מוצרים
-                  </Subtitle>
-                )
               }
             />
-          </View>
-        ) : null}
-        {this.state.isCatgegoryClicked == 2 ? this.searchComponent() : null}
-        <Loader isShow={this.state.showp} />
-        <Snackbar
-          visible={this.state.message === '' ? false : true}
-          duration={600}
-          onDismiss={() =>
-            this.setState({
-              message: '',
-            })
-          }>
-          {this.state.message}
-        </Snackbar>
-      </Screen>
+          )}
+          {this.state.isCatgegoryClicked == 1 ? (
+            <View
+              styleName="vertical"
+              style={{flex: 1, backgroundColor: 'white'}}>
+              <View>
+                {this.state.longPress === false
+                  ? this.renderBtnAddProduct()
+                  : this.renderBtnDeleteAndStockInfo()}
+              </View>
+              <DummyLoader
+                visibilty={this.state.progressView}
+                center={
+                  this.state.productList.length > 0 ? (
+                    <FlatList
+                      extraData={this.state}
+                      data={this.state.productList}
+                      disableVirtualization={false}
+                      showsHorizontalScrollIndicator={false}
+                      showsVerticalScrollIndicator={true}
+                      ItemSeparatorComponent={() => {
+                        return (
+                          <View
+                            style={{
+                              height: 1,
+                              backgroundColor: '#dedede',
+                            }}
+                          />
+                        );
+                      }}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({item: item, index}) =>
+                        this.renderRow(item, index)
+                      }
+                    />
+                  ) : (
+                    <Subtitle style={styles.productsNotFoundList}>
+                      ...לא נמצאו מוצרים
+                    </Subtitle>
+                  )
+                }
+              />
+            </View>
+          ) : null}
+          {this.state.isCatgegoryClicked == 2 ? this.searchComponent() : null}
+          <Loader isShow={this.state.showp} />
+          <Snackbar
+            visible={this.state.message === '' ? false : true}
+            duration={600}
+            onDismiss={() =>
+              this.setState({
+                message: '',
+              })
+            }>
+            {this.state.message}
+          </Snackbar>
+        </Screen>
+      </SafeAreaView>
     );
   }
 
@@ -292,7 +292,11 @@ export default class BusinessAllProductList extends React.PureComponent {
                 </Title>
                 {this.getCTextIfProductOutOfStock(eachTabData.available)}
                 {this.findpro(eachTabData) ? (
-                  <Checkbox status={'checked'} color={'#3DACCF'} />
+                  <Checkbox.Android
+                    uncheckedColor={'#dedede'}
+                    status={'checked'}
+                    color={'#3DACCF'}
+                  />
                 ) : (
                   <Title styleName="bold" style={styles.productPrice}>
                     ₪{eachTabData.price}
@@ -315,7 +319,9 @@ export default class BusinessAllProductList extends React.PureComponent {
   // {
   //   if(this.state.longPress === true)
   //   {
-  //    return ( this.findpro(eachTabData) ? <Checkbox
+  //    return ( this.findpro(eachTabData) ?                                <Checkbox.Android
+  //                               uncheckedColor={'#dedede'}
+
   //                 status={"checked"}
   //                 color={'#3DACCF'}
   //               /> : <Title styleName="bold" style={styles.PriceStyle}>₪{eachTabData.price}
@@ -347,7 +353,8 @@ export default class BusinessAllProductList extends React.PureComponent {
     );
   }
 
-  renderBtnAddProduct() { //renders btn add new product
+  renderBtnAddProduct() {
+    //renders btn add new product
     return (
       <Button
         styleName=" muted border"
@@ -366,7 +373,8 @@ export default class BusinessAllProductList extends React.PureComponent {
     );
   }
 
-  renderBtnDeleteAndStockInfo() { //renders on top screen buttons delete outofstock and instock
+  renderBtnDeleteAndStockInfo() {
+    //renders on top screen buttons delete outofstock and instock
     return (
       <View style={styles.compDeleteNAvailable}>
         <Button
@@ -502,7 +510,8 @@ export default class BusinessAllProductList extends React.PureComponent {
             </Subtitle>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Checkbox
+              <Checkbox.Android
+                uncheckedColor={'#dedede'}
                 status={this.state.filterStockk === 2 ? 'checked' : 'unchecked'}
                 onPress={() =>
                   this.setState({
@@ -516,7 +525,8 @@ export default class BusinessAllProductList extends React.PureComponent {
                 style={{color: '#777777', fontSize: 14, alignSelf: 'center'}}>
                 כן
               </Subtitle>
-              <Checkbox
+              <Checkbox.Android
+                uncheckedColor={'#dedede'}
                 status={this.state.filterStockk === 1 ? 'checked' : 'unchecked'}
                 onPress={() =>
                   this.setState({
@@ -837,7 +847,7 @@ export default class BusinessAllProductList extends React.PureComponent {
               Pref.methodPost,
               this.state.token,
               result => {
-                console.log(result)
+                console.log(result);
                 this.setState({
                   showp: false,
                   selectedItem: [],
@@ -850,7 +860,7 @@ export default class BusinessAllProductList extends React.PureComponent {
               error => {
                 // console.log(this.state.token);
                 // console.log(Pref.ServiceAvailableUpdate+value);
-                 console.log(error);
+                console.log(error);
                 this.setState({showp: false});
               },
             );
@@ -932,6 +942,10 @@ export default class BusinessAllProductList extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
+  maincontainer: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   inputStyle: {
     height: sizeHeight(8),
     borderRadius: 2,

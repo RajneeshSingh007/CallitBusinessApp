@@ -41,6 +41,23 @@ target 'CallIt' do
 
   pod 'RNImageCropPicker', :path => '../node_modules/react-native-image-crop-picker'
 
+  #biz
+  pod 'react-native-notifications', :path => '../node_modules/react-native-notifications'
+
+  pod 'ReactNativeAudioToolkit', :path => '../node_modules/@react-native-community/audio-toolkit'
+
+  pod 'RNCPushNotificationIOS', :path => '../node_modules/@react-native-community/push-notification-ios'
+
+  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
+
+  pod 'CodePush', :path => '../node_modules/react-native-code-push'
+
+  pod 'react-native-html-to-pdf', :path => '../node_modules/react-native-html-to-pdf'
+
+  pod 'react-native-print', :path => '../node_modules/react-native-print'
+
+  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
+
   target 'CallItTests' do
     inherit! :search_paths
     # Pods for testing

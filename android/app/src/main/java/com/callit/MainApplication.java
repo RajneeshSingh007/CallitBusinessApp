@@ -3,16 +3,25 @@ package com.callit;
 import android.app.Application;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
+import com.facebook.react.BuildConfig;
 import com.facebook.react.PackageList;
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
 import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.geolocation.GeolocationPackage;
+import com.christopherdro.RNPrint.RNPrintPackage;
+import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
+import com.microsoft.codepush.react.CodePush;
+import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
+import com.reactnativecommunity.rctaudiotoolkit.AudioPackage;
+import com.wix.reactnativenotifications.RNNotificationsPackage;
 import com.facebook.react.modules.i18nmanager.I18nUtil;
 import com.thebylito.navigationbarcolor.NavigationBarColorPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -40,6 +49,12 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected String getJSMainModuleName() {
       return "index";
+    }
+
+    @Nullable
+    @Override
+    protected String getJSBundleFile() {
+      return CodePush.getJSBundleFile();
     }
   };
 

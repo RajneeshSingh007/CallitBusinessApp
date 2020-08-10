@@ -434,7 +434,9 @@ export default class BusinessExtraInsideProduct extends React.Component {
           height: 1,
         }} /> : null}
         <View styleName="horizontal" style={{ paddingVertical: sizeHeight(1), paddingHorizontal: sizeWidth(4)}}>
-          <Checkbox
+                                         <Checkbox.Android
+                                 uncheckedColor={'#dedede'}
+
             status={eachTabData.checked ? "checked" : "unchecked"}
             color={'#3daccf'}
             onPress={() => this.itemclicklisterner(eachTabData.idservice)}
@@ -461,7 +463,9 @@ export default class BusinessExtraInsideProduct extends React.Component {
         <View styleName="vertical">
           <View styleName="horizontal" style={{ justifyContent: 'space-between', paddingVertical: sizeHeight(2), paddingHorizontal: sizeWidth(4) }}>
             <View styleName="horizontal">
-              <Checkbox
+                                             <Checkbox.Android
+                                 uncheckedColor={'#dedede'}
+
                 status={rowData.extra.selected === true ? "checked" : "unchecked"}
                 color={'#3daccf'}
                 onPress={() => this.extraAllSelectItemlols(2, rowData.extra.name)}
@@ -500,7 +504,9 @@ export default class BusinessExtraInsideProduct extends React.Component {
         <View styleName="vertical">
           <View styleName="horizontal" style={{ justifyContent: 'space-between',paddingVertical:sizeHeight(2),paddingHorizontal:sizeWidth(4) }}>
             <View styleName="horizontal">
-              <Checkbox
+                                             <Checkbox.Android
+                                 uncheckedColor={'#dedede'}
+
                 status={rowData.selected ? "checked" : "unchecked"}
                 color={'#3daccf'}
                 onPress={() => this.groupClicked(rowData.title, rowData.selected, rowData.checked)}
@@ -765,7 +771,9 @@ export default class BusinessExtraInsideProduct extends React.Component {
                     <Subtitle  style={{ marginHorizontal: sizeWidth(0.5), color: '#292929', fontSize: 16, alignSelf: 'center' }}>
                       בחר הכל
                     </Subtitle>
-                    <Checkbox
+                                                   <Checkbox.Android
+                                 uncheckedColor={'#dedede'}
+
                       status={this.state.checkAllExtraItems ? "checked" : "unchecked"}
                       color={'#3daccf'}
                       style={{ alignSelf: 'center', justifyContent: 'center', alignItems:'center',alignContent:'center', backgroundColor:'blue' }}

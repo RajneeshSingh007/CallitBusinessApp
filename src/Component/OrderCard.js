@@ -117,8 +117,8 @@ export default class OrderCard extends React.Component
                             alignSelf: 'flex-start',
                             fontSize: 15,
                         }}>
-                        אמצעי תשלום:{' '}
-                        </Subtitle>{' '}
+                        אמצעי תשלום:
+                        </Subtitle>
                         {item.paid === 0 ? 'מזומן' : 'אשראי'}
                     </Subtitle>
                     </View>

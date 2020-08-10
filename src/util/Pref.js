@@ -73,6 +73,11 @@ export const DeleteServiceCategory = `${BASEURL}/api/deleteServiceCategory/`;
 export const UserDilveryLoginUrl = `${BASEURL}/api/UserdeliveryLogin`;
 export const ServiceAvailableUpdate = `${BASEURL}api/ServicesAvailableUpdate/`;
 
+export const STAGING_CODE_PUSH = 'i2kT4q5oMp-8bHeLO0VJSSqkDN-0so8TEGYDV';
+export const PRODUCTION_CODE_PUSH = 'Cugnw4a2ldNF12it28lPZ4lMWy4sqLkJKn_yj';
+export const STAGING_CODE_PUSH_IOS = 'RoqzlZoSHrYC2klZ34Ow5bWTb2NSZD6h-pT6D';
+export const PRODUCTION_CODE_PUSH_IOS = '_rFud2ALD67luta0yAS9niOzfA63Nyv8-PQHF';
+
 /**
  * Set Val
  * @param key

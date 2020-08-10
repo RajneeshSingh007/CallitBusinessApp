@@ -60,81 +60,113 @@ const tryBusinessProfile = createStackNavigator(
 );
 
 const bottomtab = createMaterialBottomTabNavigator(
-	{
-		Home: {
-			screen: tryBusiness,
-			navigationOptions: {
-				tabBarIcon: ({ focused }) => (
-					<Image 
-						source={require('../res/images/home.png')}
-						tintColor={focused ? '#3daccf' : '#292929'}
-						style={{ width: 24, height: 24, }} />
-				),
-				tabBarOnPress: ({ navigation, defaultHandler }) => {
-					//NavigationActions.navigate('Home');
-					defaultHandler();
-				},
-				title:"בית",
-			}
-		},
-		Products: {
-			screen: BusinessAllProductList,
-			navigationOptions: {
-				tabBarIcon: ({ focused }) => (
-					<Image 
-						source={require('../res/images/choices.png')}
-						tintColor={focused ? '#3daccf' : '#292929'}
-						style={{ width: 24, height: 24, }} />			
-				),
-				title: "המוצרים",
-			}
-		},
-		Extras: {
-			screen: BusinessAllProductExtra,
-			navigationOptions: {
-				tabBarIcon: ({ focused }) => (
-				<Image 
-					source={require('../res/images/party.png')}
-						tintColor={focused ? '#3daccf' : '#292929'}
-						style={{ width: 24, height: 24, }}/>				
-						),
-				title: "תוספות",
-			}
-		},
-		OrderHistory: {
-			screen: orderManager,
-			navigationOptions: {
-				tabBarIcon: ({ focused }) => (
-				<Image 
-					source={require('../res/images/orders.png')}
-						style={{ width: 24, height: 24, }} 
-						tintColor={focused ? '#3daccf' : '#292929'}/>				),
-				title: "היסטוריה",
-
-			}
-		},
-		Profile: {
-			screen: tryBusinessProfile,
-			navigationOptions: {
-				tabBarIcon: ({ focused }) => (
-				<Image 
-					source={require('../res/images/avatar.png')}
-						tintColor={focused ? '#3daccf' : '#292929'}
-						style={{ width: 24, height: 24, }} />				),
-				title: "פרופיל",
-			}
-		},
-	},
-	{
-		initialRouteName: "Home",
-		shifting: false,
-		labeled: true,
-		activeTintColor: '#3daccf',
-		inactiveTintColor: '#292929',
-		backBehavior: "none",
-		barStyle: { backgroundColor: Colors.white },
-		resetOnBlur: true
-	}
+  {
+    Home: {
+      screen: tryBusiness,
+      navigationOptions: {
+        tabBarIcon: ({focused}) => (
+          <Image
+            source={require('../res/images/home.png')}
+            tintColor={focused ? '#3daccf' : '#292929'}
+            style={{
+              width: 24,
+              height: 24,
+              tintColor: focused ? '#3daccf' : '#292929',
+            }}
+          />
+        ),
+        tabBarOnPress: ({navigation, defaultHandler}) => {
+          //NavigationActions.navigate('Home');
+          defaultHandler();
+        },
+        title: 'בית',
+      },
+    },
+    Products: {
+      screen: BusinessAllProductList,
+      navigationOptions: {
+        tabBarIcon: ({focused}) => (
+          <Image
+            source={require('../res/images/choices.png')}
+            tintColor={focused ? '#3daccf' : '#292929'}
+            style={{
+              width: 24,
+              height: 24,
+              tintColor: focused ? '#3daccf' : '#292929',
+            }}
+          />
+        ),
+        title: 'המוצרים',
+      },
+    },
+    Extras: {
+      screen: BusinessAllProductExtra,
+      navigationOptions: {
+        tabBarIcon: ({focused}) => (
+          <Image
+            source={require('../res/images/party.png')}
+            tintColor={focused ? '#3daccf' : '#292929'}
+            style={{
+              width: 24,
+              height: 24,
+              tintColor: focused ? '#3daccf' : '#292929',
+            }}
+          />
+        ),
+        title: 'תוספות',
+      },
+    },
+    OrderHistory: {
+      screen: orderManager,
+      navigationOptions: {
+        tabBarIcon: ({focused}) => (
+          <Image
+            source={require('../res/images/orders.png')}
+            style={{
+              width: 24,
+              height: 24,
+              tintColor: focused ? '#3daccf' : '#292929',
+            }}
+            tintColor={focused ? '#3daccf' : '#292929'}
+          />
+        ),
+        title: 'היסטוריה',
+      },
+    },
+    Profile: {
+      screen: tryBusinessProfile,
+      navigationOptions: {
+        tabBarIcon: ({focused}) => (
+          <Image
+            source={require('../res/images/avatar.png')}
+            tintColor={focused ? '#3daccf' : '#292929'}
+            style={{
+              width: 24,
+              height: 24,
+              tintColor: focused ? '#3daccf' : '#292929',
+            }}
+          />
+        ),
+        title: 'פרופיל',
+      },
+    },
+  },
+  {
+    initialRouteName: 'Home',
+    shifting: false,
+    labeled: true,
+    activeTintColor: '#3daccf',
+    inactiveTintColor: '#292929',
+    tabBarOptions: {
+      activeTintColor: '#3daccf',
+      inactiveTintColor: '#292929',
+    },
+    activeTintColor: '#3daccf',
+    inactiveTintColor: '#292929',
+    backBehavior: 'none',
+    barStyle: {backgroundColor: Colors.white},
+    resetOnBlur: true,
+  },
 );
 
 /**

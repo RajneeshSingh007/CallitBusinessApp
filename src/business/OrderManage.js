@@ -45,6 +45,7 @@ import Lodash from 'lodash';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import RNPrint from 'react-native-print';
 import xml2js from 'xml2js';
+import {SafeAreaView} from 'react-navigation';
 
 let word = 'עדכון: הזמנה מוכנה';
 let declineMsg = '';
@@ -89,7 +90,7 @@ export default class OrderManage extends React.Component {
       terminalNumber: '',
       cardSessionID: '',
       shovar: '',
-      combinePriced:'',
+      combinePriced: '',
     };
   }
 
@@ -147,7 +148,7 @@ export default class OrderManage extends React.Component {
     Pref.getVal(Pref.bId, v => {
       this.setState({bid: v});
     });
-    Pref.getVal(Pref.branchId,brID=>{
+    Pref.getVal(Pref.branchId, brID => {
       this.setState({branchId: brID});
     });
     Pref.getVal(Pref.printon, value => {
@@ -233,8 +234,11 @@ export default class OrderManage extends React.Component {
         '</strong><br><br>';
       restaurants.map(item => {
         parseString +=
-          '<strong>' + Lodash.capitalize(item.serviceName) + `   ${item.quantity}x`+ '</strong>';
-          //console.log("items", item);
+          '<strong>' +
+          Lodash.capitalize(item.serviceName) +
+          `   ${item.quantity}x` +
+          '</strong>';
+        //console.log("items", item);
         if (item.extras !== undefined && item.extras.length > 0) {
           let manisps = `<p>`;
           this.filterExtrasCat(item.extras).map(elex => {
@@ -408,15 +412,7 @@ export default class OrderManage extends React.Component {
                   </Title>
                 ) : null}
               </Title>
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontFamily: 'Rubik',
-                  multiline: false,
-                  alignSelf: 'flex-start',
-                  fontSize: 16,
-                  fontWeight: 'bold',
-                }}>{`₪${item.price}`}</Subtitle>
+              <Subtitle style={styles.priceitem}>{`₪${item.price}`}</Subtitle>
             </View>
             <View style={{flex: 1, flexDirection: 'column'}}>
               <View
@@ -425,16 +421,7 @@ export default class OrderManage extends React.Component {
                   flexDirection: 'row',
                   flexWrap: 'wrap',
                 }}>
-                <Title
-                  styleName="wrap"
-                  style={{
-                    color: '#292929',
-                    fontFamily: 'Rubik',
-                    fontSize: 16,
-                    fontWeight: '400',
-                    paddingHorizontal: 2,
-                    writingDirection: 'ltr',
-                  }}>
+                <Title styleName="wrap" style={styles.extratitlestyle}>
                   {`${Lodash.capitalize(item.extraDisplayArray.trim())}`}
                 </Title>
               </View>
@@ -671,7 +658,7 @@ export default class OrderManage extends React.Component {
     this.setState({showDecline: false, showp: true});
     const datas = [];
     //const time = this.state.time;
-    const newmsg = (this.state.status) === -2 ?  "" : declineMsg || '';    
+    const newmsg = this.state.status === -2 ? '' : declineMsg || '';
     const message = this.state.message + newmsg;
     const bid = this.state.bid;
     const customerfkOx = this.state.customerfkO;
@@ -781,171 +768,124 @@ export default class OrderManage extends React.Component {
     }
   };
 
-
-  getTitle = (status) =>
-  {
-    if(status === 1)
-      return `הזמנה ממתינה`;
-    if(status === 2)
-      return 'הזמנה בטיפול';
-    if(status === 3 )
-      return 'הזמנה מוכנה';
-    if(status === 4)
-      return 'הזמנה הסתיימה';
-    if(status === -2 || status === -1)
-      return 'הזמנה בוטלה';
+  getTitle = status => {
+    if (status === 1) return `הזמנה ממתינה`;
+    if (status === 2) return 'הזמנה בטיפול';
+    if (status === 3) return 'הזמנה מוכנה';
+    if (status === 4) return 'הזמנה הסתיימה';
+    if (status === -2 || status === -1) return 'הזמנה בוטלה';
     return 'הזמנה';
-  }
-  
+  };
+
   render() {
-    
     return (
-      <Screen
-        style={{
-          backgroundColor: 'white',
-        }}>
-        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-        <NavigationBar
-          styleName="inline no-border"
-          style={{
-            rightComponent: {
-              flex: 0.4,
-            },
-            leftComponent: {
-              flex: 0.4,
-            },
-            centerComponent: {
-              flex: 0.2,
-            },
-            componentsContainer: {
-              flex: 1,
-            },
-          }}
-          rightComponent={
-            <Subtitle
-              style={{
-                color: '#292929',
-                alignSelf: 'flex-start',
-                fontSize: 15,
-                fontWeight: '700',
-                marginStart: sizeWidth(6.5),
-              }}>{`מספר הזמנה: ${this.last3digitorder()}`}</Subtitle>
-          }
-          leftComponent={
-            <View style={{marginStart: 12, flexDirection: 'row'}}>
-              <TouchableOpacity onPress={() => NavigationActions.goBack()}>
-                <Icons
-                  name="arrow-forward"
-                  size={28}
-                  style={{marginEnd: 12, alignSelf: 'center'}}
-                />
-              </TouchableOpacity>
-              <Heading
-                style={{
-                  fontSize: 20,
-                  color: '#292929',
-                  fontFamily: 'Rubik',
-                  fontWeight: '700',
-                  alignSelf: 'center',
-                }}>
-                {this.getTitle(this.state.status)}
-              </Heading>
-            </View>
-          }
-        />
-        <ScrollView
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={true}>
-          <View
-            styleName="vertical"
+      <SafeAreaView style={styles.maincontainer} forceInset={{top: 'never'}}>
+        <Screen style={styles.maincontainer}>
+          <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+          <NavigationBar
+            styleName="inline no-border"
             style={{
-              backgroundColor: 'white',
-            }}>
-            {this.state.status === -2 ? (
+              rightComponent: {
+                flex: 0.4,
+              },
+              leftComponent: {
+                flex: 0.4,
+              },
+              centerComponent: {
+                flex: 0.2,
+              },
+              componentsContainer: {
+                flex: 1,
+              },
+            }}
+            rightComponent={
               <Subtitle
                 style={{
-                  color: 'red',
+                  color: '#292929',
                   alignSelf: 'flex-start',
                   fontSize: 15,
                   fontWeight: '700',
-                  marginStart: sizeWidth(3),
-                  lineHeight: 32,
-                }}>{`הזמנה זו בוטלה על ידי הלקוח`}</Subtitle>
-            ) : null}
-
-            <DummyLoader
-              visibilty={this.state.progressView}
-              center={
-                this.state.restaurants != null &&
-                this.state.restaurants.length > 0 &&
-                this.state.restaurants !== undefined ? (
-                  <FlatList
-                    extraData={this.state}
-                    showsVerticalScrollIndicator={true}
-                    showsHorizontalScrollIndicator={false}
-                    data={this.state.displayList}
-                    nestedScrollEnabled={true}
-                    keyExtractor={(item, index) => `${index}`}
-                    renderItem={({item: item, index}) =>
-                      this.renderRow(item, index)
-                    }
+                  marginStart: sizeWidth(6.5),
+                }}>{`מספר הזמנה: ${this.last3digitorder()}`}</Subtitle>
+            }
+            leftComponent={
+              <View style={{marginStart: 12, flexDirection: 'row'}}>
+                <TouchableOpacity onPress={() => NavigationActions.goBack()}>
+                  <Icons
+                    name="arrow-forward"
+                    size={28}
+                    style={{marginEnd: 12, alignSelf: 'center'}}
                   />
-                ) : null
-              }
-            />
-            {this.state.restaurants != null &&
-            this.state.restaurants.length > 0 &&
-            this.state.restaurants !== undefined ? (
-              <View>
-                <View
+                </TouchableOpacity>
+                <Heading
                   style={{
-                    height: 1,
-                    backgroundColor: '#dedede',
-                    marginVertical: sizeHeight(1),
-                  }}
-                />
-                <View
-                  style={{
-                    flexDirection: 'column',
-                    marginVertical: sizeHeight(0.4),
-                    marginHorizontal: sizeWidth(3.7),
+                    fontSize: 20,
+                    color: '#292929',
+                    fontFamily: 'Rubik',
+                    fontWeight: '700',
+                    alignSelf: 'center',
                   }}>
-                  <Subtitle
-                    style={{
-                      color: '#292929',
-                      fontFamily: 'Rubik',
-                      alignSelf: 'flex-start',
-                      fontSize: 15,
-                    }}>{`שם לקוח: ${this.state.ogData.name}`}</Subtitle>
-                  <TouchableWithoutFeedback
-                    onPress={() => {
-                      const phoneNumber = this.state.ogData
-                        .customertelephone;
-                      Linking.openURL(`tel:${phoneNumber}`);
-                    }}>
-                    <Subtitle
-                      style={{
-                        color: '#292929',
-                        fontFamily: 'Rubik',
-                        alignSelf: 'flex-start',
-                        fontSize: 15,
-                      }}>
-                      {`פלאפון: `}
-                      <Subtitle
-                        style={{
-                          color: '#3daccf',
-                          fontFamily: 'Rubik',
-                          alignSelf: 'flex-start',
-                          fontSize: 15,
-                        }}>{`${
-                        this.state.ogData.customertelephone
-                      }`}</Subtitle>
-                    </Subtitle>
-                  </TouchableWithoutFeedback>
+                  {this.getTitle(this.state.status)}
+                </Heading>
+              </View>
+            }
+          />
+          <ScrollView
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}>
+            <View
+              styleName="vertical"
+              style={{
+                backgroundColor: 'white',
+              }}>
+              {this.state.status === -2 ? (
+                <Subtitle
+                  style={{
+                    color: 'red',
+                    alignSelf: 'flex-start',
+                    fontSize: 15,
+                    fontWeight: '700',
+                    marginStart: sizeWidth(3),
+                    lineHeight: 32,
+                  }}>{`הזמנה זו בוטלה על ידי הלקוח`}</Subtitle>
+              ) : null}
+
+              <DummyLoader
+                visibilty={this.state.progressView}
+                center={
+                  this.state.restaurants != null &&
+                  this.state.restaurants.length > 0 &&
+                  this.state.restaurants !== undefined ? (
+                    <FlatList
+                      extraData={this.state}
+                      showsVerticalScrollIndicator={true}
+                      showsHorizontalScrollIndicator={false}
+                      data={this.state.displayList}
+                      nestedScrollEnabled={true}
+                      keyExtractor={(item, index) => `${index}`}
+                      renderItem={({item: item, index}) =>
+                        this.renderRow(item, index)
+                      }
+                    />
+                  ) : null
+                }
+              />
+              {this.state.restaurants != null &&
+              this.state.restaurants.length > 0 &&
+              this.state.restaurants !== undefined ? (
+                <View>
                   <View
                     style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
+                      height: 1,
+                      backgroundColor: '#dedede',
+                      marginVertical: sizeHeight(1),
+                    }}
+                  />
+                  <View
+                    style={{
+                      flexDirection: 'column',
+                      marginVertical: sizeHeight(0.4),
+                      marginHorizontal: sizeWidth(3.7),
                     }}>
                     <Subtitle
                       style={{
@@ -953,565 +893,752 @@ export default class OrderManage extends React.Component {
                         fontFamily: 'Rubik',
                         alignSelf: 'flex-start',
                         fontSize: 15,
-                      }}>
-                      כתובת:{' '}
-                      <TouchableWithoutFeedback onPress={this.locationOpen}>
-                        <Subtitle
-                          style={{
-                            color: '#6DC124',
-                            fontFamily: 'Rubik',
-                            alignSelf: 'flex-start',
-                            fontSize: 15,
-                          }}>
-                          {this.state.ogData.address !== ''
-                            ? `${this.state.ogData.address}`
-                            : this.state.ogData.isdelivery === 1 ? 'נשלחה מיקום הלקוח, לבדוק במפה' : 'איסוף עצמי'
-                            }
-                        </Subtitle>
-                      </TouchableWithoutFeedback>
-                    </Subtitle>
+                      }}>{`שם לקוח: ${this.state.ogData.name}`}</Subtitle>
                     <TouchableWithoutFeedback
                       onPress={() => {
-                        const data = this.state.clone;
-                        const lat = data[0].geolat;
-                        const lng = data[0].geolng;
-                        const url = `https://www.waze.com/ul?ll=${lat}%2C${lng}&navigate=yes`;
-                        Linking.openURL(url);
+                        const phoneNumber = this.state.ogData.customertelephone;
+                        Linking.openURL(`tel:${phoneNumber}`);
                       }}>
-                      <Image
-                        source={require('./../res/images/waze.png')}
-                        style={{
-                          width: 24,
-                          height: 22,
-                          alignSelf: 'center',
-                          padding: 4,
-                          marginEnd: 4,
-                        }}
-                      />
-                    </TouchableWithoutFeedback>
-                  </View>
-                  {this.state.ogData.deliveryprice !== undefined &&
-                  this.state.ogData.deliveryprice !== null &&
-                  this.state.ogData.deliveryprice !== '' &&
-                  Number(this.state.ogData.deliveryprice > 0) ? (
-                    <Subtitle
-                      style={{
-                        color: '#292929',
-                        fontFamily: 'Rubik',
-                        alignSelf: 'flex-start',
-                        fontWeight: '400',
-                        fontSize: 15,
-                      }}>{`עלות משלוח: ₪${
-                      this.state.ogData.deliveryprice
-                    }`}</Subtitle>
-                  ) : null}
-                  <Subtitle
-                    style={{
-                      color: '#292929',
-                      fontFamily: 'Rubik',
-                      alignSelf: 'flex-start',
-                      fontSize: 15,
-                    }}>
-                    {`סכום לתשלום:`}{' '}
-                    <Subtitle
-                      style={{
-                        color: '#292929',
-                        fontFamily: 'Rubik',
-                        fontWeight: '700',
-                        fontSize: 15,
-                      }}>{`₪${this.state.combinePriced}`}</Subtitle>
-                  </Subtitle>
-                  <Subtitle
-                    style={{
-                      color: '#292929',
-                      fontFamily: 'Rubik',
-                      alignSelf: 'flex-start',
-                      fontSize: 15,
-                    }}>
-                    {`אמצעי תשלום: `}
-                    <Subtitle
-                      style={{
-                        color: 'red',
-                        fontFamily: 'Rubik',
-                        fontSize: 15,
-                      }}>
-                      {this.state.ogData.paid === 0 ? 'מזומן' : 'אשראי'}
-                    </Subtitle>
-                  </Subtitle>
-                  {this.state.shovar !== '' ? (
-                    <Subtitle
-                      style={{
-                        color: '#292929',
-                        fontFamily: 'Rubik',
-                        alignSelf: 'flex-start',
-                        fontSize: 15,
-                      }}>
-                      {`מספר שובר: `}
-                      <Subtitle
-                        style={{
-                          color: 'orange',
-                          fontFamily: 'Rubik',
-                          fontSize: 15,
-                        }}>
-                        {this.state.shovar}
-                      </Subtitle>
-                    </Subtitle>
-                  ) : null}
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    {this.state.ogData.orderdate !== undefined &&
-                    this.state.ogData.orderdate !== '' &&
-                    this.state.ogData.orderdate !== null ? (
                       <Subtitle
                         style={{
                           color: '#292929',
                           fontFamily: 'Rubik',
                           alignSelf: 'flex-start',
-                          fontWeight: '600',
                           fontSize: 15,
-                        }}>{`תאריך הזמנה: ${Moment(
-                        this.state.ogData.orderdate,
-                      ).format('YYYY/DD/MM HH:mm')}`}</Subtitle>
-                    ) : null}
-                    <TouchableWithoutFeedback onPress={this.printText}>
-                      <Icons
-                        name={'print'}
-                        size={28}
-                        style={{
-                          alignSelf: 'center',
-                          padding: 4,
-                          marginEnd: 4,
-                        }}
-                      />
+                        }}>
+                        {`פלאפון: `}
+                        <Subtitle
+                          style={{
+                            color: '#3daccf',
+                            fontFamily: 'Rubik',
+                            alignSelf: 'flex-start',
+                            fontSize: 15,
+                          }}>{`${
+                          this.state.ogData.customertelephone
+                        }`}</Subtitle>
+                      </Subtitle>
                     </TouchableWithoutFeedback>
-                  </View>
-                </View>
-              </View>
-            ) : null}
-            {!this.state.mode ? (
-              <>
-                <View
-                  style={{
-                    height: 1,
-                    backgroundColor: '#dedede',
-                    marginVertical: sizeHeight(1),
-                  }}
-                />
-                {Number(this.state.status) !== -2 ? (
-                  <View>
-                    <Subtitle
-                      style={{
-                        color: '#292929',
-                        fontSize: 16,
-                        marginTop: sizeHeight(1),
-                        marginHorizontal: sizeWidth(4),
-                        fontWeight: '400',
-                      }}>{`כמה זמן יקח? (בדקות) - אופציונלי`}</Subtitle>
                     <View
-                      styleName="horizontal"
                       style={{
-                        flexDirection: 'row-reverse',
-                        marginVertical: sizeHeight(1),
-                        marginHorizontal: sizeWidth(4),
-                        borderColor: '#dedede',
-                        borderStyle: 'solid',
-                        borderWidth: 1,
-                        color: '#000000',
-                        flex: 8,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
                       }}>
-                      <TouchableWithoutFeedback
-                        onPress={() => {
-                          const oo = this.state.wse;
-                          this.setState({time: '5', wse: oo === 1 ? 0 : 1});
+                      <Subtitle
+                        style={{
+                          color: '#292929',
+                          fontFamily: 'Rubik',
+                          alignSelf: 'flex-start',
+                          fontSize: 15,
                         }}>
-                        <View
-                          style={{
-                            flex: 1,
-                            flexDirection: 'row',
-                            height: sizeHeight(6.5),
-                            width: sizeWidth(10),
-                            backgroundColor:
-                              this.state.wse == 1 ? '#3daccf' : 'white',
-                          }}>
-                          <View
-                            style={{
-                              width: 1,
-                              backgroundColor: '#dedede',
-                            }}
-                          />
+                        כתובת:
+                        <TouchableWithoutFeedback onPress={this.locationOpen}>
                           <Subtitle
                             style={{
-                              color:
-                                this.state.wse !== 1 ? '#292929' : 'white',
-                              fontSize: 16,
-                              alignSelf: 'center',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              alignContent: 'center',
-                              marginStart: 13,
+                              color: '#6DC124',
+                              fontFamily: 'Rubik',
+                              alignSelf: 'flex-start',
+                              fontSize: 15,
                             }}>
-                            5
+                            {this.state.ogData.address !== ''
+                              ? `${this.state.ogData.address}`
+                              : this.state.ogData.isdelivery === 1
+                              ? 'נשלחה מיקום הלקוח, לבדוק במפה'
+                              : 'איסוף עצמי'}
                           </Subtitle>
-                        </View>
-                      </TouchableWithoutFeedback>
+                        </TouchableWithoutFeedback>
+                      </Subtitle>
                       <TouchableWithoutFeedback
                         onPress={() => {
-                          const oo = this.state.wse;
-                          this.setState({
-                            time: '10',
-                            wse: oo === 2 ? 0 : 2,
-                          });
+                          const data = this.state.clone;
+                          const lat = data[0].geolat;
+                          const lng = data[0].geolng;
+                          const url = `https://www.waze.com/ul?ll=${lat}%2C${lng}&navigate=yes`;
+                          Linking.openURL(url);
                         }}>
-                        <View
+                        <Image
+                          source={require('./../res/images/waze.png')}
                           style={{
-                            flex: 1,
-                            flexDirection: 'row',
-                            height: sizeHeight(6.5),
-                            width: sizeWidth(10),
-                            backgroundColor:
-                              this.state.wse == 2 ? '#3daccf' : 'white',
-                          }}>
-                          <View
-                            style={{
-                              width: 1,
-                              backgroundColor: '#dedede',
-                            }}
-                          />
-                          <Subtitle
-                            style={{
-                              color:
-                                this.state.wse !== 2 ? '#292929' : 'white',
-                              fontSize: 16,
-                              alignSelf: 'center',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              alignContent: 'center',
-                              marginStart: 13,
-                            }}>
-                            10
-                          </Subtitle>
-                        </View>
-                      </TouchableWithoutFeedback>
-                      <TouchableWithoutFeedback
-                        onPress={() => {
-                          const oo = this.state.wse;
-                          this.setState({
-                            time: '15',
-                            wse: oo === 3 ? 0 : 3,
-                          });
-                        }}>
-                        <View
-                          style={{
-                            flex: 1,
-                            flexDirection: 'row',
-                            height: sizeHeight(6.5),
-                            width: sizeWidth(10),
-                            backgroundColor:
-                              this.state.wse == 3 ? '#3daccf' : 'white',
-                          }}>
-                          <View
-                            style={{
-                              width: 1,
-                              backgroundColor: '#dedede',
-                            }}
-                          />
-                          <Subtitle
-                            style={{
-                              color:
-                                this.state.wse !== 3 ? '#292929' : 'white',
-                              fontSize: 16,
-                              alignSelf: 'center',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              alignContent: 'center',
-                              marginStart: 13,
-                            }}>
-                            15
-                          </Subtitle>
-                        </View>
-                      </TouchableWithoutFeedback>
-                      <TouchableWithoutFeedback
-                        onPress={() => {
-                          const oo = this.state.wse;
-                          this.setState({
-                            time: '20',
-                            wse: oo === 4 ? 0 : 4,
-                          });
-                        }}>
-                        <View
-                          style={{
-                            flex: 1,
-                            flexDirection: 'row',
-                            height: sizeHeight(6.5),
-                            width: sizeWidth(10),
-                            backgroundColor:
-                              this.state.wse == 4 ? '#3daccf' : 'white',
-                          }}>
-                          <View
-                            style={{
-                              width: 1,
-                              backgroundColor: '#dedede',
-                            }}
-                          />
-                          <Subtitle
-                            style={{
-                              color:
-                                this.state.wse !== 4 ? '#292929' : 'white',
-                              fontSize: 16,
-                              alignSelf: 'center',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              alignContent: 'center',
-                              marginStart: 13,
-                            }}>
-                            20
-                          </Subtitle>
-                        </View>
-                      </TouchableWithoutFeedback>
-                      <TouchableWithoutFeedback
-                        onPress={() => {
-                          const oo = this.state.wse;
-                          this.setState({
-                            time: '30',
-                            wse: oo === 5 ? 0 : 5,
-                          });
-                        }}>
-                        <View
-                          style={{
-                            flex: 1,
-                            flexDirection: 'row',
-                            height: sizeHeight(6.5),
-                            width: sizeWidth(10),
-                            backgroundColor:
-                              this.state.wse == 5 ? '#3daccf' : 'white',
-                          }}>
-                          <View
-                            style={{
-                              width: 1,
-                              backgroundColor: '#dedede',
-                            }}
-                          />
-                          <Subtitle
-                            style={{
-                              color:
-                                this.state.wse !== 5 ? '#292929' : 'white',
-                              fontSize: 16,
-                              alignSelf: 'center',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              alignContent: 'center',
-                              marginStart: 13,
-                            }}>
-                            30
-                          </Subtitle>
-                        </View>
-                      </TouchableWithoutFeedback>
-                      <TouchableWithoutFeedback
-                        onPress={() => {
-                          const oo = this.state.wse;
-                          this.setState({
-                            time: '40',
-                            wse: oo === 6 ? 0 : 6,
-                          });
-                        }}>
-                        <View
-                          style={{
-                            flex: 1,
-                            flexDirection: 'row',
-                            height: sizeHeight(6.5),
-                            width: sizeWidth(10),
-                            backgroundColor:
-                              this.state.wse == 6 ? '#3daccf' : 'white',
-                          }}>
-                          <View
-                            style={{
-                              width: 1,
-                              backgroundColor: '#dedede',
-                            }}
-                          />
-                          <Subtitle
-                            style={{
-                              color:
-                                this.state.wse !== 6 ? '#292929' : 'white',
-                              fontSize: 16,
-                              alignSelf: 'center',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              alignContent: 'center',
-                              marginStart: 13,
-                            }}>
-                            40
-                          </Subtitle>
-                        </View>
-                      </TouchableWithoutFeedback>
-                      <TouchableWithoutFeedback
-                        onPress={() => {
-                          const oo = this.state.wse;
-                          this.setState({
-                            time: '50',
-                            wse: oo === 7 ? 0 : 7,
-                          });
-                        }}>
-                        <View
-                          style={{
-                            flex: 1,
-                            flexDirection: 'row',
-                            height: sizeHeight(6.5),
-                            width: sizeWidth(10),
-                            backgroundColor:
-                              this.state.wse == 7 ? '#3daccf' : 'white',
-                          }}>
-                          <View
-                            style={{
-                              width: 1,
-                              backgroundColor: '#dedede',
-                            }}
-                          />
-                          <Subtitle
-                            style={{
-                              color:
-                                this.state.wse !== 7 ? '#292929' : 'white',
-                              fontSize: 16,
-                              alignSelf: 'center',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              alignContent: 'center',
-                              marginStart: 13,
-                            }}>
-                            50
-                          </Subtitle>
-                        </View>
-                      </TouchableWithoutFeedback>
-                      <TouchableWithoutFeedback
-                        onPress={() => {
-                          const oo = this.state.wse;
-                          this.setState({
-                            time: '60',
-                            wse: oo === 8 ? 0 : 8,
-                          });
-                        }}>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            height: sizeHeight(6.5),
-                            width: sizeWidth(10),
-                            backgroundColor:
-                              this.state.wse == 8 ? '#3daccf' : 'white',
-                          }}>
-                          <Subtitle
-                            style={{
-                              color:
-                                this.state.wse !== 8 ? '#292929' : 'white',
-                              fontSize: 16,
-                              alignSelf: 'center',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              alignContent: 'center',
-                              marginStart: 5,
-                            }}>
-                            60
-                          </Subtitle>
-                        </View>
+                            width: 24,
+                            height: 22,
+                            alignSelf: 'center',
+                            padding: 4,
+                            marginEnd: 4,
+                          }}
+                        />
                       </TouchableWithoutFeedback>
                     </View>
-                    <TextInput
-                      style={[
-                        styles.inputStyle,
-                        {
-                          height: 42,
-                          marginVertical: sizeHeight(1),
-                          width: 90,
-                          justifyContent: 'center',
-                          alignSelf: 'center',
-                        },
-                      ]}
-                      mode={'flat'}
-                      //label={"message"}
-                      password={false}
-                      keyboardType={'number-pad'}
-                      value={this.state.time}
-                      onChangeText={text => this.setState({time: text})}
-                      underlineColor={'transparent'}
-                      underlineColorAndroid={'transparent'}
-                    />
+                    {this.state.ogData.deliveryprice !== undefined &&
+                    this.state.ogData.deliveryprice !== null &&
+                    this.state.ogData.deliveryprice !== '' &&
+                    Number(this.state.ogData.deliveryprice > 0) ? (
+                      <Subtitle
+                        style={{
+                          color: '#292929',
+                          fontFamily: 'Rubik',
+                          alignSelf: 'flex-start',
+                          fontWeight: '400',
+                          fontSize: 15,
+                        }}>{`עלות משלוח: ₪${
+                        this.state.ogData.deliveryprice
+                      }`}</Subtitle>
+                    ) : null}
                     <Subtitle
                       style={{
                         color: '#292929',
-                        fontSize: 16,
-                        marginTop: sizeHeight(1),
-                        marginHorizontal: sizeWidth(4),
-                      }}>{`הערה ללקוח - אופציונלי`}</Subtitle>
-                    <TextInput
-                      style={[styles.inputStyle, {height: 100}]}
-                      mode={'flat'}
-                      //label={"message"}
-                      password={false}
-                      returnKeyType="next"
-                      multiline={true}
-                      value={this.state.message}
-                      onChangeText={text => this.setState({message: text})}
-                      underlineColor={'transparent'}
-                      underlineColorAndroid={'transparent'}
-                    />
-                  </View>
-                ) : null}
-
-                {Number(this.state.status) === -2 ? (
-                  <View
-                    styleName="horizontal"
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'center',
-                      marginVertical: sizeHeight(6),
-                    }}>
-                    <Button
-                      styleName=" muted border"
-                      mode={'contained'}
-                      uppercase={true}
-                      dark={true}
-                      style={styles.loginButtonStyle}
-                      onPress={this.decline}>
-                      <Subtitle style={{color: 'white'}}>
-                        {'ביטול וסגירת הזמנה'}
+                        fontFamily: 'Rubik',
+                        alignSelf: 'flex-start',
+                        fontSize: 15,
+                      }}>
+                      {`סכום לתשלום:`}
+                      <Subtitle
+                        style={{
+                          color: '#292929',
+                          fontFamily: 'Rubik',
+                          fontWeight: '700',
+                          fontSize: 15,
+                        }}>{`₪${this.state.combinePriced}`}</Subtitle>
+                    </Subtitle>
+                    <Subtitle
+                      style={{
+                        color: '#292929',
+                        fontFamily: 'Rubik',
+                        alignSelf: 'flex-start',
+                        fontSize: 15,
+                      }}>
+                      {`אמצעי תשלום: `}
+                      <Subtitle
+                        style={{
+                          color: 'red',
+                          fontFamily: 'Rubik',
+                          fontSize: 15,
+                        }}>
+                        {this.state.ogData.paid === 0 ? 'מזומן' : 'אשראי'}
                       </Subtitle>
-                    </Button>
-                  </View>
-                ) : Number(this.state.status) === 1 ? (
-                  <View
-                    styleName="horizontal"
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'center',
-                      marginVertical: sizeHeight(6),
-                    }}>
-                    <Button
-                      styleName=" muted border"
-                      mode={'contained'}
-                      uppercase={true}
-                      dark={true}
-                      style={styles.loginButtonStyle}
-                      onPress={() => this.setState({showApprove: true})}>
-                      <Subtitle style={{color: 'white'}}>
-                        {'אשר הזמנה'}
+                    </Subtitle>
+                    {this.state.shovar !== '' ? (
+                      <Subtitle
+                        style={{
+                          color: '#292929',
+                          fontFamily: 'Rubik',
+                          alignSelf: 'flex-start',
+                          fontSize: 15,
+                        }}>
+                        {`מספר שובר: `}
+                        <Subtitle
+                          style={{
+                            color: 'orange',
+                            fontFamily: 'Rubik',
+                            fontSize: 15,
+                          }}>
+                          {this.state.shovar}
+                        </Subtitle>
                       </Subtitle>
-                    </Button>
-                    <TouchableWithoutFeedback
-                      onPress={() => this.setState({showDecline: true})}>
+                    ) : null}
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}>
+                      {this.state.ogData.orderdate !== undefined &&
+                      this.state.ogData.orderdate !== '' &&
+                      this.state.ogData.orderdate !== null ? (
+                        <Subtitle
+                          style={{
+                            color: '#292929',
+                            fontFamily: 'Rubik',
+                            alignSelf: 'flex-start',
+                            fontWeight: '600',
+                            fontSize: 15,
+                          }}>{`תאריך הזמנה: ${Moment(
+                          this.state.ogData.orderdate,
+                        ).format('YYYY/DD/MM HH:mm')}`}</Subtitle>
+                      ) : null}
+                      <TouchableWithoutFeedback onPress={this.printText}>
+                        <Icons
+                          name={'print'}
+                          size={28}
+                          style={{
+                            alignSelf: 'center',
+                            padding: 4,
+                            marginEnd: 4,
+                          }}
+                        />
+                      </TouchableWithoutFeedback>
+                    </View>
+                  </View>
+                </View>
+              ) : null}
+              {!this.state.mode ? (
+                <>
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: '#dedede',
+                      marginVertical: sizeHeight(1),
+                    }}
+                  />
+                  {Number(this.state.status) !== -2 ? (
+                    <View>
                       <Subtitle
                         style={{
                           color: '#292929',
                           fontSize: 16,
-                          alignSelf: 'center',
-                          marginHorizontal: sizeWidth(8),
+                          marginTop: sizeHeight(1),
+                          marginHorizontal: sizeWidth(4),
+                          fontWeight: '400',
+                        }}>{`כמה זמן יקח? (בדקות) - אופציונלי`}</Subtitle>
+                      <View
+                        styleName="horizontal"
+                        style={{
+                          flexDirection: 'row-reverse',
+                          marginVertical: sizeHeight(1),
+                          marginHorizontal: sizeWidth(4),
+                          borderColor: '#dedede',
+                          borderStyle: 'solid',
+                          borderWidth: 1,
+                          color: '#000000',
+                          flex: 8,
                         }}>
-                        בטל הזמנה
+                        <TouchableWithoutFeedback
+                          onPress={() => {
+                            const oo = this.state.wse;
+                            this.setState({time: '5', wse: oo === 1 ? 0 : 1});
+                          }}>
+                          <View
+                            style={{
+                              flex: 1,
+                              flexDirection: 'row',
+                              height: sizeHeight(6.5),
+                              width: sizeWidth(10),
+                              backgroundColor:
+                                this.state.wse == 1 ? '#3daccf' : 'white',
+                            }}>
+                            <View
+                              style={{
+                                width: 1,
+                                backgroundColor: '#dedede',
+                              }}
+                            />
+                            <Subtitle
+                              style={{
+                                color:
+                                  this.state.wse !== 1 ? '#292929' : 'white',
+                                fontSize: 16,
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                alignContent: 'center',
+                                marginStart: 13,
+                              }}>
+                              5
+                            </Subtitle>
+                          </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback
+                          onPress={() => {
+                            const oo = this.state.wse;
+                            this.setState({
+                              time: '10',
+                              wse: oo === 2 ? 0 : 2,
+                            });
+                          }}>
+                          <View
+                            style={{
+                              flex: 1,
+                              flexDirection: 'row',
+                              height: sizeHeight(6.5),
+                              width: sizeWidth(10),
+                              backgroundColor:
+                                this.state.wse == 2 ? '#3daccf' : 'white',
+                            }}>
+                            <View
+                              style={{
+                                width: 1,
+                                backgroundColor: '#dedede',
+                              }}
+                            />
+                            <Subtitle
+                              style={{
+                                color:
+                                  this.state.wse !== 2 ? '#292929' : 'white',
+                                fontSize: 16,
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                alignContent: 'center',
+                                marginStart: 13,
+                              }}>
+                              10
+                            </Subtitle>
+                          </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback
+                          onPress={() => {
+                            const oo = this.state.wse;
+                            this.setState({
+                              time: '15',
+                              wse: oo === 3 ? 0 : 3,
+                            });
+                          }}>
+                          <View
+                            style={{
+                              flex: 1,
+                              flexDirection: 'row',
+                              height: sizeHeight(6.5),
+                              width: sizeWidth(10),
+                              backgroundColor:
+                                this.state.wse == 3 ? '#3daccf' : 'white',
+                            }}>
+                            <View
+                              style={{
+                                width: 1,
+                                backgroundColor: '#dedede',
+                              }}
+                            />
+                            <Subtitle
+                              style={{
+                                color:
+                                  this.state.wse !== 3 ? '#292929' : 'white',
+                                fontSize: 16,
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                alignContent: 'center',
+                                marginStart: 13,
+                              }}>
+                              15
+                            </Subtitle>
+                          </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback
+                          onPress={() => {
+                            const oo = this.state.wse;
+                            this.setState({
+                              time: '20',
+                              wse: oo === 4 ? 0 : 4,
+                            });
+                          }}>
+                          <View
+                            style={{
+                              flex: 1,
+                              flexDirection: 'row',
+                              height: sizeHeight(6.5),
+                              width: sizeWidth(10),
+                              backgroundColor:
+                                this.state.wse == 4 ? '#3daccf' : 'white',
+                            }}>
+                            <View
+                              style={{
+                                width: 1,
+                                backgroundColor: '#dedede',
+                              }}
+                            />
+                            <Subtitle
+                              style={{
+                                color:
+                                  this.state.wse !== 4 ? '#292929' : 'white',
+                                fontSize: 16,
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                alignContent: 'center',
+                                marginStart: 13,
+                              }}>
+                              20
+                            </Subtitle>
+                          </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback
+                          onPress={() => {
+                            const oo = this.state.wse;
+                            this.setState({
+                              time: '30',
+                              wse: oo === 5 ? 0 : 5,
+                            });
+                          }}>
+                          <View
+                            style={{
+                              flex: 1,
+                              flexDirection: 'row',
+                              height: sizeHeight(6.5),
+                              width: sizeWidth(10),
+                              backgroundColor:
+                                this.state.wse == 5 ? '#3daccf' : 'white',
+                            }}>
+                            <View
+                              style={{
+                                width: 1,
+                                backgroundColor: '#dedede',
+                              }}
+                            />
+                            <Subtitle
+                              style={{
+                                color:
+                                  this.state.wse !== 5 ? '#292929' : 'white',
+                                fontSize: 16,
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                alignContent: 'center',
+                                marginStart: 13,
+                              }}>
+                              30
+                            </Subtitle>
+                          </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback
+                          onPress={() => {
+                            const oo = this.state.wse;
+                            this.setState({
+                              time: '40',
+                              wse: oo === 6 ? 0 : 6,
+                            });
+                          }}>
+                          <View
+                            style={{
+                              flex: 1,
+                              flexDirection: 'row',
+                              height: sizeHeight(6.5),
+                              width: sizeWidth(10),
+                              backgroundColor:
+                                this.state.wse == 6 ? '#3daccf' : 'white',
+                            }}>
+                            <View
+                              style={{
+                                width: 1,
+                                backgroundColor: '#dedede',
+                              }}
+                            />
+                            <Subtitle
+                              style={{
+                                color:
+                                  this.state.wse !== 6 ? '#292929' : 'white',
+                                fontSize: 16,
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                alignContent: 'center',
+                                marginStart: 13,
+                              }}>
+                              40
+                            </Subtitle>
+                          </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback
+                          onPress={() => {
+                            const oo = this.state.wse;
+                            this.setState({
+                              time: '50',
+                              wse: oo === 7 ? 0 : 7,
+                            });
+                          }}>
+                          <View
+                            style={{
+                              flex: 1,
+                              flexDirection: 'row',
+                              height: sizeHeight(6.5),
+                              width: sizeWidth(10),
+                              backgroundColor:
+                                this.state.wse == 7 ? '#3daccf' : 'white',
+                            }}>
+                            <View
+                              style={{
+                                width: 1,
+                                backgroundColor: '#dedede',
+                              }}
+                            />
+                            <Subtitle
+                              style={{
+                                color:
+                                  this.state.wse !== 7 ? '#292929' : 'white',
+                                fontSize: 16,
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                alignContent: 'center',
+                                marginStart: 13,
+                              }}>
+                              50
+                            </Subtitle>
+                          </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback
+                          onPress={() => {
+                            const oo = this.state.wse;
+                            this.setState({
+                              time: '60',
+                              wse: oo === 8 ? 0 : 8,
+                            });
+                          }}>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              height: sizeHeight(6.5),
+                              width: sizeWidth(10),
+                              backgroundColor:
+                                this.state.wse == 8 ? '#3daccf' : 'white',
+                            }}>
+                            <Subtitle
+                              style={{
+                                color:
+                                  this.state.wse !== 8 ? '#292929' : 'white',
+                                fontSize: 16,
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                alignContent: 'center',
+                                marginStart: 5,
+                              }}>
+                              60
+                            </Subtitle>
+                          </View>
+                        </TouchableWithoutFeedback>
+                      </View>
+                      <TextInput
+                        style={[
+                          styles.inputStyle,
+                          {
+                            height: 42,
+                            marginVertical: sizeHeight(1),
+                            width: 90,
+                            justifyContent: 'center',
+                            alignSelf: 'center',
+                          },
+                        ]}
+                        mode={'flat'}
+                        //label={"message"}
+                        password={false}
+                        keyboardType={'number-pad'}
+                        value={this.state.time}
+                        onChangeText={text => this.setState({time: text})}
+                        underlineColor={'transparent'}
+                        underlineColorAndroid={'transparent'}
+                      />
+                      <Subtitle
+                        style={{
+                          color: '#292929',
+                          fontSize: 16,
+                          marginTop: sizeHeight(1),
+                          marginHorizontal: sizeWidth(4),
+                        }}>{`הערה ללקוח - אופציונלי`}</Subtitle>
+                      <TextInput
+                        style={[styles.inputStyle, {height: 100}]}
+                        mode={'flat'}
+                        //label={"message"}
+                        password={false}
+                        returnKeyType="next"
+                        multiline={true}
+                        value={this.state.message}
+                        onChangeText={text => this.setState({message: text})}
+                        underlineColor={'transparent'}
+                        underlineColorAndroid={'transparent'}
+                      />
+                    </View>
+                  ) : null}
+
+                  {Number(this.state.status) === -2 ? (
+                    <View
+                      styleName="horizontal"
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        marginVertical: sizeHeight(6),
+                      }}>
+                      <Button
+                        styleName=" muted border"
+                        mode={'contained'}
+                        uppercase={true}
+                        dark={true}
+                        style={styles.loginButtonStyle}
+                        onPress={this.decline}>
+                        <Subtitle style={{color: 'white'}}>
+                          {'ביטול וסגירת הזמנה'}
+                        </Subtitle>
+                      </Button>
+                    </View>
+                  ) : Number(this.state.status) === 1 ? (
+                    <View
+                      styleName="horizontal"
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        marginVertical: sizeHeight(6),
+                      }}>
+                      <Button
+                        styleName=" muted border"
+                        mode={'contained'}
+                        uppercase={true}
+                        dark={true}
+                        style={styles.loginButtonStyle}
+                        onPress={() => this.setState({showApprove: true})}>
+                        <Subtitle style={{color: 'white'}}>
+                          {'אשר הזמנה'}
+                        </Subtitle>
+                      </Button>
+                      <TouchableWithoutFeedback
+                        onPress={() => this.setState({showDecline: true})}>
+                        <Subtitle
+                          style={{
+                            color: '#292929',
+                            fontSize: 16,
+                            alignSelf: 'center',
+                            marginHorizontal: sizeWidth(8),
+                          }}>
+                          בטל הזמנה
+                        </Subtitle>
+                      </TouchableWithoutFeedback>
+                    </View>
+                  ) : (
+                    <Button
+                      styleName=" muted border"
+                      mode={'contained'}
+                      uppercase={true}
+                      dark={true}
+                      style={[
+                        styles.loginButtonStyle,
+                        {
+                          marginHorizontal: sizeWidth(4),
+                          marginVertical: sizeHeight(6),
+                        },
+                      ]}
+                      onPress={this.ordemm}>
+                      <Subtitle style={{color: 'white'}}>
+                        {this.state.status === 2
+                          ? `${word}`
+                          : this.state.status === 3
+                          ? 'עדכון: ההזמנה טופלה'
+                          : this.state.isDelivery
+                          ? 'עדכון: ההזמנה מוכנה לאיסוף'
+                          : 'עדכון: ההזמנה טופלה'}
                       </Subtitle>
-                    </TouchableWithoutFeedback>
+                    </Button>
+                  )}
+
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignContent: 'center',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexWrap: 'wrap',
+                      marginVertical: sizeHeight(2),
+                    }}>
+                    <Checkbox.Android
+                      uncheckedColor={'#dedede'}
+                      status={this.state.printmodeon ? 'checked' : 'unchecked'}
+                      color={'#3daccf'}
+                      onPress={() => {
+                        const checkers = this.state.printmodeon;
+                        this.setState({printmodeon: !checkers}, () => {
+                          Pref.setVal(
+                            Pref.printon,
+                            this.state.printmodeon ? '1' : '0',
+                          );
+                        });
+                      }}
+                    />
+                    <Subtitle style={{color: '#292929', fontSize: 15}}>
+                      {'הדפס עם אישור ההזמנה'}
+                    </Subtitle>
                   </View>
-                ) : (
+                </>
+              ) : null}
+            </View>
+          </ScrollView>
+
+          <Portal>
+            <Modal
+              dismissable={true}
+              visible={this.state.showApprove}
+              style={{backgroundColor: 'white'}}
+              onDismiss={() => this.setState({showApprove: false})}>
+              <View
+                styleName="vertical sm-gutter"
+                style={{
+                  backgroundColor: 'white',
+                  marginHorizontal: sizeWidth(6),
+                  flexDirection: 'column',
+                }}>
+                <Subtitle
+                  style={{
+                    color: '#292929',
+                    fontFamily: 'Rubik',
+                    alignSelf: 'center',
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    marginVertical: sizeHeight(1.5),
+                    marginBottom: sizeHeight(2),
+                    paddingBottom: 8,
+                  }}>
+                  {'האם אתה בטוח?'}
+                </Subtitle>
+                <Button
+                  styleName=" muted border"
+                  mode={'contained'}
+                  uppercase={true}
+                  dark={true}
+                  style={[
+                    styles.loginButtonStyle,
+                    {marginVertical: 0, marginHorizontal: sizeWidth(3)},
+                  ]}
+                  onPress={this.ordemm}>
+                  <Subtitle style={{color: 'white'}}>{'כן'}</Subtitle>
+                </Button>
+                <TouchableWithoutFeedback
+                  onPress={() => this.setState({showApprove: false})}>
+                  <Subtitle
+                    style={{
+                      marginTop: sizeHeight(1.5),
+                      color: '#292929',
+                      fontFamily: 'Rubik',
+                      alignSelf: 'center',
+                      fontSize: 15,
+                      paddingBottom: 8,
+                    }}>
+                    {'לא'}
+                  </Subtitle>
+                </TouchableWithoutFeedback>
+              </View>
+            </Modal>
+          </Portal>
+
+          <Portal>
+            <Modal
+              dismissable={true}
+              visible={this.state.showDecline}
+              onDismiss={() => this.setState({showDecline: false})}>
+              <View
+                styleName="vertical sm-gutter"
+                style={{
+                  backgroundColor: 'white',
+                  marginHorizontal: sizeWidth(6),
+                  flexDirection: 'column',
+                }}>
+                <Subtitle
+                  style={{
+                    color: '#292929',
+                    fontFamily: 'Rubik',
+                    alignSelf: 'center',
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    marginVertical: sizeHeight(1.5),
+                    marginBottom: sizeHeight(1),
+                    paddingBottom: 8,
+                  }}>
+                  {`בטל הזמנה`}
+                </Subtitle>
+                <Subtitle
+                  style={{
+                    color: '#292929',
+                    fontFamily: 'Rubik',
+                    alignSelf: 'center',
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    paddingBottom: 8,
+                  }}>
+                  {'סיבת הסירוב:'}
+                </Subtitle>
+                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
                   <Button
                     styleName=" muted border"
                     mode={'contained'}
@@ -1519,213 +1646,83 @@ export default class OrderManage extends React.Component {
                     dark={true}
                     style={[
                       styles.loginButtonStyle,
-                      {
-                        marginHorizontal: sizeWidth(4),
-                        marginVertical: sizeHeight(6),
-                      },
+                      {marginVertical: 0, marginHorizontal: sizeWidth(3)},
                     ]}
-                    onPress={this.ordemm}>
-                    <Subtitle style={{color: 'white'}}>
-                      {this.state.status === 2
-                        ? `${word}`
-                        : this.state.status === 3
-                        ? 'עדכון: ההזמנה טופלה'
-                        : this.state.isDelivery
-                        ? 'עדכון: ההזמנה מוכנה לאיסוף'
-                        : 'עדכון: ההזמנה טופלה'}
-                    </Subtitle>
+                    onPress={this.declineWithNothing}>
+                    <Subtitle style={{color: 'white'}}>{'כללי'}</Subtitle>
                   </Button>
-                )}
-
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignContent: 'center',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexWrap: 'wrap',
-                    marginVertical: sizeHeight(2),
-                  }}>
-                  <Checkbox
-                    status={
-                      this.state.printmodeon ? 'checked' : 'unchecked'
-                    }
-                    color={'#3daccf'}
-                    onPress={() => {
-                      const checkers = this.state.printmodeon;
-                      this.setState({printmodeon: !checkers}, () => {
-                        Pref.setVal(
-                          Pref.printon,
-                          this.state.printmodeon ? '1' : '0',
-                        );
-                      });
-                    }}
-                  />
-                  <Subtitle style={{color: '#292929', fontSize: 15}}>
-                    {'הדפס עם אישור ההזמנה'}
-                  </Subtitle>
+                  <Button
+                    styleName=" muted border"
+                    mode={'contained'}
+                    uppercase={true}
+                    dark={true}
+                    style={[
+                      styles.loginButtonStyle,
+                      {marginVertical: 0, marginHorizontal: sizeWidth(3)},
+                    ]}
+                    onPress={this.declineWithBusy}>
+                    <Subtitle style={{color: 'white'}}>{'עמוס'}</Subtitle>
+                  </Button>
+                  <Button
+                    styleName=" muted border"
+                    mode={'contained'}
+                    uppercase={true}
+                    dark={true}
+                    style={[
+                      styles.loginButtonStyle,
+                      {marginVertical: 0, marginHorizontal: sizeWidth(3)},
+                    ]}
+                    onPress={this.declineWithOutOfStock}>
+                    <Subtitle style={{color: 'white'}}>{'לא במלאי'}</Subtitle>
+                  </Button>
                 </View>
-              </>
-            ) : null}
-          </View>
-        </ScrollView>
-
-        <Portal>
-          <Modal
-            dismissable={true}
-            visible={this.state.showApprove}
-            style={{backgroundColor: 'white'}}
-            onDismiss={() => this.setState({showApprove: false})}>
-            <View
-              styleName="vertical sm-gutter"
-              style={{
-                backgroundColor: 'white',
-                marginHorizontal: sizeWidth(6),
-                flexDirection: 'column',
-              }}>
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontFamily: 'Rubik',
-                  alignSelf: 'center',
-                  fontSize: 16,
-                  fontWeight: 'bold',
-                  marginVertical: sizeHeight(1.5),
-                  marginBottom: sizeHeight(2),
-                  paddingBottom: 8,
-                }}>
-                {'האם אתה בטוח?'}
-              </Subtitle>
-              <Button
-                styleName=" muted border"
-                mode={'contained'}
-                uppercase={true}
-                dark={true}
-                style={[
-                  styles.loginButtonStyle,
-                  {marginVertical: 0, marginHorizontal: sizeWidth(3)},
-                ]}
-                onPress={this.ordemm}>
-                <Subtitle style={{color: 'white'}}>{'כן'}</Subtitle>
-              </Button>
-              <TouchableWithoutFeedback
-                onPress={() => this.setState({showApprove: false})}>
-                <Subtitle
-                  style={{
-                    marginTop: sizeHeight(1.5),
-                    color: '#292929',
-                    fontFamily: 'Rubik',
-                    alignSelf: 'center',
-                    fontSize: 15,
-                    paddingBottom: 8,
-                  }}>
-                  {'לא'}
-                </Subtitle>
-              </TouchableWithoutFeedback>
-            </View>
-          </Modal>
-        </Portal>
-
-        <Portal>
-          <Modal
-            dismissable={true}
-            visible={this.state.showDecline}
-            onDismiss={() => this.setState({showDecline: false})}>
-            <View
-              styleName="vertical sm-gutter"
-              style={{
-                backgroundColor: 'white',
-                marginHorizontal: sizeWidth(6),
-                flexDirection: 'column',
-              }}>
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontFamily: 'Rubik',
-                  alignSelf: 'center',
-                  fontSize: 16,
-                  fontWeight: 'bold',
-                  marginVertical: sizeHeight(1.5),
-                  marginBottom: sizeHeight(1),
-                  paddingBottom: 8,
-                }}>
-                {`בטל הזמנה`}
-              </Subtitle>
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontFamily: 'Rubik',
-                  alignSelf: 'center',
-                  fontSize: 14,
-                  fontWeight: 'bold',
-                  paddingBottom: 8,
-                }}>
-                {'סיבת הסירוב:'}
-              </Subtitle>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'center'}}>
-                <Button
-                  styleName=" muted border"
-                  mode={'contained'}
-                  uppercase={true}
-                  dark={true}
-                  style={[
-                    styles.loginButtonStyle,
-                    {marginVertical: 0, marginHorizontal: sizeWidth(3)},
-                  ]}
-                  onPress={this.declineWithNothing}>
-                  <Subtitle style={{color: 'white'}}>{'כללי'}</Subtitle>
-                </Button>
-                <Button
-                  styleName=" muted border"
-                  mode={'contained'}
-                  uppercase={true}
-                  dark={true}
-                  style={[
-                    styles.loginButtonStyle,
-                    {marginVertical: 0, marginHorizontal: sizeWidth(3)},
-                  ]}
-                  onPress={this.declineWithBusy}>
-                  <Subtitle style={{color: 'white'}}>{'עמוס'}</Subtitle>
-                </Button>
-                <Button
-                  styleName=" muted border"
-                  mode={'contained'}
-                  uppercase={true}
-                  dark={true}
-                  style={[
-                    styles.loginButtonStyle,
-                    {marginVertical: 0, marginHorizontal: sizeWidth(3)},
-                  ]}
-                  onPress={this.declineWithOutOfStock}>
-                  <Subtitle style={{color: 'white'}}>{'לא במלאי'}</Subtitle>
-                </Button>
+                <TouchableWithoutFeedback
+                  onPress={() => this.setState({showDecline: false})}>
+                  <Subtitle
+                    style={{
+                      marginTop: sizeHeight(5),
+                      color: '#292929',
+                      fontFamily: 'Rubik',
+                      alignSelf: 'center',
+                      fontSize: 18,
+                      paddingBottom: 8,
+                    }}>
+                    {'חזור'}
+                  </Subtitle>
+                </TouchableWithoutFeedback>
               </View>
-              <TouchableWithoutFeedback
-                onPress={() => this.setState({showDecline: false})}>
-                <Subtitle
-                  style={{
-                    marginTop: sizeHeight(5),
-                    color: '#292929',
-                    fontFamily: 'Rubik',
-                    alignSelf: 'center',
-                    fontSize: 18,
-                    paddingBottom: 8,
-                  }}>
-                  {'חזור'}
-                </Subtitle>
-              </TouchableWithoutFeedback>
-            </View>
-          </Modal>
-        </Portal>
+            </Modal>
+          </Portal>
 
-        <Loader isShow={this.state.showp} />
-      </Screen>
+          <Loader isShow={this.state.showp} />
+        </Screen>
+      </SafeAreaView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  priceitem: {
+    color: '#292929',
+    fontFamily: 'Rubik',
+    multiline: false,
+    alignSelf: 'flex-start',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  extratitlestyle: {
+    color: '#292929',
+    fontFamily: 'Rubik',
+    fontSize: 16,
+    fontWeight: '400',
+    paddingHorizontal: 2,
+    writingDirection: 'ltr',
+    textAlign: 'left',
+  },
+  maincontainer: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   inputStyle: {
     borderRadius: 2,
     borderColor: '#dedede',

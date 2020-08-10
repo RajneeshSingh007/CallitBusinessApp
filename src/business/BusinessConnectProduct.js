@@ -130,7 +130,9 @@ export default class BusinessConnectProduct extends React.Component {
         <View styleName='vertical v-start h-start'>
           <Subtitle numberOfLines={1} styleName='bold'>{rowData.name}</Subtitle>
         </View>
-        <Checkbox
+                                       <Checkbox.Android
+                                 uncheckedColor={'#dedede'}
+
           status={this
             .state
             .selectedItem

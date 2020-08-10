@@ -44,6 +44,7 @@ import BusinessExtraInsideProduct from './../business/BusinessExtraInsideProduct
 import * as Lodash from 'lodash';
 import BusinessMenuChoices from './BusinessMenuChoices';
 import {AlertDialog} from './../util/AlertDialog';
+import {SafeAreaView} from 'react-navigation';
 
 //added
 // import ModalCategoryEdit from './../components/modalCategoryEdit';
@@ -779,7 +780,7 @@ export default class BusinessEditAddProducts extends React.Component {
           // onPress={() =>
           //   this.handleCategoryPick(category.name, category.categoryid)
           // }
-          >
+        >
           <View
             style={{
               justifyContent: 'space-between',
@@ -829,405 +830,397 @@ export default class BusinessEditAddProducts extends React.Component {
   render() {
     //console.log(this.state.mode);
     return (
-      <Screen
-        style={{
-          backgroundColor: 'white',
-        }}>
-        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-        <NavigationBar
-          styleName="inline no-border"
-          rightComponent={
-            <View style={{flexDirection: 'row', marginEnd: sizeWidth(5)}}>
-              <BusinessMenuChoices />
-            </View>
-          }
-          leftComponent={
-            <View style={{marginStart: 12}}>
-              <Heading
-                style={{
-                  fontSize: 21,
-                  color: '#292929',
-                  fontFamily: 'Rubik',
-                  fontWeight: '700',
-                }}>
-                {this.state.mode === true ? 'עריכת מוצר' : 'מוצר חדש'}
-              </Heading>
-            </View>
-          }
-        />
-        <View
-          styleName="vertical"
-          style={{flex: 1, flexDirection: 'column'}}>
-          {/** ADDED MODAL TO SHOW */}
-          {this.modalCategoryEdit()}
-          <ScrollView style={{flex: 1}}>
-            <View styleName="vertical sm-gutter">
-              <View
-                style={{
-                  flexDirection: 'row',
-                  borderRadius: 1,
-                  borderColor: '#dedede',
-                  borderStyle: 'solid',
-                  borderWidth: 1,
-                  marginTop: sizeHeight(1.5),
-                  marginHorizontal: sizeWidth(5),
-                  height: sizeHeight(9),
-                }}>
-                <TouchableWithoutFeedback
-                  onPress={() =>
-                    this.setState({selectedMode: true, checkMulti: false})
-                  }>
-                  <View
-                    style={{
-                      flex: 0.5,
-                      backgroundColor: this.state.selectedMode
-                        ? '#5EBBD7'
-                        : 'white',
-                      alignContent: 'center',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Title
-                      styleName="bold"
-                      style={{
-                        color: this.state.selectedMode
-                          ? 'white'
-                          : '#777777',
-                        fontFamily: 'Rubik',
-                        fontSize: 16,
-                        fontWeight: '700',
-                        alignContent: 'center',
-                        justifyContent: 'center',
-                        alignSelf: 'center',
-                      }}>{` מוצר יחיד`}</Title>
-                  </View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback
-                  onPress={() =>
-                    this.setState({selectedMode: false, checkMulti: true})
-                  }>
-                  <View
-                    style={{
-                      flex: 0.5,
-                      backgroundColor: !this.state.selectedMode
-                        ? '#5EBBD7'
-                        : 'white',
-                      alignContent: 'center',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Title
-                      styleName="bold"
-                      style={{
-                        color: !this.state.selectedMode
-                          ? 'white'
-                          : '#777777',
-                        fontFamily: 'Rubik',
-                        fontSize: 16,
-                        fontWeight: '700',
-                      }}>{` מוצר מרובה`}</Title>
-                  </View>
-                </TouchableWithoutFeedback>
+      <SafeAreaView style={styles.maincontainer} forceInset={{top: 'never'}}>
+        <Screen style={styles.maincontainer}>
+          <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+          <NavigationBar
+            styleName="inline no-border"
+            rightComponent={
+              <View style={{flexDirection: 'row', marginEnd: sizeWidth(5)}}>
+                <BusinessMenuChoices />
               </View>
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontSize: 16,
-                  marginHorizontal: sizeWidth(2),
-                  marginTop: sizeHeight(1),
-                }}>
-                קטגוריה
-              </Subtitle>
-              {/** category products */}
-              <View style={styles.inputStyle}>
-                <List.Accordion
-                  title={this.state.inputCategory}
-                  titleStyle={{
+            }
+            leftComponent={
+              <View style={{marginStart: 12}}>
+                <Heading
+                  style={{
+                    fontSize: 21,
+                    color: '#292929',
                     fontFamily: 'Rubik',
-                    fontSize: 16,
-                    fontWeight: '400',
-                  }}
-                  expanded={this.state.expandedCat}
-                  onPress={this.handleExpandedCat}>
-                  <FlatList
-                    showsHorizontalScrollIndicator={false}
-                    showsVerticalScrollIndicator={true}
-                    initialNumToRender={20}
-                    data={this.state.serviceCategories}
-                    nestedScrollEnabled={true}
-                    ItemSeparatorComponent={() => {
-                      return <View style={styles.renderRowFlatListView} />;
-                    }}
-                    keyExtractor={item => item.categoryid.toString()}
-                    renderItem={({item, index}) =>
-                      this.renderCataRow(item, index)
-                    }
-                  />
-                </List.Accordion>
+                    fontWeight: '700',
+                  }}>
+                  {this.state.mode === true ? 'עריכת מוצר' : 'מוצר חדש'}
+                </Heading>
               </View>
-              {/**      ADD CATEGORY */}
-              <TouchableWithoutFeedback
-                onPress={() => this.handleBtnAddNewCategory()}>
+            }
+          />
+          <View styleName="vertical" style={{flex: 1, flexDirection: 'column'}}>
+            {/** ADDED MODAL TO SHOW */}
+            {this.modalCategoryEdit()}
+            <ScrollView style={{flex: 1}}>
+              <View styleName="vertical sm-gutter">
                 <View
                   style={{
-                    flex: 0.1,
-                    backgroundColor: '#5EBBD7',
-                    alignSelf: 'baseline',
-                    marginTop: sizeHeight(1.2),
-                    marginHorizontal: sizeWidth(2),
-                    borderRadius: 5,
+                    flexDirection: 'row',
+                    borderRadius: 1,
+                    borderColor: '#dedede',
+                    borderStyle: 'solid',
+                    borderWidth: 1,
+                    marginTop: sizeHeight(1.5),
+                    marginHorizontal: sizeWidth(5),
+                    height: sizeHeight(9),
                   }}>
-                  <Title
-                    styleName="bold"
-                    style={{
-                      color: 'white',
-                      fontFamily: 'Rubik',
-                      fontSize: 16,
-                      marginHorizontal: 10,
-                      fontWeight: 'bold',
-                    }}>{`הוסף קטגוריה`}</Title>
-                </View>
-              </TouchableWithoutFeedback>
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontSize: 16,
-                  marginTop: sizeHeight(1),
-                  marginHorizontal: sizeWidth(2),
-                }}>
-                שם המוצר
-              </Subtitle>
-              <TextInput
-                style={styles.inputStyle}
-                mode={'flat'}
-                //label={"Name"}
-                password={false}
-                returnKeyType="next"
-                numberOfLines={1}
-                value={this.state.inputName}
-                onChangeText={text => this.setState({inputName: text})}
-                underlineColor={'transparent'}
-                underlineColorAndroid={'transparent'}
-              />
-
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontSize: 16,
-                  marginTop: sizeHeight(1),
-                  marginHorizontal: sizeWidth(2),
-                }}>
-                מחיר
-              </Subtitle>
-
-              <TextInput
-                style={styles.inputStyle}
-                mode={'flat'}
-                //label={"price"}
-                password={false}
-                returnKeyType="next"
-                numberOfLines={1}
-                keyboardType={'number-pad'}
-                value={this.state.inputPrice}
-                onChangeText={text => this.setState({inputPrice: text})}
-                underlineColor={'transparent'}
-                underlineColorAndroid={'transparent'}
-              />
-
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontSize: 16,
-                  marginTop: sizeHeight(1),
-                  marginHorizontal: sizeWidth(2),
-                }}>
-                מלאי
-              </Subtitle>
-              <View
-                styleName="horizontal"
-                style={{
-                  flexDirection: 'row-reverse',
-                  marginVertical: sizeHeight(1),
-                  marginHorizontal: sizeWidth(2),
-                  borderColor: '#dedede',
-                  borderStyle: 'solid',
-                  borderWidth: 1,
-                  color: '#000000',
-                  flex: 8,
-                }}>
-                <TouchableWithoutFeedback
-                  onPress={() => {
-                    this.setState({checkAvail: false});
-                  }}>
-                  <View
-                    style={{
-                      flex: 1,
-                      flexDirection: 'row',
-                      height: sizeHeight(6.5),
-                      width: sizeWidth(10),
-                      backgroundColor: !this.state.checkAvail
-                        ? '#3daccf'
-                        : 'white',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                  <TouchableWithoutFeedback
+                    onPress={() =>
+                      this.setState({selectedMode: true, checkMulti: false})
+                    }>
                     <View
                       style={{
-                        width: 1,
-                        backgroundColor: '#dedede',
-                      }}
-                    />
-                    <Subtitle
-                      style={{
-                        color: !this.state.checkAvail ? 'white' : '#292929',
-                        fontSize: 16,
-                        alignSelf: 'center',
+                        flex: 0.5,
+                        backgroundColor: this.state.selectedMode
+                          ? '#5EBBD7'
+                          : 'white',
+                        alignContent: 'center',
                         justifyContent: 'center',
                         alignItems: 'center',
+                      }}>
+                      <Title
+                        styleName="bold"
+                        style={{
+                          color: this.state.selectedMode ? 'white' : '#777777',
+                          fontFamily: 'Rubik',
+                          fontSize: 16,
+                          fontWeight: '700',
+                          alignContent: 'center',
+                          justifyContent: 'center',
+                          alignSelf: 'center',
+                        }}>{` מוצר יחיד`}</Title>
+                    </View>
+                  </TouchableWithoutFeedback>
+                  <TouchableWithoutFeedback
+                    onPress={() =>
+                      this.setState({selectedMode: false, checkMulti: true})
+                    }>
+                    <View
+                      style={{
+                        flex: 0.5,
+                        backgroundColor: !this.state.selectedMode
+                          ? '#5EBBD7'
+                          : 'white',
                         alignContent: 'center',
-                      }}>{`לא`}</Subtitle>
-                  </View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback
-                  onPress={() => {
-                    this.setState({checkAvail: true});
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Title
+                        styleName="bold"
+                        style={{
+                          color: !this.state.selectedMode ? 'white' : '#777777',
+                          fontFamily: 'Rubik',
+                          fontSize: 16,
+                          fontWeight: '700',
+                        }}>{` מוצר מרובה`}</Title>
+                    </View>
+                  </TouchableWithoutFeedback>
+                </View>
+                <Subtitle
+                  style={{
+                    color: '#292929',
+                    fontSize: 16,
+                    marginHorizontal: sizeWidth(2),
+                    marginTop: sizeHeight(1),
                   }}>
+                  קטגוריה
+                </Subtitle>
+                {/** category products */}
+                <View style={styles.inputStyle}>
+                  <List.Accordion
+                    title={this.state.inputCategory}
+                    titleStyle={{
+                      fontFamily: 'Rubik',
+                      fontSize: 16,
+                      fontWeight: '400',
+                    }}
+                    expanded={this.state.expandedCat}
+                    onPress={this.handleExpandedCat}>
+                    <FlatList
+                      showsHorizontalScrollIndicator={false}
+                      showsVerticalScrollIndicator={true}
+                      initialNumToRender={20}
+                      data={this.state.serviceCategories}
+                      nestedScrollEnabled={true}
+                      ItemSeparatorComponent={() => {
+                        return <View style={styles.renderRowFlatListView} />;
+                      }}
+                      keyExtractor={item => item.categoryid.toString()}
+                      renderItem={({item, index}) =>
+                        this.renderCataRow(item, index)
+                      }
+                    />
+                  </List.Accordion>
+                </View>
+                {/**      ADD CATEGORY */}
+                <TouchableWithoutFeedback
+                  onPress={() => this.handleBtnAddNewCategory()}>
                   <View
                     style={{
-                      flex: 1,
-                      flexDirection: 'row',
-                      height: sizeHeight(6.5),
-                      width: sizeWidth(10),
-                      backgroundColor: this.state.checkAvail
-                        ? '#3daccf'
-                        : 'white',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      flex: 0.1,
+                      backgroundColor: '#5EBBD7',
+                      alignSelf: 'baseline',
+                      marginTop: sizeHeight(1.2),
+                      marginHorizontal: sizeWidth(2),
+                      borderRadius: 5,
                     }}>
-                    <Subtitle
+                    <Title
+                      styleName="bold"
                       style={{
-                        color: this.state.checkAvail ? 'white' : '#292929',
+                        color: 'white',
+                        fontFamily: 'Rubik',
                         fontSize: 16,
-                        alignSelf: 'center',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        alignContent: 'center',
-                      }}>{`כן`}</Subtitle>
+                        marginHorizontal: 10,
+                        fontWeight: 'bold',
+                      }}>{`הוסף קטגוריה`}</Title>
                   </View>
                 </TouchableWithoutFeedback>
-              </View>
-
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontSize: 16,
-                  marginTop: sizeHeight(1),
-                  marginHorizontal: sizeWidth(2),
-                }}>
-                תוספות לבחירה
-              </Subtitle>
-              <TouchableWithoutFeedback
-                onPress={() =>
-                  this.setState({showExtraList: !this.state.showExtraList})
-                }>
-                <View
+                <Subtitle
                   style={{
+                    color: '#292929',
+                    fontSize: 16,
+                    marginTop: sizeHeight(1),
+                    marginHorizontal: sizeWidth(2),
+                  }}>
+                  שם המוצר
+                </Subtitle>
+                <TextInput
+                  style={styles.inputStyle}
+                  mode={'flat'}
+                  //label={"Name"}
+                  password={false}
+                  returnKeyType="next"
+                  numberOfLines={1}
+                  value={this.state.inputName}
+                  onChangeText={text => this.setState({inputName: text})}
+                  underlineColor={'transparent'}
+                  underlineColorAndroid={'transparent'}
+                />
+
+                <Subtitle
+                  style={{
+                    color: '#292929',
+                    fontSize: 16,
+                    marginTop: sizeHeight(1),
+                    marginHorizontal: sizeWidth(2),
+                  }}>
+                  מחיר
+                </Subtitle>
+
+                <TextInput
+                  style={styles.inputStyle}
+                  mode={'flat'}
+                  //label={"price"}
+                  password={false}
+                  returnKeyType="next"
+                  numberOfLines={1}
+                  keyboardType={'number-pad'}
+                  value={this.state.inputPrice}
+                  onChangeText={text => this.setState({inputPrice: text})}
+                  underlineColor={'transparent'}
+                  underlineColorAndroid={'transparent'}
+                />
+
+                <Subtitle
+                  style={{
+                    color: '#292929',
+                    fontSize: 16,
+                    marginTop: sizeHeight(1),
+                    marginHorizontal: sizeWidth(2),
+                  }}>
+                  מלאי
+                </Subtitle>
+                <View
+                  styleName="horizontal"
+                  style={{
+                    flexDirection: 'row-reverse',
+                    marginVertical: sizeHeight(1),
+                    marginHorizontal: sizeWidth(2),
                     borderColor: '#dedede',
                     borderStyle: 'solid',
                     borderWidth: 1,
                     color: '#000000',
-                    height: 60,
-                    marginHorizontal: sizeWidth(2),
-                    marginTop: sizeHeight(0.5),
-                    justifyContent: 'space-between',
-                    flexDirection: 'row-reverse',
+                    flex: 8,
                   }}>
-                  <Icon
-                    name={'keyboard-arrow-down'}
-                    size={24}
-                    style={{
-                      color: '#292929',
-                      alignSelf: 'center',
-                      marginHorizontal: sizeWidth(2),
-                    }}
-                  />
-                  <Subtitle
-                    style={{
-                      color: '#292929',
-                      fontSize: 16,
-                      alignSelf: 'center',
-                      marginHorizontal: sizeWidth(2),
-                    }}
-                  />
+                  <TouchableWithoutFeedback
+                    onPress={() => {
+                      this.setState({checkAvail: false});
+                    }}>
+                    <View
+                      style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        height: sizeHeight(6.5),
+                        width: sizeWidth(10),
+                        backgroundColor: !this.state.checkAvail
+                          ? '#3daccf'
+                          : 'white',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <View
+                        style={{
+                          width: 1,
+                          backgroundColor: '#dedede',
+                        }}
+                      />
+                      <Subtitle
+                        style={{
+                          color: !this.state.checkAvail ? 'white' : '#292929',
+                          fontSize: 16,
+                          alignSelf: 'center',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          alignContent: 'center',
+                        }}>{`לא`}</Subtitle>
+                    </View>
+                  </TouchableWithoutFeedback>
+                  <TouchableWithoutFeedback
+                    onPress={() => {
+                      this.setState({checkAvail: true});
+                    }}>
+                    <View
+                      style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        height: sizeHeight(6.5),
+                        width: sizeWidth(10),
+                        backgroundColor: this.state.checkAvail
+                          ? '#3daccf'
+                          : 'white',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Subtitle
+                        style={{
+                          color: this.state.checkAvail ? 'white' : '#292929',
+                          fontSize: 16,
+                          alignSelf: 'center',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          alignContent: 'center',
+                        }}>{`כן`}</Subtitle>
+                    </View>
+                  </TouchableWithoutFeedback>
                 </View>
-              </TouchableWithoutFeedback>
-              {this.state.showExtraList ? (
-                <View style={{marginTop: sizeHeight(1)}}>
-                  <BusinessExtraInsideProduct
-                    idservice={
-                      this.state.mode ? this.state.idservice : undefined
-                    }
-                    onSubmitCallback={listItemSelect => {
-                      Lodash.map(listItemSelect, ele => {
-                        this.state.selectedCategoryItems.push(ele.extra);
-                      });
-                    }}
-                  />
-                </View>
-              ) : null}
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontSize: 16,
-                  marginTop: sizeHeight(1),
-                  marginHorizontal: sizeWidth(2.5),
-                }}>
-                פירוט
-              </Subtitle>
-              <TextInput
-                style={[styles.inputStyle, {height: 100}]}
-                mode={'flat'}
-                //label={"Descripton"}
-                password={false}
-                returnKeyType="next"
-                multiline={true}
-                value={this.state.inputDesc}
-                onChangeText={text => this.setState({inputDesc: text})}
-                underlineColor={'transparent'}
-                underlineColorAndroid={'transparent'}
-              />
-              {/** start service mode */}
 
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontSize: 16,
-                  marginTop: sizeHeight(1),
-                  marginHorizontal: sizeWidth(2.5),
-                }}>
-                סוג מוצר
-              </Subtitle>
-              <View
-                style={{
-                  borderRadius: 1,
-                  borderColor: '#dedede',
-                  borderStyle: 'solid',
-                  borderWidth: 1,
-                  marginHorizontal: sizeWidth(2.5),
-                }}>
-                <List.Accordion
-                  title={this.state.serviceType}
-                  titleStyle={{
-                    fontFamily: 'Rubik',
+                <Subtitle
+                  style={{
+                    color: '#292929',
                     fontSize: 16,
-                    fontWeight: '400',
-                  }}
-                  expanded={this.state.showServiceTypeList}
-                  onPress={this.handleServiceTypeOnClick}>
-                  {this.renderServiceTypeList()}
-                </List.Accordion>
-              </View>
-              {/* <TouchableWithoutFeedback
+                    marginTop: sizeHeight(1),
+                    marginHorizontal: sizeWidth(2),
+                  }}>
+                  תוספות לבחירה
+                </Subtitle>
+                <TouchableWithoutFeedback
+                  onPress={() =>
+                    this.setState({showExtraList: !this.state.showExtraList})
+                  }>
+                  <View
+                    style={{
+                      borderColor: '#dedede',
+                      borderStyle: 'solid',
+                      borderWidth: 1,
+                      color: '#000000',
+                      height: 60,
+                      marginHorizontal: sizeWidth(2),
+                      marginTop: sizeHeight(0.5),
+                      justifyContent: 'space-between',
+                      flexDirection: 'row-reverse',
+                    }}>
+                    <Icon
+                      name={'keyboard-arrow-down'}
+                      size={24}
+                      style={{
+                        color: '#292929',
+                        alignSelf: 'center',
+                        marginHorizontal: sizeWidth(2),
+                      }}
+                    />
+                    <Subtitle
+                      style={{
+                        color: '#292929',
+                        fontSize: 16,
+                        alignSelf: 'center',
+                        marginHorizontal: sizeWidth(2),
+                      }}
+                    />
+                  </View>
+                </TouchableWithoutFeedback>
+                {this.state.showExtraList ? (
+                  <View style={{marginTop: sizeHeight(1)}}>
+                    <BusinessExtraInsideProduct
+                      idservice={
+                        this.state.mode ? this.state.idservice : undefined
+                      }
+                      onSubmitCallback={listItemSelect => {
+                        Lodash.map(listItemSelect, ele => {
+                          this.state.selectedCategoryItems.push(ele.extra);
+                        });
+                      }}
+                    />
+                  </View>
+                ) : null}
+                <Subtitle
+                  style={{
+                    color: '#292929',
+                    fontSize: 16,
+                    marginTop: sizeHeight(1),
+                    marginHorizontal: sizeWidth(2.5),
+                  }}>
+                  פירוט
+                </Subtitle>
+                <TextInput
+                  style={[styles.inputStyle, {height: 100}]}
+                  mode={'flat'}
+                  //label={"Descripton"}
+                  password={false}
+                  returnKeyType="next"
+                  multiline={true}
+                  value={this.state.inputDesc}
+                  onChangeText={text => this.setState({inputDesc: text})}
+                  underlineColor={'transparent'}
+                  underlineColorAndroid={'transparent'}
+                />
+                {/** start service mode */}
+
+                <Subtitle
+                  style={{
+                    color: '#292929',
+                    fontSize: 16,
+                    marginTop: sizeHeight(1),
+                    marginHorizontal: sizeWidth(2.5),
+                  }}>
+                  סוג מוצר
+                </Subtitle>
+                <View
+                  style={{
+                    borderRadius: 1,
+                    borderColor: '#dedede',
+                    borderStyle: 'solid',
+                    borderWidth: 1,
+                    marginHorizontal: sizeWidth(2.5),
+                  }}>
+                  <List.Accordion
+                    title={this.state.serviceType}
+                    titleStyle={{
+                      fontFamily: 'Rubik',
+                      fontSize: 16,
+                      fontWeight: '400',
+                    }}
+                    expanded={this.state.showServiceTypeList}
+                    onPress={this.handleServiceTypeOnClick}>
+                    {this.renderServiceTypeList()}
+                  </List.Accordion>
+                </View>
+                {/* <TouchableWithoutFeedback
                 onPress={() => this.handleServiceTypeOnClick()}>
                 <View
                   style={[
@@ -1267,190 +1260,195 @@ export default class BusinessEditAddProducts extends React.Component {
                   </Subtitle>
                 </View>
               </TouchableWithoutFeedback> */}
-              <View
-                style={{
-                  height: 1,
-                  backgroundColor: '#dedede',
-                  marginTop: sizeHeight(2),
-                }}
-              />
-
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontSize: 16,
-                  marginTop: sizeHeight(1),
-                  marginHorizontal: sizeWidth(2),
-                }}>
-                הוספת הנחה
-              </Subtitle>
-
-              <TextInput
-                style={styles.inputStyle}
-                mode={'flat'}
-                password={false}
-                returnKeyType="next"
-                multiline={true}
-                value={this.state.inputDPrice}
-                onChangeText={text => this.setState({inputDPrice: text})}
-                underlineColor={'transparent'}
-                underlineColorAndroid={'transparent'}
-              />
-
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  fontSize: 16,
-                  marginTop: sizeHeight(1),
-                  marginHorizontal: sizeWidth(2),
-                }}>
-                תאריכים
-              </Subtitle>
-
-              <View style={{flexDirection: 'row'}}>
-                <TextInput
-                  style={[styles.inputStyle, {flex: 0.5}]}
-                  mode={'flat'}
-                  password={false}
-                  returnKeyType="next"
-                  multiline={true}
-                  label={'סוף המבצע'}
-                  value={this.state.inputDStartDateTime}
-                  onFocus={() => this.date1()}
-                  underlineColor={'transparent'}
-                  underlineColorAndroid={'transparent'}
-                />
-                <TextInput
-                  style={[styles.inputStyle, {flex: 0.5}]}
-                  mode={'flat'}
-                  label={'תחילת המבצע'}
-                  password={false}
-                  returnKeyType="next"
-                  multiline={true}
-                  value={this.state.inputDEndDateTime}
-                  onFocus={() => this.date2()}
-                  underlineColor={'transparent'}
-                  underlineColorAndroid={'transparent'}
-                />
-              </View>
-
-              <Subtitle
-                style={{
-                  color: '#292929',
-                  alignSelf: 'flex-start',
-                  fontSize: 16,
-                  marginTop: sizeHeight(1),
-                  marginHorizontal: sizeWidth(2),
-                }}>
-                תמונת מוצר
-              </Subtitle>
-
-              <TouchableWithoutFeedback onPress={() => this.onImageClick()}>
-                <Card
+                <View
                   style={{
-                    width: 142,
-                    height: 96,
-                    alignSelf: 'center',
-                    borderColor: '#dedede',
-                    ...Platform.select({
-                      android: {
-                        elevation: 2,
-                      },
-                      default: {
-                        shadowColor: 'rgba(0,0,0, .2)',
-                        shadowOffset: {height: 0, width: 0},
-                        shadowOpacity: 1,
-                        shadowRadius: 1,
-                      },
-                    }),
-                    marginVertical: 8,
+                    height: 1,
+                    backgroundColor: '#dedede',
+                    marginTop: sizeHeight(2),
+                  }}
+                />
+
+                <Subtitle
+                  style={{
+                    color: '#292929',
+                    fontSize: 16,
+                    marginTop: sizeHeight(1),
+                    marginHorizontal: sizeWidth(2),
                   }}>
-                  <Image
-                    styleName="medium"
-                    source={
-                      this.state.imagePath === ''
-                        ? require('./../res/images/placed.png')
-                        : {uri: `${this.state.imagePath}`}
-                    }
+                  הוספת הנחה
+                </Subtitle>
+
+                <TextInput
+                  style={styles.inputStyle}
+                  mode={'flat'}
+                  password={false}
+                  returnKeyType="next"
+                  multiline={true}
+                  value={this.state.inputDPrice}
+                  onChangeText={text => this.setState({inputDPrice: text})}
+                  underlineColor={'transparent'}
+                  underlineColorAndroid={'transparent'}
+                />
+
+                <Subtitle
+                  style={{
+                    color: '#292929',
+                    fontSize: 16,
+                    marginTop: sizeHeight(1),
+                    marginHorizontal: sizeWidth(2),
+                  }}>
+                  תאריכים
+                </Subtitle>
+
+                <View style={{flexDirection: 'row'}}>
+                  <TextInput
+                    style={[styles.inputStyle, {flex: 0.5}]}
+                    mode={'flat'}
+                    password={false}
+                    returnKeyType="next"
+                    multiline={true}
+                    label={'סוף המבצע'}
+                    value={this.state.inputDStartDateTime}
+                    onFocus={() => this.date1()}
+                    underlineColor={'transparent'}
+                    underlineColorAndroid={'transparent'}
+                  />
+                  <TextInput
+                    style={[styles.inputStyle, {flex: 0.5}]}
+                    mode={'flat'}
+                    label={'תחילת המבצע'}
+                    password={false}
+                    returnKeyType="next"
+                    multiline={true}
+                    value={this.state.inputDEndDateTime}
+                    onFocus={() => this.date2()}
+                    underlineColor={'transparent'}
+                    underlineColorAndroid={'transparent'}
+                  />
+                </View>
+
+                <Subtitle
+                  style={{
+                    color: '#292929',
+                    alignSelf: 'flex-start',
+                    fontSize: 16,
+                    marginTop: sizeHeight(1),
+                    marginHorizontal: sizeWidth(2),
+                  }}>
+                  תמונת מוצר
+                </Subtitle>
+
+                <TouchableWithoutFeedback onPress={() => this.onImageClick()}>
+                  <Card
                     style={{
                       width: 142,
                       height: 96,
                       alignSelf: 'center',
-                      borderTopEndRadius: 8,
-                      borderTopLeftRadius: 8,
-                      borderTopRightRadius: 8,
-                      borderTopStartRadius: 8,
-                      borderBottomRightRadius: 8,
-                      borderBottomStartRadius: 8,
-                      borderBottomEndRadius: 8,
-                      borderBottomLeftRadius: 8,
-                    }}
-                  />
-                </Card>
-              </TouchableWithoutFeedback>
+                      borderColor: '#dedede',
+                      ...Platform.select({
+                        android: {
+                          elevation: 2,
+                        },
+                        default: {
+                          shadowColor: 'rgba(0,0,0, .2)',
+                          shadowOffset: {height: 0, width: 0},
+                          shadowOpacity: 1,
+                          shadowRadius: 1,
+                        },
+                      }),
+                      marginVertical: 8,
+                    }}>
+                    <Image
+                      styleName="medium"
+                      source={
+                        this.state.imagePath === ''
+                          ? require('./../res/images/placed.png')
+                          : {uri: `${this.state.imagePath}`}
+                      }
+                      style={{
+                        width: 142,
+                        height: 96,
+                        alignSelf: 'center',
+                        borderTopEndRadius: 8,
+                        borderTopLeftRadius: 8,
+                        borderTopRightRadius: 8,
+                        borderTopStartRadius: 8,
+                        borderBottomRightRadius: 8,
+                        borderBottomStartRadius: 8,
+                        borderBottomEndRadius: 8,
+                        borderBottomLeftRadius: 8,
+                      }}
+                    />
+                  </Card>
+                </TouchableWithoutFeedback>
 
-              <DateTimePicker
-                isVisible={this.state.datePicker}
-                onConfirm={this._handleSDatePicked}
-                mode={'datetime'}
-                datePickerModeAndroid={'default'}
-                onCancel={() => {
-                  this.setState({datePicker: false});
-                }}
-              />
+                <DateTimePicker
+                  isVisible={this.state.datePicker}
+                  onConfirm={this._handleSDatePicked}
+                  mode={'datetime'}
+                  datePickerModeAndroid={'default'}
+                  onCancel={() => {
+                    this.setState({datePicker: false});
+                  }}
+                />
 
-              <DateTimePicker
-                isVisible={this.state.datePicker1}
-                onConfirm={this._handleEDatePicked}
-                mode={'datetime'}
-                datePickerModeAndroid={'default'}
-                onCancel={() => {
-                  this.setState({datePicker1: false});
-                }}
-              />
-            </View>
-          </ScrollView>
-        </View>
+                <DateTimePicker
+                  isVisible={this.state.datePicker1}
+                  onConfirm={this._handleEDatePicked}
+                  mode={'datetime'}
+                  datePickerModeAndroid={'default'}
+                  onCancel={() => {
+                    this.setState({datePicker1: false});
+                  }}
+                />
+              </View>
+            </ScrollView>
+          </View>
 
-        {this.state.visibility === false ? null : (
-          <Button
-            styleName=" muted border"
-            mode={'contained'}
-            uppercase={true}
-            dark={true}
-            style={styles.loginButtonStyle}
-            onPress={() => this.addProduct()}>
-            <Subtitle style={{color: 'white'}}>
-              {this.state.mode === true ? 'עדכן מוצר' : 'סיום'}
-            </Subtitle>
-          </Button>
-        )}
-        <Loader isShow={this.state.progressView} />
-        {this.state.showAlert ? (
-          <AlertDialog
-            isShow={true}
-            title={'הודעה'}
-            content={this.state.alertContent}
-            callbacks={() => this.setState({showAlert: false})}
-          />
-        ) : null}
+          {this.state.visibility === false ? null : (
+            <Button
+              styleName=" muted border"
+              mode={'contained'}
+              uppercase={true}
+              dark={true}
+              style={styles.loginButtonStyle}
+              onPress={() => this.addProduct()}>
+              <Subtitle style={{color: 'white'}}>
+                {this.state.mode === true ? 'עדכן מוצר' : 'סיום'}
+              </Subtitle>
+            </Button>
+          )}
+          <Loader isShow={this.state.progressView} />
+          {this.state.showAlert ? (
+            <AlertDialog
+              isShow={true}
+              title={'הודעה'}
+              content={this.state.alertContent}
+              callbacks={() => this.setState({showAlert: false})}
+            />
+          ) : null}
 
-        <Snackbar
-          visible={this.state.message === '' ? false : true}
-          duration={1000}
-          onDismiss={() =>
-            this.setState({
-              message: '',
-            })
-          }>
-          {this.state.message}
-        </Snackbar>
-      </Screen>
+          <Snackbar
+            visible={this.state.message === '' ? false : true}
+            duration={1000}
+            onDismiss={() =>
+              this.setState({
+                message: '',
+              })
+            }>
+            {this.state.message}
+          </Snackbar>
+        </Screen>
+      </SafeAreaView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  maincontainer: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   inputStyle: {
     borderRadius: 2,
     borderColor: '#dedede',

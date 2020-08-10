@@ -1,14 +1,21 @@
 //reacts
 import React from 'react';
-import {FlatList, StatusBar, Text, AppState, SafeAreaView ,StyleSheet} from 'react-native';
+import {
+  FlatList,
+  StatusBar,
+  Text,
+  AppState,
+  StyleSheet,
+  Platform,
+} from 'react-native';
 //3rd party comps
-import {Heading,  NavigationBar,  Screen,  View,} from '@shoutem/ui';
+import {Heading, NavigationBar, Screen, View} from '@shoutem/ui';
 
 //utilties
 import BusinessMenuChoices from './BusinessMenuChoices';
 import * as Helper from './../util/Helper';
 import * as Pref from './../util/Pref';
-import { sizeWidth} from './../util/Size';
+import {sizeWidth} from './../util/Size';
 import NavigationActions from './../util/NavigationActions';
 import PushNotificationAndroid from 'react-native-push-android';
 //customComps
@@ -19,6 +26,14 @@ import DoubleTab from '../Component/DoubleTab';
 //time+date libraries
 import momenttz from 'moment-timezone';
 import Moment from 'moment';
+import {Notifications} from 'react-native-notifications';
+import {SafeAreaView} from 'react-navigation';
+import {
+  request,
+  PERMISSIONS,
+  RESULTS,
+  requestNotifications,
+} from 'react-native-permissions';
 
 export default class BusinessHomePage extends React.Component {
   constructor(props) {
@@ -41,9 +56,9 @@ export default class BusinessHomePage extends React.Component {
       token: '',
       branchInfo: {},
       firstTime: false,
-      isRightChecked:true,
+      isRightChecked: true,
       // showLoader:false,
-      fetched:false,
+      fetched: false,
     };
   }
 
@@ -59,15 +74,38 @@ export default class BusinessHomePage extends React.Component {
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.fetchAllCat();
     });
-    this._notificationEvent = PushNotificationAndroid.addEventListener(
-      'notification',
-      details => {
-        PushNotificationAndroid.notify(details);
-        this.setState({progressView: true});
-        this.fetchAllCat();
-        // console.log("remoteNotification => body", details.fcm.body);
-      },
-    );
+    if (Platform.OS === 'ios') {
+      requestNotifications(['alert', 'badge', 'sound']).then(() => {
+        //alert('granted');
+      });
+      Notifications.registerRemoteNotifications();
+
+      Notifications.events().registerNotificationReceivedForeground(
+        (notification, completion) => {
+          this.setState({progressView: true});
+          this.fetchAllCat();
+          completion({alert: false, sound: true, badge: false});
+        },
+      );
+
+      Notifications.events().registerNotificationOpened(
+        (notification, completion) => {
+          this.setState({progressView: true});
+          this.fetchAllCat();
+          completion();
+        },
+      );
+    } else {
+      this._notificationEvent = PushNotificationAndroid.addEventListener(
+        'notification',
+        details => {
+          PushNotificationAndroid.notify(details);
+          this.setState({progressView: true});
+          this.fetchAllCat();
+          // console.log("remoteNotification => body", details.fcm.body);
+        },
+      );
+    }
   }
 
   componentWillUnmount() {
@@ -76,8 +114,13 @@ export default class BusinessHomePage extends React.Component {
     if (this.focusListener !== undefined) {
       this.focusListener.remove();
     }
-    if (this._notificationEvent !== undefined) {
-      this._notificationEvent.remove();
+    if (Platform.OS === 'android') {
+      if (
+        this._notificationEvent !== undefined &&
+        this._notificationEvent !== null
+      ) {
+        this._notificationEvent.remove();
+      }
     }
     if (this.willFocusListener !== undefined) {
       this.willFocusListener.remove();
@@ -132,10 +175,10 @@ export default class BusinessHomePage extends React.Component {
           },
           error => {
             this.setState({
-                progressView: false,
-                // showLoader:false,
-                fetched:true
-              });
+              progressView: false,
+              // showLoader:false,
+              fetched: true,
+            });
           },
         );
       });
@@ -144,33 +187,30 @@ export default class BusinessHomePage extends React.Component {
 
   fetchOrderData(id, dates, token) {
     let body;
-    if(this.state.isRightChecked)
-    {
+    if (this.state.isRightChecked) {
       let yesterdayDate = momenttz
-      .tz('Asia/Jerusalem')
-      .subtract(1, 'days')
-      .format()
-      .split('T')[0];
+        .tz('Asia/Jerusalem')
+        .subtract(1, 'days')
+        .format()
+        .split('T')[0];
       let tomorrowDate = momenttz
-      .tz('Asia/Jerusalem')
-      .add(1, 'days')
-      .format()
-      .split('T')[0];
+        .tz('Asia/Jerusalem')
+        .add(1, 'days')
+        .format()
+        .split('T')[0];
       body = JSON.stringify({
-        input: yesterdayDate + '?'+ tomorrowDate,
-      }); 
-    }
-    else
-    {
+        input: yesterdayDate + '?' + tomorrowDate,
+      });
+    } else {
       body = JSON.stringify({
         input: '2020-02-16?' + dates,
       });
     }
-    
+
     // const body = JSON.stringify({
     //   input: '2020-02-16?' + dates,
     // });
-    
+
     Helper.networkHelperTokenPost(
       Pref.GetOrdersUrl + id,
       body,
@@ -184,76 +224,82 @@ export default class BusinessHomePage extends React.Component {
           progressView: false,
           firstTime: true,
           // showLoader:false,
-          fetched:true,
+          fetched: true,
         });
       },
       error => {
-        this.setState({fetched:true});
+        this.setState({fetched: true});
         //////console.log(error);
       },
     );
   }
 
-  
-
   renderRow(item) {
     return (
-      <OrderCard item={item} onClick={() =>
-        NavigationActions.navigate('OrderManage', {
-          item: item,
-          mode: false,
-        })}/>
+      <OrderCard
+        item={item}
+        onClick={() =>
+          NavigationActions.navigate('OrderManage', {
+            item: item,
+            mode: false,
+          })
+        }
+      />
     );
   }
 
-  handleCheckedRight = (temp) => // true or false
-  {
+  handleCheckedRight = (
+    temp, // true or false
+  ) => {
     this.setState({isRightChecked: temp});
     this.fetchAllCat();
-  }
-
+  };
 
   render() {
     return (
-      <SafeAreaView
-        style={styles.container}>
-          
-        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-        <NavigationBar 
-          styleName="inline no-border"
-          style={styleNavBar}
-          rightComponent={
-            <View style={{flexDirection: 'row', marginEnd: sizeWidth(5)}}>
-              <BusinessMenuChoices />
-            </View>
-          }
-          leftComponent={
-            <View style={{marginStart: 12}}>
-              <Heading
-                style={styles.heading}>
-                {this.state.branchInfo.name}
-              </Heading>
-            </View>
-          }
-        />
-        <DoubleTab  LeftText={'כל ההזמנות'} RightText={'ההזמנות של היום'} MakeRightChecked={this.handleCheckedRight} />
-        
-        <View
-          styleName="vertical"
-          style={styles.listContainer}>
-          <FlatList
+      <SafeAreaView style={styles.container} forceInset={{top: 'never'}}>
+        <Screen style={styles.container}>
+          <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+          <NavigationBar
+            styleName="inline no-border"
+            style={styleNavBar}
+            rightComponent={
+              <View style={{flexDirection: 'row', marginEnd: sizeWidth(5)}}>
+                <BusinessMenuChoices />
+              </View>
+            }
+            leftComponent={
+              <View style={{marginStart: 12}}>
+                <Heading style={styles.heading}>
+                  {this.state.branchInfo.name}
+                </Heading>
+              </View>
+            }
+          />
+          <DoubleTab
+            LeftText={'כל ההזמנות'}
+            RightText={'ההזמנות של היום'}
+            MakeRightChecked={this.handleCheckedRight}
+          />
+
+          <View styleName="vertical" style={styles.listContainer}>
+            <FlatList
               extraData={this.state}
               showsVerticalScrollIndicator={true}
               showsHorizontalScrollIndicator={false}
-              ListEmptyComponent={this.state.fetched === true ?  <Text style={{alignSelf:'center'}}>אין הזמנות פעילות..</Text> : null}
+              ListEmptyComponent={
+                this.state.fetched === true ? (
+                  <Text style={{alignSelf: 'center'}}>
+                    אין הזמנות פעילות..
+                  </Text>
+                ) : null
+              }
               data={this.state.restaurants}
               keyExtractor={(item, index) => item.title.toString()}
-              renderItem={({item: item}) =>
-                this.renderRow(item, )
-              }
-          />
-          
-          {/* <DummyLoader
+              renderItem={({item: item}) => this.renderRow(item)}
+            />
+
+            {/* <DummyLoader
             visibilty={this.state.progressView}
             center={
               this.state.restaurants.length > 0 ? (
@@ -274,8 +320,9 @@ export default class BusinessHomePage extends React.Component {
               )
             }
           /> */}
-          {/* <LoaderInd ShowLoader={this.state.progressView}/> */}
-        </View>
+            {/* <LoaderInd ShowLoader={this.state.progressView}/> */}
+          </View>
+        </Screen>
       </SafeAreaView>
     );
   }
@@ -296,19 +343,19 @@ const styleNavBar = {
   },
 };
 
-
 const styles = StyleSheet.create({
-  container:{
-    backgroundColor: 'white',flex:1,
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
   },
-  heading:{
+  heading: {
     fontSize: 18,
     color: '#292929',
     fontFamily: 'Rubik',
     fontWeight: '700',
     alignSelf: 'center',
   },
-  listContainer:{
+  listContainer: {
     flex: 1,
     backgroundColor: 'white',
   },
