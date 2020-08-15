@@ -34,6 +34,7 @@ import {
   RESULTS,
   requestNotifications,
 } from 'react-native-permissions';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 export default class BusinessHomePage extends React.Component {
   constructor(props) {
@@ -75,6 +76,7 @@ export default class BusinessHomePage extends React.Component {
       this.fetchAllCat();
     });
     if (Platform.OS === 'ios') {
+      PushNotificationIOS.requestPermissions().then(() => {});
       requestNotifications(['alert', 'badge', 'sound']).then(() => {
         //alert('granted');
       });
@@ -83,15 +85,26 @@ export default class BusinessHomePage extends React.Component {
       Notifications.events().registerNotificationReceivedForeground(
         (notification, completion) => {
           this.setState({progressView: true});
-          this.fetchAllCat();
-          completion({alert: false, sound: true, badge: false});
+          this.fetchOrderData(
+            this.state.id,
+            this.state.dates,
+            this.state.token,
+          );
+          completion({
+            alert: false,
+            sound: true,
+            badge: false,
+          });
         },
       );
-
       Notifications.events().registerNotificationOpened(
         (notification, completion) => {
           this.setState({progressView: true});
-          this.fetchAllCat();
+          this.fetchOrderData(
+            this.state.id,
+            this.state.dates,
+            this.state.token,
+          );
           completion();
         },
       );
@@ -101,7 +114,11 @@ export default class BusinessHomePage extends React.Component {
         details => {
           PushNotificationAndroid.notify(details);
           this.setState({progressView: true});
-          this.fetchAllCat();
+          this.fetchOrderData(
+            this.state.id,
+            this.state.dates,
+            this.state.token,
+          );
           // console.log("remoteNotification => body", details.fcm.body);
         },
       );
@@ -289,9 +306,7 @@ export default class BusinessHomePage extends React.Component {
               showsHorizontalScrollIndicator={false}
               ListEmptyComponent={
                 this.state.fetched === true ? (
-                  <Text style={{alignSelf: 'center'}}>
-                    אין הזמנות פעילות..
-                  </Text>
+                  <Text style={{alignSelf: 'center'}}>אין הזמנות פעילות..</Text>
                 ) : null
               }
               data={this.state.restaurants}

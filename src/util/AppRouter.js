@@ -7,12 +7,11 @@ import {
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 import { Colors } from "react-native-paper";
 import AuthPage from "./../customer/AuthPage";
-import BusinessHomePage from "./../business/BusinessHomePage";
 import BusinessAllProductExtra from "./../business/BusinessAllProductExtra";
 import BusinessAllProductList from "./../business/BusinessAllProductList";
 import BusinessOrderHistory from "./../business/BusinessOrderHistory";
 import BusinessEditAddProducts from "./../business/BusinessEditAddProducts";
-import BusinessWelcomePage from "./../business/BusinessWelcomePage";
+import Login from '../business/Login';
 import BusinessEditAddExtra from "./../business/BusinessEditAddExtra";
 import BusinessProfile from "./../business/BusinessProfile";
 import BranchDetailEdit from "./../business/BranchDetailEdit";
@@ -20,7 +19,6 @@ import OrderManage from "./../business/OrderManage";
 import ReviewsPage from "./../business/ReviewsPage";
 import BusinessDelivery from "./../business/BusinessDelivery";
 import BusinessGlobalProfile from "./../business/BusinessGlobalProfile";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import {Image,} from "@shoutem/ui";
 import HomeList from "../business/HomeList";
 
@@ -173,19 +171,17 @@ const bottomtab = createMaterialBottomTabNavigator(
  * Business Login
  */
 const bLoginNav = createStackNavigator(
-	{
-		//BusinessLoginPage:{ screen: BusinessLoginPage},
-		Welcome: { screen: BusinessWelcomePage }
-	},
-	{
-		headerMode: "none"
-	}
+  {
+    Login: {screen: Login},
+  },
+  {
+    headerMode: 'none',
+  },
 );
 
 
 const businessNav = createStackNavigator(
 	{
-		//Home:{screen:BusinessHomePage},
 		HomeList: { screen: HomeList },
 		Home: { screen: bottomtab },
 		BusinessEditAddProducts: { screen: BusinessEditAddProducts },

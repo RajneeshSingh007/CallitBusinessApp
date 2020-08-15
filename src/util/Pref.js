@@ -26,7 +26,7 @@ export const dateToLogout = 'dateLogin';
  */
 // 'http://djangoman123-001-site1.btempurl.com/'
 //  http://192.236.162.188/
-export const BASEURL = 'http://djangoman123-001-site1.btempurl.com/';
+export const BASEURL = 'http://192.236.162.188/';
 
 export const UserOwnerLoginUrl = `${BASEURL}api/UserownersLogin`;
 export const AddServiceUrl = `${BASEURL}api/AddService`;

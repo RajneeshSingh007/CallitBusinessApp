@@ -1,8 +1,8 @@
 import React from 'react';
 import {StatusBar, StyleSheet, Text, Platform} from 'react-native';
 import {Image, Screen, Subtitle, View, Heading, Icon} from '@shoutem/ui';
-import * as Helper from './../util/Helper';
-import * as Pref from './../util/Pref';
+import * as Helper from '../util/Helper';
+import * as Pref from '../util/Pref';
 import {Button, Snackbar, Menu, Divider} from 'react-native-paper';
 import messaging from '@react-native-firebase/messaging';
 
@@ -15,7 +15,7 @@ import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {requestNotifications} from 'react-native-permissions';
 import {SafeAreaView} from 'react-navigation';
 
-export default class BusinessWelcomePage extends React.Component {
+export default class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

@@ -44,7 +44,7 @@ function Main() {
     );
 }
 
-const checkReleaseMode = false;
+const checkReleaseMode = true;
 let codepushurl = '';
 
 if (checkReleaseMode === true) {
